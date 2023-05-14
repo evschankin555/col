@@ -43,10 +43,10 @@ $form = ActiveForm::begin([
 <div class="wrap">
 <?php
     NavBar::begin([
-        'brandLabel' => 'Название вашего сайта',
+        'brandLabel' => 'Солнышко',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
-            'class' => 'navbar-dark bg-dark navbar-expand-lg',
+            'class' => 'navbar navbar-expand-lg fixed-top navbar-dark bg-primary',
         ],
     ]);
 
@@ -58,7 +58,10 @@ $form = ActiveForm::begin([
         ]
     ]);
 
-    echo $form->field($model, 'search')->textInput(['placeholder' => 'Поиск...'])->label(false);
+   echo $form->field($model, 'search')
+       ->textInput(['placeholder' => 'Поиск...', 'class' => 'form-control me-sm-2'])
+       ->label(false);
+
 
     ActiveForm::end();
 
@@ -86,13 +89,23 @@ $form = ActiveForm::begin([
         <?= $content ?>
     </div>
 </div>
-
-<footer class="footer">
+<footer id="footer">
     <div class="container">
-        <p class="pull-left">&copy; Название вашего сайта <?= date('Y') ?></p>
-        <p class="pull-right"><?= Yii::powered() ?></p>
+    <div class="row">
+        <div class="col-lg-12">
+            <ul class="list-unstyled">
+                <li class="float-end"><a href="#top">На верх</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">RSS</a></li>
+                <li><a href="#">Twitter</a></li>
+                <li><a href="#">API</a></li>
+            </ul>
+            <p class="pull-left">&copy; Солнышко <?= date('Y') ?></p>
+        </div>
+    </div>
     </div>
 </footer>
+
 
 <?php $this->endBody() ?>
 </body>

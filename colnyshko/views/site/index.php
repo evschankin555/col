@@ -11,12 +11,9 @@ use yii\bootstrap5\Button;
 $this->title = 'Название вашего сайта';
 ?>
 
-
-<div class="container">
     <div class="jumbotron">
-        <h1 class="display-4">Привет, мир!</h1>
-        <p class="lead">Это простой пример элемента с кнопками.</p>
-        <hr class="my-4">
+        <h1 class="display-4">Топ новых картинок и анимаций2</h1>
+        <hr class="my-2">
         <p>Дополнительная информация.</p>
         <p class="lead">
             <?= Button::widget([
@@ -56,4 +53,3 @@ $this->title = 'Название вашего сайта';
             </div>
         </div>
     </div>
-</div>
