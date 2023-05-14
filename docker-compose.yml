@@ -1,0 +1,22 @@
+version: '3'
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www/colnyshko
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - .:/var/www/colnyshko
+    ports:
+      - 80:80
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: colnyshko
+      MYSQL_USER: user_colnyshko
+      MYSQL_PASSWORD: C600d#$75F4
