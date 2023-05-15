@@ -42,14 +42,13 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'category/<id:\d+>' => 'site/category',
             ],
         ],
-        */
     ],
     'params' => $params,
 ];

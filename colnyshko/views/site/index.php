@@ -7,24 +7,27 @@ use yii\bootstrap5\NavBar;
 use yii\bootstrap5\Nav;
 use yii\widgets\ActiveForm;
 use yii\bootstrap5\Button;
+use GuzzleHttp\Client;
+use yii\caching\FileCache;
 
-$this->title = 'Название вашего сайта';
+$this->title = 'Солнышко';
 ?>
 
     <div class="jumbotron">
-        <h1 class="display-4">Топ новых картинок и анимаций2</h1>
+        <h1 class="display-4">Солнышко - открытки, анимации, видео</h1>
         <hr class="my-2">
-        <p>Дополнительная информация.</p>
-        <p class="lead">
-            <?= Button::widget([
-                'label' => 'Действие 1',
-                'options' => ['class' => 'btn btn-primary btn-lg'],
-            ]) ?>
-            <?= Button::widget([
-                'label' => 'Действие 2',
-                'options' => ['class' => 'btn btn-secondary btn-lg'],
-            ]) ?>
+        <p class="lead main-categories">
+            <?php
+            foreach ($categories as $category) {
+                echo Html::a(
+                    $category->name,
+                    $category->id == 0 ? '/' : ['site/category', 'id' => $category->id],
+                    ['class' => $category->isActive ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm']
+                );
+            }
+            ?>
         </p>
+        <hr class="my-2">
     </div>
 
     <div class="row">

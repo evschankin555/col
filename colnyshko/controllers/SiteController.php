@@ -10,6 +10,7 @@ use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\SearchForm;
+use app\models\Category;
 
 class SiteController extends Controller
 {
@@ -55,17 +56,24 @@ class SiteController extends Controller
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
+
     public function actionIndex()
     {
-        $searchModel = new SearchForm();
+        $categories = Category::getAll();
+        Category::setActive(0);
 
         return $this->render('index', [
-            'model' => $searchModel,
+            'categories' => $categories,
+        ]);
+    }
+
+    public function actionCategory($id)
+    {
+        $categories = Category::getAll();
+        Category::setActive($id);
+
+        return $this->render('index', [
+            'categories' => $categories,
         ]);
     }
 
