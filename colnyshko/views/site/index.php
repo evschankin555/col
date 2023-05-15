@@ -14,19 +14,39 @@ $this->title = 'Солнышко';
 ?>
 
     <div class="jumbotron">
-        <h1 class="display-4">Солнышко - открытки, анимации, видео</h1>
-        <hr class="my-2">
-        <p class="lead main-categories">
             <?php
+            echo '<p class="lead main-categories">';
             foreach ($categories as $category) {
                 echo Html::a(
-                    $category->name,
-                    $category->id == 0 ? '/' : ['site/category', 'id' => $category->id],
-                    ['class' => $category->isActive ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm']
+                    $category->name . '<span class="badge bg-secondary">' . $category->count . '</span>',
+                    $category->id == 0 ? '/' : ['site/category', 'slug' => $category->slug],
+                    [
+                        'class' => $category->isActive ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm',
+                        'title' => $category->name . ' (' . $category->count . ')',
+                    ]
                 );
             }
+            echo '</p>';
+
+            foreach ($categories as $category) {
+                if ($category->isActive) {
+                    echo '<p class="lead sub-categories">';
+                    foreach ($category->subCategories as $subCategory) {
+                        echo Html::a(
+                            $subCategory->name. '<span class="badge bg-secondary">' . $subCategory->count . '</span>',
+                            ['site/sub-category', 'slug' => $subCategory->slug],
+                            [
+                                'class' => $subCategory->isActive ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm',
+                                'title' => $subCategory->name . ' (' . $subCategory->count . ')',
+                            ]
+                        );
+                    }
+                    echo '</p>';
+                }
+            }
+
+
             ?>
-        </p>
         <hr class="my-2">
     </div>
 

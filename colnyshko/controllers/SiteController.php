@@ -67,10 +67,20 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionCategory($id)
+    public function actionCategory($slug)
     {
         $categories = Category::getAll();
-        Category::setActive($id);
+        Category::setActive($slug);
+
+        return $this->render('index', [
+            'categories' => $categories,
+        ]);
+    }
+
+    public function actionSubCategory($slug)
+    {
+        $categories = Category::getAll();
+        Category::setActiveSubCategory($slug);
 
         return $this->render('index', [
             'categories' => $categories,

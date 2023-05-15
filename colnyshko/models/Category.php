@@ -4,12 +4,17 @@ namespace app\models;
 use GuzzleHttp\Client;
 use Yii;
 use yii\base\Model;
+use app\models\SubCategory;
 
 class Category extends Model
 {
     public $id;
     public $name;
+    public $count;
+    public $slug;
     public $isActive;
+    public $subCategories = [];
+
 
     private static $categories;
 
@@ -39,7 +44,21 @@ class Category extends Model
                 $model = new static;
                 $model->id = $category['id'];
                 $model->name = $category['name'];
+                $model->slug = $category['slug'];
                 $model->isActive = false; // по умолчанию все категории неактивны
+
+                $count = 0;
+                // Создаем модели подкатегорий и добавляем их в свойство модели категории
+                foreach ($category['subCategories'] as $subCategory) {
+                    $subCategoryModel = new SubCategory();
+                    $subCategoryModel->id = $subCategory['id'];
+                    $subCategoryModel->name = $subCategory['name'];
+                    $subCategoryModel->slug = $subCategory['slug'];
+                    $count += $subCategoryModel->count = $subCategory['count'];
+                    $model->subCategories[] = $subCategoryModel;
+                }
+
+                $model->count = $count;
                 self::$categories[] = $model;
             }
         }
@@ -47,14 +66,28 @@ class Category extends Model
         return self::$categories;
     }
 
-
-    public static function setActive($id)
+    public static function setActive($slug)
     {
         foreach (self::$categories as $category) {
-            if ($category->id == $id) {
+            if ($category->slug == $slug) {
                 $category->isActive = true;
                 break;
             }
         }
     }
+
+    public static function setActiveSubCategory($slug)
+    {
+        foreach (self::$categories as $category) {
+            foreach ($category->subCategories as $subCategory) {
+                if ($subCategory->slug == $slug) {
+                    $subCategory->isActive = true;
+                    $category->isActive = true;  // активируем родительскую категорию
+                    break 2;  // прерываем оба цикла
+                }
+            }
+        }
+    }
+
+
 }
