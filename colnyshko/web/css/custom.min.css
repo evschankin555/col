@@ -3,6 +3,9 @@ body{padding-top:120px}iframe{overflow:hidden;border:none}.navbar .bi{margin-rig
 .navbar-expand-lg .navbar-collapse{
     justify-content: flex-end;
 }
+.navbar-expand-lg .navbar-collapse.center{
+    justify-content: center;
+}
 .wrap{
     min-height: 1000px;
 }

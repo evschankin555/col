@@ -49,6 +49,9 @@ $form = ActiveForm::begin([
             'class' => 'navbar navbar-expand-lg fixed-top navbar-dark bg-primary',
         ],
     ]);
+?>
+    <div class="collapse navbar-collapse center">
+    <?php
 
     $form = ActiveForm::begin([
         'action' => ['/site/search'],
@@ -64,7 +67,9 @@ $form = ActiveForm::begin([
 
 
     ActiveForm::end();
-
+    ?>
+        </div>
+            <?php
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav ml-auto'],
         'items' => [
