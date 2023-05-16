@@ -25,7 +25,7 @@ class Category extends Model
 
             $cache = Yii::$app->cache;
 
-            $categories = $cache->get('categories');
+            $categories = $cache->get('categories_new2');
 
             if ($categories === false) {
                 $response = $client->request('GET', 'categories');

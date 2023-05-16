@@ -46,3 +46,29 @@ body{padding-top:100px}iframe{overflow:hidden;border:none}.navbar .bi{margin-rig
     font-size: calc(2.48rem);
     text-align: center;
 }
+video {
+    max-width: 100%;
+    width: 100%;
+    margin-bottom: 20px;
+}
+.cards-images{
+    margin-top: 20px;
+}
+.cards-images .card{
+    height: calc(100% - 30px);
+}
+.cards-images .card-body{
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    align-content: space-between;
+}
+.pagination {
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.pagination .page-link.page-dotted{
+    line-height: 20px;
+    height: 100%;
+}

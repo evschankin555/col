@@ -10,6 +10,8 @@ use yii\bootstrap5\Button;
 use GuzzleHttp\Client;
 use yii\caching\FileCache;
 use app\components\CategoryWidget;
+use app\components\ImagesWidget;
+use app\components\PaginationWidget;
 
 $this->title = 'Солнышко';
 ?>
@@ -20,28 +22,8 @@ $this->title = 'Солнышко';
     </div>
 
     <div class="row">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Плитка 1</h5>
-                    <p class="card-text">Какое-то описание.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Плитка 2</h5>
-                    <p class="card-text">Какое-то описание.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Плитка 3</h5>
-                    <p class="card-text">Какое-то описание.</p>
-                </div>
-            </div>
-        </div>
+        <?= ImagesWidget::widget(['images' => $images])?>
+        <hr class="my-2">
+        <?= PaginationWidget::widget(['pagination' => $pagination])?>
+        <hr class="my-2">
     </div>

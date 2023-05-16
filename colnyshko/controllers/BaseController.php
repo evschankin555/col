@@ -14,6 +14,7 @@ use app\models\User;
 use app\models\SourceList;
 use app\models\UploadForm;
 use yii\web\UploadedFile;
+use app\models\Images;
 
 class BaseController extends Controller
 {
@@ -35,8 +36,20 @@ class BaseController extends Controller
         $categories = Category::getAll();
         Category::setActive(0);
 
+        $page = Yii::$app->request->get('page', 1);
+        $imagesData = Images::getAll($page);
+
+        $images = $imagesData['images'];
+        $totalPages = $imagesData['pages'];
+
+        $pagination = Images::getPagination($page, $totalPages);
+
         return $this->render('home', [
             'categories' => $categories,
+            'images' => $images,
+            'pagination' => $pagination,
         ]);
     }
+
+
 }

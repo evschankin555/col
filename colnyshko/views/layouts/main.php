@@ -43,7 +43,7 @@ $form = ActiveForm::begin([
 <div class="wrap">
 <?php
     NavBar::begin([
-        'brandLabel' => 'Солнышко',
+        'brandLabel' => 'Солнышко - коллекция открыток',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar navbar-expand-lg fixed-top navbar-dark bg-primary',
@@ -104,13 +104,29 @@ $form = ActiveForm::begin([
                 <li><a href="#">RSS</a></li>
                 <li><a href="#">Twitter</a></li>
                 <li><a href="#">API</a></li>
+                <li class="float-end"><div id="ok_group_widget" style="margin-left: -30px;"></div></li>
             </ul>
-            <p class="pull-left">&copy; Солнышко <?= date('Y') ?></p>
+            <p class="pull-left">&copy; Солнышко - коллекция открыток <?= date('Y') ?></p>
         </div>
     </div>
     </div>
 </footer>
-
+<script>
+    !function (d, id, did, st) {
+        var js = d.createElement("script");
+        js.src = "https://connect.ok.ru/connect.js";
+        js.onload = js.onreadystatechange = function () {
+            if (!this.readyState || this.readyState == "loaded" || this.readyState == "complete") {
+                if (!this.executed) {
+                    this.executed = true;
+                    setTimeout(function () {
+                        OK.CONNECT.insertGroupWidget(id,did,st);
+                    }, 0);
+                }
+            }};
+        d.documentElement.appendChild(js);
+    }(document,"ok_group_widget","51957422030974",'{"width":240,"height":105}');
+</script>
 
 <?php $this->endBody() ?>
 </body>
