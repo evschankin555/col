@@ -10,6 +10,7 @@ use yii\bootstrap5\NavBar;
 use yii\widgets\Breadcrumbs;
 use yii\widgets\ActiveForm; // Добавьте это
 use app\assets\AppAsset;
+use app\widgets\BootstrapBreadcrumbs;
 
 AppAsset::register($this);
 
@@ -90,7 +91,14 @@ $form = ActiveForm::begin([
     NavBar::end();
     ?>
 
-    <div class="container">
+    <div class="container main-container">
+        <?= BootstrapBreadcrumbs::widget([
+            'homeLink' => [
+                'label' => 'Главная',
+                'url' => '/',
+            ],
+            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+        ]); ?>
         <?= $content ?>
     </div>
 </div>

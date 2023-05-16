@@ -24,9 +24,6 @@ class ImagesWidget extends Widget
     private function renderCard($image)
     {
         $output = '<div class="card mb-3">';
-        $output .= '<div class="card-header">';
-        $output .= $this->renderDropdown($image);
-        $output .= '</div>';
         $output .= '<div class="card-body">';
 
         if ($this->isVideo($image->src)) {
@@ -39,7 +36,7 @@ class ImagesWidget extends Widget
         $output .= '</div>';
 
         $output .= '<div class="card-footer">';
-        $output .= '<a class="card-link" href="' . $image->href . '">Просмотреть</a>';
+        $output .= $this->renderDropdown($image);
         $output .= '</div>';
 
         $output .= '</div>';
@@ -48,7 +45,11 @@ class ImagesWidget extends Widget
 
     private function renderDropdown($image)
     {
-        $output = '<ul class="nav nav-pills float-end">';
+        $output = '<ul class="nav nav-pills">';
+
+        $output .= '<li class="nav-item">';
+        $output .= '<a class="nav-link" href="' . $image->href . '">Просмотреть</a>';
+        $output .= '</li>';
 
         $output .= '<li class="nav-item dropdown">';
         $output .= '<a class="nav-link dropdown-toggle show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отправить</a>';

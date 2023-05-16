@@ -17,6 +17,7 @@ body{padding-top:100px}iframe{overflow:hidden;border:none}.navbar .bi{margin-rig
 .main-categories{
     display: flex;
     justify-content: center;
+    padding-top: 10px;
 }
 .main-categories .btn{
     margin-right: 5px;
@@ -56,7 +57,7 @@ video {
 }
 .cards-images .card{
     height: calc(100% - 30px);
-}
+}+
 .cards-images .card-body{
     flex-wrap: wrap;
     display: flex;
@@ -64,13 +65,40 @@ video {
     align-content: space-between;
 }
 .cards-images .card .dropdown-menu{
-    background-color: rgba(255,255,255,.2);
+    background-color: rgba(232, 50, 131, 0.76);
     background-image: linear-gradient(125deg,rgba(255,255,255,.3),rgba(255,255,255,.2) 70%);
+}
+
+.cards-images .card .card-footer .nav-pills{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-content: center;
 }
 
 .cards-images .card .dropdown-menu .dropdown-item:hover {
     color: var(--bs-dropdown-link-active-color);
-    background-color: var(--bs-dropdown-link-active-bg)
+    background-color: rgba(255, 255, 255, 0.45);
+    box-shadow:inset 1px 1px rgba(255,255,255,.2),
+    inset -1px -1px rgba(255,255,255,.1),
+    1px 2px 5px 1px rgba(255,255,255,.25);
+}
+.cards-images .card .dropdown-menu.show{
+    position: absolute;
+    inset: auto 0px 0px auto !important;
+    transform: translate(0px, -42px) !important;
+    bottom: 0;
+    right: 0;
+}
+.cards-images .card .dropdown-toggle::after{
+    display: inline-block;
+    margin-left: 0.255em;
+    vertical-align: 0.255em;
+    content: "";
+    border-top: 0;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0.3em solid;
+    border-left: 0.3em solid transparent;
 }
 
 .pagination {
@@ -81,4 +109,9 @@ video {
 .pagination .page-link.page-dotted{
     line-height: 20px;
     height: 100%;
+}
+.breadcrumb{
+    margin-bottom: 20px;
+}
+.main-container{
 }

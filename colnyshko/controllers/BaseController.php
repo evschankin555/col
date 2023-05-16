@@ -33,6 +33,8 @@ class BaseController extends Controller
      */
     public function actionHome(): string
     {
+
+        $this->view->params['title'] = 'Солнышко';
         $categories = Category::getAll();
         Category::setActive(0);
 

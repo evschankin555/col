@@ -12,11 +12,9 @@ use yii\caching\FileCache;
 use app\components\CategoryWidget;
 use app\components\ImagesWidget;
 use app\components\PaginationWidget;
-
-$this->title = 'Солнышко';
 ?>
-
     <div class="jumbotron">
+        <hr class="my-2">
         <?= CategoryWidget::widget(['categories' => $categories])?>
         <hr class="my-2">
     </div>
