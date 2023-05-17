@@ -8,18 +8,18 @@ use yii\helpers\Html;
 class PaginationWidget extends Widget
 {
     public $pagination;
-
     public function run()
     {
-        $output = '<ul class="pagination pagination-lg">';
-
+        if (count($this->pagination) == 0) {
+            return '';
+        }
+        $output = '<hr class="my-2"><ul class="pagination pagination-lg">';
         foreach ($this->pagination as $pageItem) {
             $output .= $this->renderPageItem($pageItem);
         }
-
-        $output .= '</ul>';
-
+        $output .= '</ul><hr class="my-2">';
         return $output;
+
     }
 
     private function renderPageItem($pageItem)
@@ -31,14 +31,10 @@ class PaginationWidget extends Widget
         if ($pageItem['active']) {
             $class .= ' active';
         }
-
         $url = $pageItem['url'];
         $output = '<li class="' . $class . '">';
         $output .= Html::a($pageItem['label'], $url, ['class' => $pageItem['label'] == '...' ? 'page-link page-dotted' : 'page-link']);
         $output .= '</li>';
-
         return $output;
     }
-
-
 }

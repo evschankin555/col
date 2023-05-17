@@ -14,14 +14,10 @@ use app\components\ImagesWidget;
 use app\components\PaginationWidget;
 ?>
     <div class="jumbotron">
-        <hr class="my-2">
         <?= CategoryWidget::widget(['categories' => $categories])?>
-        <hr class="my-2">
     </div>
 
     <div class="row">
         <?= ImagesWidget::widget(['images' => $images])?>
-        <hr class="my-2">
         <?= PaginationWidget::widget(['pagination' => $pagination])?>
-        <hr class="my-2">
     </div>

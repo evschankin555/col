@@ -54,6 +54,9 @@ class Images extends Model
     }
 
     public static function getPagination($currentPage, $totalPages, $categorySlug = null, $subCategorySlug = null) {
+        if ($totalPages <= 1) {
+            return [];
+        }
         $pagination = [];
 
         // Создаем объект пагинации для кнопки "назад"
