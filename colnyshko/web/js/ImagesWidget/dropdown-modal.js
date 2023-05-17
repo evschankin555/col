@@ -29,6 +29,7 @@ $(document).ready(function(){
         $('.nav-link[data-bs-toggle="dropdown"]').addClass('show');
         $(document.activeElement).focus();
     });
-
-
+    $('.dropdown').on('hide.bs.dropdown', function (e) {
+        $('.nav-link[data-bs-toggle="dropdown"]').addClass('show');
+    });
 });

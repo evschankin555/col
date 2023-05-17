@@ -90,13 +90,14 @@ class ImagesWidget extends Widget
         $output .= '<li class="nav-item dropdown">';
         $output .= '<a class="nav-link show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отправить</a>';
         $output .= '<div class="dropdown-menu" data-popper-placement="bottom-start">';
-        $output .= '<a class="dropdown-item" href="#">Одноклассники</a>';
+        $output .= '<a class="dropdown-item"   href="#">Одноклассники</a>';
         $output .= '<a class="dropdown-item" href="#">Вконтакте</a>';
         $output .= '<a class="dropdown-item" href="#">Мой мир</a>';
         $output .= '<div class="dropdown-divider"></div>';
-        $output .= '<a class="dropdown-item" href="#">Вотсап</a>';
-        $output .= '<a class="dropdown-item" href="#">Телеграм</a>';
-        $output .= '<a class="dropdown-item" href="#">Вайбер</a>';
+        $output .= '<a class="dropdown-item whatsapp" rel="nofollow noopener" target="_blank" href="https://api.whatsapp.com/send?text={{ url }}">
+                                WhatsUp</a>';
+        $output .= '<a class="dropdown-item telegram" rel="nofollow noopener" target="_blank" href="https://telegram.me/share/url?url={{ url }}">Телеграм</a>';
+        $output .= '<a class="dropdown-item viber" rel="nofollow noopener" target="_blank" href="viber://forward?text={{ url }}">Вайбер</a>';
         $output .= '<div class="dropdown-divider"></div>';
         $output .= '<a class="dropdown-item" href="#">Ссылка</a>';
         $output .= '<a class="dropdown-item" href="#">HTML</a>';
