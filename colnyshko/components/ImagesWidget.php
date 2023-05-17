@@ -47,12 +47,12 @@ class ImagesWidget extends Widget
     {
         $output = '<ul class="nav nav-pills">';
 
-        $output .= '<li class="nav-item">';
+        /*$output .= '<li class="nav-item">';
         $output .= '<a class="nav-link" href="' . $image->href . '">Просмотреть</a>';
-        $output .= '</li>';
+        $output .= '</li>';*/
 
         $output .= '<li class="nav-item dropdown">';
-        $output .= '<a class="nav-link dropdown-toggle show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отправить</a>';
+        $output .= '<a class="nav-link show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отправить</a>';
         $output .= '<div class="dropdown-menu" data-popper-placement="bottom-start">';
         $output .= '<a class="dropdown-item" href="#">Одноклассники</a>';
         $output .= '<a class="dropdown-item" href="#">Вконтакте</a>';

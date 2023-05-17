@@ -71,9 +71,10 @@ video {
 
 .cards-images .card .card-footer .nav-pills{
     display: flex;
-    justify-content: space-between;
+    justify-content: end; /*space-between;*/
     flex-wrap: wrap;
     align-content: center;
+    width: 100%;
 }
 
 .cards-images .card .dropdown-menu .dropdown-item:hover {

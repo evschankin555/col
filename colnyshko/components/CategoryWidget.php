@@ -31,7 +31,7 @@ class CategoryWidget extends Widget
                         $subCategory->name. '<span class="badge bg-secondary">' . $subCategory->count . '</span>',
                         '/'.$category->slug.'/'.$subCategory->slug,
                         [
-                            'class' => $subCategory->isActive ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm',
+                            'class' => $subCategory->isActive ? 'btn btn-info btn-sm' : 'btn btn-secondary btn-sm',
                             'title' => $subCategory->name . ' (' . $subCategory->count . ')',
                         ]
                     );

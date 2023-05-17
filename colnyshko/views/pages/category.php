@@ -17,6 +17,7 @@ $this->title = 'Солнышко';
 ?>
 
     <div class="jumbotron">
+        <hr class="my-2">
         <?= CategoryWidget::widget(['categories' => $categories])?>
         <hr class="my-2">
     </div>
