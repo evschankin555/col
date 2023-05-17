@@ -3,6 +3,9 @@ namespace app\components;
 
 use yii\base\Widget;
 use yii\helpers\Html;
+use yii\bootstrap5\Modal;
+use app\components\Yii;
+use app\assets\ImagesWidgetDropdownModalAsset;
 
 class ImagesWidget extends Widget
 {
@@ -18,18 +21,50 @@ class ImagesWidget extends Widget
         }
         $output .= '</div>';
 
+        $output .= $this->renderModal();
+        $output .= $this->renderMediaModal();
+        ImagesWidgetDropdownModalAsset::register($this->view);
+
         return $output;
     }
+
+    private function renderModal()
+    {
+        ob_start();
+        Modal::begin([
+            'title' => '<span id="modal-title"></span>',
+            'id' => 'myModal',
+            'footer' => Html::button('Копировать', ['class' => 'btn btn-info']). Html::button('Close', ['class' => 'btn btn-secondary', 'data-bs-dismiss' => 'modal']),
+            'dialogOptions' => ['class' => 'modal-dialog-centered'],
+        ]);
+        echo '<span id="modal-content">Содержимое модального окна...</span>';
+        Modal::end();
+        return ob_get_clean();
+    }
+    private function renderMediaModal()
+    {
+        ob_start();
+        Modal::begin([
+            'title' => '<span id="media-modal-title"</span>',
+            'id' => 'mediaModal',
+            'options' => ['class' => 'media-modal'],
+            'dialogOptions' => ['class' => 'modal-dialog-centered modal-lg'],
+        ]);
+        echo '<div id="media-modal-content">Содержимое модального окна...</div>';
+        Modal::end();
+        return ob_get_clean();
+    }
+
 
     private function renderCard($image)
     {
         $output = '<div class="card mb-3">';
-        $output .= '<div class="card-body">';
+        $output .= '<div class="card-body media-card-body">';
 
         if ($this->isVideo($image->src)) {
-            $output .= '<video autoplay loop muted playsinline src="' . $image->src . '"></video>';
+            $output .= '<video class="video-modal" data-src="' . $image->src . '" autoplay loop muted playsinline src="' . $image->src . '" alt="' . $image->alt . '"></video>';
         } else {
-            $output .= '<img src="' . $image->src . '" alt="' . $image->alt . '">';
+            $output .= '<img class="image-modal" data-src="' . $image->src . '" src="' . $image->src . '" alt="' . $image->alt . '">';
         }
 
         $output .= '<h5 class="card-title">' . Html::encode($image->alt) . '</h5>';
@@ -42,6 +77,7 @@ class ImagesWidget extends Widget
         $output .= '</div>';
         return $output;
     }
+
 
     private function renderDropdown($image)
     {

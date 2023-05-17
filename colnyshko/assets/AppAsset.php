@@ -19,15 +19,21 @@ class AppAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
-    public $css = [
-        'css/bootstrap.min.css',
-        'css/custom.min.css',
-    ];
-
-    public $js = [
-    ];
+    public $css = [];
+    public $js = [];
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap5\BootstrapAsset'
     ];
+
+    public function init()
+    {
+        $customCssVersion = filemtime(\Yii::getAlias("@webroot/css/custom.min.css"));
+        $this->css = [
+            'css/bootstrap.min.css',
+            'css/custom.min.css?v=' . $customCssVersion,
+        ];
+
+        parent::init();
+    }
 }

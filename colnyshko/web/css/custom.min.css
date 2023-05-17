@@ -116,3 +116,23 @@ video {
 }
 .main-container{
 }
+@media (min-width: 576px) {
+    .media-modal .modal-dialog {
+        max-width: 1000px;
+    }
+}
+
+@media (max-width: 800px) {
+    .media-modal .modal-dialog {
+        width: calc(100% - 20px);
+    }
+}
+.video-modal{
+    cursor: pointer;
+}
+.media-card-body{
+    justify-content: space-between;
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
