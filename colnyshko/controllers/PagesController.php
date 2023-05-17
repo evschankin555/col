@@ -109,6 +109,10 @@ class PagesController extends BaseController
             'pagination' => $pagination,
         ]);
     }
+    public function actionBase()
+    {
+          return $this->render('base', []);
+    }
 
 
 

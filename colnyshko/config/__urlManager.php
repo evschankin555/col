@@ -24,6 +24,12 @@ return [
         ],
         [
             'class' => 'yii\web\UrlRule',
+            'pattern' => 'base',
+            'route' => 'pages/base', // соответствует действию actionError в SiteController
+            'suffix' => ''
+        ],
+        [
+            'class' => 'yii\web\UrlRule',
             'pattern' => '<category:[\w_\/-]+>/<subcategory>/page/<page:\d+>',
             'route' => 'pages/subcategory',
             'suffix' => ''

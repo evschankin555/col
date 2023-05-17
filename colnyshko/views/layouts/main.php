@@ -36,6 +36,7 @@ $form = ActiveForm::begin([
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 </head>
 <body>
 
@@ -135,7 +136,6 @@ $form = ActiveForm::begin([
         d.documentElement.appendChild(js);
     }(document,"ok_group_widget","51957422030974",'{"width":240,"height":105}');
 </script>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 <?php $this->endBody() ?>
