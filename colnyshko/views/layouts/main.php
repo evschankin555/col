@@ -11,10 +11,13 @@ use yii\widgets\Breadcrumbs;
 use yii\widgets\ActiveForm; // Добавьте это
 use app\assets\AppAsset;
 use app\widgets\BootstrapBreadcrumbs;
+use app\components\LoginModalWidget;
+use app\components\LoginButtonWidget;
 
 AppAsset::register($this);
 
 $model = new \app\models\SearchForm();
+$modelUser = new \app\models\User();
 
 $form = ActiveForm::begin([
     'action' => ['/site/search'],
@@ -72,23 +75,26 @@ $form = ActiveForm::begin([
     ?>
         </div>
             <?php
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav ml-auto'],
-        'items' => [
-            Yii::$app->user->isGuest ? (
-            ['label' => 'Войти', 'url' => ['/site/login']]
-            ) : (
-                '<li class="nav-item">'
-                . Html::beginForm(['/site/logout'], 'post')
-                . Html::submitButton(
-                    'Выйти (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link nav-link']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
-        ],
-    ]);
+            echo Nav::widget([
+                'options' => ['class' => 'navbar-nav ml-auto'],
+                'items' => [
+                    Yii::$app->user->isGuest ? (
+                        '<li class="nav-item">'
+                        . LoginButtonWidget::widget()
+                        . '</li>'
+                    ) : (
+                        '<li class="nav-item">'
+                        . Html::beginForm(['/site/logout'], 'post')
+                        . Html::submitButton(
+                            'Выйти (' . Yii::$app->user->identity->username . ')',
+                            ['class' => 'btn btn-link nav-link']
+                        )
+                        . Html::endForm()
+                        . '</li>'
+                    )
+                ],
+            ]);
+
     NavBar::end();
     ?>
 
@@ -136,9 +142,9 @@ $form = ActiveForm::begin([
         d.documentElement.appendChild(js);
     }(document,"ok_group_widget","51957422030974",'{"width":240,"height":105}');
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 <?php $this->endBody() ?>
+<?=LoginModalWidget::widget(['model' => $modelUser])?>
+
 </body>
 </html>
 <?php $this->endPage() ?>
