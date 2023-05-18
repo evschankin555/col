@@ -15,7 +15,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'email', 'password'], 'required'],
+            [['username', 'email', 'password', 'agreement'], 'required'],
             [['username', 'email'], 'string', 'max' => 255],
             [['password'], 'string', 'max' => 64],
             [['created_at'], 'safe'],
@@ -27,7 +27,16 @@ class User extends ActiveRecord implements IdentityInterface
             ['email', 'email', 'message' => 'Invalid email format.'],
         ];
     }
-
+    public function attributeLabels()
+    {
+        return [
+            'username' => 'Отображаемое имя',
+            'email' => 'Eмейл',
+            'password' => 'Пароль',
+            'agreement' => 'Согласие на обработку персональных данных',
+            // и так далее для всех ваших полей...
+        ];
+    }
     public static function findIdentity($id)
     {
         return static::findOne($id);

@@ -20,5 +20,9 @@ services:
       MYSQL_DATABASE: colnyshko
       MYSQL_USER: user_colnyshko
       MYSQL_PASSWORD: C600d#$75F4
+    volumes:
+      - dbdata:/var/lib/mysql
     ports:
       - 3306:3306
+volumes:
+  dbdata:

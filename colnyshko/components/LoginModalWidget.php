@@ -33,16 +33,33 @@ class LoginModalWidget extends Widget
         echo $form->field($this->model, 'email')->textInput(['autofocus' => true]);
         echo $form->field($this->model, 'password')->passwordInput();
         echo Html::tag('div',
-            Html::submitButton('Continue', ['class' => 'btn btn-primary', 'name' => 'login-button']) .
-            Html::a('Forgot your password?', '#', ['id' => 'forgot']),
-            ['class' => 'form-group']);
+            Html::a('Забыли пароль?', '#', [
+                'id' => 'forgot',
+                'data-bs-dismiss' => 'modal',
+                'data-bs-toggle' => 'modal',
+                'data-bs-target' => '#restore-modal'
+            ]) .
+            Html::submitButton('Продолжить', ['class' => 'btn btn-primary', 'name' => 'login-button']),
+            ['class' => 'modal-footer']
+        );
+
         ActiveForm::end();
         $formOutput = ob_get_clean();
 
         $output .= $modal;
         $output .= $formOutput;
+        $output .= '<hr class="my-2">';
 
-        $output .= Html::tag('div', 'Not registered yet? ' . Html::a('Register', '#', ['class' => 'js-btn', 'data-link' => 'register']), ['class' => 'not-registered-wrapper']);
+        $output .= Html::tag('div',
+            Html::tag('span','Ещё не зарегистрированы? ',  ['class' => 'js-btn', 'data-link' => 'register']).
+            Html::a('Регистрация', '#', [
+                'class' => 'js-btn',
+                'data-bs-dismiss' => 'modal',
+                'data-bs-toggle' => 'modal',
+                'data-bs-target' => '#register-modal'
+            ])
+            , ['class' => 'not-registered-wrapper']);
+
 
         ob_start();
         Modal::end();

@@ -16,8 +16,9 @@ class RegistrationFormWidget extends Widget
         ob_start();
 
         Modal::begin([
-            'title' => 'Create a GTFS.pro Account',
+            'title' => 'Регистрация на Солнышко',
             'id' => 'register-modal',
+            'dialogOptions' => ['class' => 'modal-dialog-centered modal-lg'],
         ]);
 
         $form = ActiveForm::begin([
@@ -36,7 +37,18 @@ class RegistrationFormWidget extends Widget
         <?= $form->field($this->model, 'agreement')->checkbox() ?>
 
         <div class="form-group">
-            <?= Html::submitButton('Sign Up', ['class' => 'btn btn-primary', 'name' => 'register-button']) ?>
+            <?= Html::tag('div',
+                Html::a('Вернуться', '#', [
+                    'data-bs-dismiss' => 'modal',
+                    'data-bs-toggle' => 'modal',
+                    'data-bs-target' => '#login-modal'
+                ])
+                .
+                Html::submitButton('Зарегистрироваться', ['class' => 'btn btn-primary', 'name' => 'register-button'])
+                ,
+                ['class' => 'modal-footer']
+            );
+            ?>
         </div>
 
         <?php ActiveForm::end();

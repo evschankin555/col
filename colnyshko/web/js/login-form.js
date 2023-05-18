@@ -17,8 +17,18 @@ $('form#login-form').on('beforeSubmit', function(e) {
     });
     return false;
 });
-$('#forgot').on('click', function(e) {
-    e.preventDefault();
-    $('#login-modal').modal('hide');
-    $('#restore-modal').modal('show');
+window.addEventListener('load', function() {
+    document.getElementById('forgot').addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // Закрыть модальное окно login-modal
+        var loginModalEl = document.getElementById('login-modal');
+        var loginModal = new bootstrap.Modal(loginModalEl);
+        loginModal.hide();
+
+        // Показать модальное окно restore-modal
+        var restoreModalEl = document.getElementById('restore-modal');
+        var restoreModal = new bootstrap.Modal(restoreModalEl);
+        restoreModal.show();
+    });
 });

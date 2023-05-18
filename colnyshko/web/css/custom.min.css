@@ -171,11 +171,33 @@ video {
     position: absolute;
     left: 15px;
 }
-#login-modal .modal-dialog {
+#login-modal .modal-dialog, #restore-modal .modal-dialog, #register-modal  .modal-dialog{
     margin: 0 auto;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: calc(100% - 20px);
+    max-width: 500px;
+}
+#login-form .modal-footer{
+    padding: 20px 0 2px 0;
+    justify-content: space-between;
+}
+#login-modal .not-registered-wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.modal-content {
+    backdrop-filter: blur(10px);
+}
+
+#restore-modal .modal-footer{
+    padding: 20px 0 2px 0;
+    justify-content: space-between;
+}
+#register-modal .modal-footer{
+    padding: 20px 0 2px 0;
+    justify-content: space-between;
 }

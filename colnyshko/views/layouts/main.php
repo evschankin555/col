@@ -13,6 +13,8 @@ use app\assets\AppAsset;
 use app\widgets\BootstrapBreadcrumbs;
 use app\components\LoginModalWidget;
 use app\components\LoginButtonWidget;
+use app\components\PasswordRecoveryFormWidget;
+use app\components\RegistrationFormWidget;
 
 AppAsset::register($this);
 
@@ -144,7 +146,8 @@ $form = ActiveForm::begin([
 </script>
 <?php $this->endBody() ?>
 <?=LoginModalWidget::widget(['model' => $modelUser])?>
-
+<?=PasswordRecoveryFormWidget::widget(['model' => $modelUser])?>
+<?=RegistrationFormWidget::widget(['model' => $modelUser])?>
 </body>
 </html>
 <?php $this->endPage() ?>

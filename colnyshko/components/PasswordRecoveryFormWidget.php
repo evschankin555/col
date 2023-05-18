@@ -16,8 +16,9 @@ class PasswordRecoveryFormWidget extends Widget
         ob_start();
 
         Modal::begin([
-            'title' => 'Password recover',
+            'title' => 'Восстановление пароля',
             'id' => 'restore-modal',
+            'dialogOptions' => ['class' => 'modal-dialog-centered modal-lg'],
         ]);
 
         $form = ActiveForm::begin([
@@ -30,7 +31,18 @@ class PasswordRecoveryFormWidget extends Widget
         <?= $form->field($this->model, 'email')->textInput() ?>
 
         <div class="form-group">
-            <?= Html::submitButton('Restore', ['class' => 'btn btn-primary', 'name' => 'restore-button']) ?>
+            <?= Html::tag('div',
+                Html::a('Вернуться', '#', [
+                    'data-bs-dismiss' => 'modal',
+                    'data-bs-toggle' => 'modal',
+                    'data-bs-target' => '#login-modal'
+                ])
+                .
+                Html::submitButton('Восстановить', ['class' => 'btn btn-primary', 'name' => 'restore-button'])
+                ,
+                ['class' => 'modal-footer']
+            );
+            ?>
         </div>
 
         <?php ActiveForm::end();
@@ -39,6 +51,7 @@ class PasswordRecoveryFormWidget extends Widget
 
         $js = <<<JS
             $('form#restore-form').on('beforeSubmit', function(e) {
+                e.preventDefault();
                 var form = $(this);
                 $.ajax({
                     url: form.attr('action'),
