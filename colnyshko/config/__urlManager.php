@@ -30,30 +30,6 @@ return [
         ],
         [
             'class' => 'yii\web\UrlRule',
-            'pattern' => '<category:[\w_\/-]+>/<subcategory>/page/<page:\d+>',
-            'route' => 'pages/subcategory',
-            'suffix' => ''
-        ],
-        [
-            'class' => 'yii\web\UrlRule',
-            'pattern' => '<category:[\w_\/-]+>/page/<page:\d+>',
-            'route' => 'pages/category',
-            'suffix' => ''
-        ],
-        [
-            'class' => 'yii\web\UrlRule',
-            'pattern' => '<category:[\w_\/-]+>/<subcategory>',
-            'route' => 'pages/subcategory',
-            'suffix' => ''
-        ],
-        [
-            'class' => 'yii\web\UrlRule',
-            'pattern' => '<category:[\w_\/-]+>',
-            'route' => 'pages/category',
-            'suffix' => ''
-        ],
-        [
-            'class' => 'yii\web\UrlRule',
             'pattern' => 'register',
             'route' => 'pages/register',
             'suffix' => ''
@@ -84,8 +60,32 @@ return [
         ],
         [
             'class' => 'yii\web\UrlRule',
-            'pattern' => 'en/reset-password',
+            'pattern' => 'reset-password',
             'route' => 'pages/reset-password',
+            'suffix' => ''
+        ],
+        [
+            'class' => 'yii\web\UrlRule',
+            'pattern' => '<category:[\w_\/-]+>/<subcategory>/page/<page:\d+>',
+            'route' => 'pages/subcategory',
+            'suffix' => ''
+        ],
+        [
+            'class' => 'yii\web\UrlRule',
+            'pattern' => '<category:[\w_\/-]+>/page/<page:\d+>',
+            'route' => 'pages/category',
+            'suffix' => ''
+        ],
+        [
+            'class' => 'yii\web\UrlRule',
+            'pattern' => '<category:[\w_\/-]+>/<subcategory>',
+            'route' => 'pages/subcategory',
+            'suffix' => ''
+        ],
+        [
+            'class' => 'yii\web\UrlRule',
+            'pattern' => '<category:[\w_\/-]+>',
+            'route' => 'pages/category',
             'suffix' => ''
         ],
     ],

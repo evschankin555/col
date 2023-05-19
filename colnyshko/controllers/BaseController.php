@@ -59,15 +59,18 @@ class BaseController extends Controller
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
         $this->layout = 'json';
-        $username = $_POST['username'];
-        $email = $_POST['email'];
-        $password = $_POST['password'];
+        $username = Yii::$app->request->post('username');
+        $email = Yii::$app->request->post('email');
+        $password = Yii::$app->request->post('password');
+
+        // Выход из метода, если какие-то из данных не переданы
+        if ($username === null || $email === null || $password === null) {
+            Yii::$app->response->data = ['success' => false, 'error' => 'Обязательные поля пустые.'];
+            return;
+        }
 
         $user = new User();
         $userReg = $user->register($username, $email, $password);
-
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        Yii::$app->response->headers->set('Content-Type', 'application/json; charset=utf-8');
 
         if ($userReg === true) {
             Yii::$app->response->data = ['success' => true];
@@ -88,16 +91,22 @@ class BaseController extends Controller
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
         $userModel = new User();
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-        $userAuth = $userModel->login($email, $password);
+        $email = Yii::$app->request->post('email');
+        $password = Yii::$app->request->post('password');
 
+        // Выход из метода, если какие-то из данных не переданы
+        if ($email === null || $password === null) {
+            Yii::$app->response->data = ['success' => false, 'error' => 'Обязательные поля пустые.'];
+            return;
+        }
+
+        $userAuth = $userModel->login($email, $password);
         if ($userAuth) {
             return ['success' => true];
         } else {
             return [
                 'success' => false,
-                'error' => 'Incorrect email/password combination',
+                'error' => 'Не верный логин или пароль.'
             ];
         }
     }
@@ -107,9 +116,15 @@ class BaseController extends Controller
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
         $userModel = new User();
-        $email = $_POST['email'];
-        $isRestore = $userModel->restore($email);
+        $email = Yii::$app->request->post('email');
 
+        // Выход из метода, если какие-то из данных не переданы
+        if ($email === null) {
+            Yii::$app->response->data = ['success' => false, 'error' => 'Обязательные поля пустые.'];
+            return;
+        }
+
+        $isRestore = $userModel->restore($email);
         if ($isRestore) {
             return ['success' => true];
         } else {

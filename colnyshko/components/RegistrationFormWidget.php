@@ -6,6 +6,7 @@ use yii\helpers\Html;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Modal;
 use yii\web\View;
+use app\assets\RegistrationFormWidgetAsset;
 
 class RegistrationFormWidget extends Widget
 {
@@ -55,28 +56,7 @@ class RegistrationFormWidget extends Widget
 
         Modal::end();
 
-        $js = <<<JS
-            $('form#register-form').on('beforeSubmit', function(e) {
-                var form = $(this);
-                $.ajax({
-                    url: form.attr('action'),
-                    type: 'post',
-                    data: form.serialize(),
-                    success: function (response) {
-                        if (response.success) {
-                            location.reload();
-                        } else {
-                            $("#register-modal .error-text").html(response.error).show();
-                        }
-                    },
-                    error: function () {
-                        alert("Something went wrong. Please try again.");
-                    }
-                });
-                return false;
-            });
-        JS;
-        $this->view->registerJs($js, View::POS_READY);
+        RegistrationFormWidgetAsset::register($this->view);
 
         return ob_get_clean();
     }
