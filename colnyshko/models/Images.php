@@ -142,6 +142,4 @@ class Images extends Model
         }
         return $url;
     }
-
-
 }

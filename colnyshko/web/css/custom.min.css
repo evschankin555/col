@@ -272,5 +272,11 @@ video {
     z-index: 1000;
 }
 .media-card-body img{
-    max-width: 100%;
+    width: 100%;
+}
+.card-image{
+    /*max-width: 870px;*/
+}
+.card-image .card-title{
+    margin-top: 20px;
 }

@@ -7,21 +7,12 @@ use yii\bootstrap5\Modal;
 use app\components\Yii;
 use app\assets\ImagesWidgetDropdownModalAsset;
 
-class ImagesWidget extends Widget
+class ImageWidget extends Widget
 {
-    public $images;
-    public $currentCategory;
-    public $currentSubCategory;
+    public $image;
     public function run()
     {
-        $output = '<div class="row cards-images">';
-        foreach ($this->images as $image) {
-            $output .= '<div class="col-md-6">';
-            $output .= $this->renderCard($image);
-            $output .= '</div>';
-        }
-        $output .= '</div>';
-
+        $output = $this->renderCard($this->image);
         $output .= $this->renderModal();
         $output .= $this->renderAlert();
         ImagesWidgetDropdownModalAsset::register($this->view);
@@ -60,23 +51,15 @@ class ImagesWidget extends Widget
     private function renderCard($image)
     {
         $id = md5($image->src);
-        $output = '<div class="card mb-3">';
+        $output = '<div class="row cards-images"><div class="card mb-3">';
         $output .= '<div class="card-body media-card-body" data-id="'.$id.'">';
 
-        $link = $this->renderLink($image);
         if ($this->isVideo($image->src)) {
-            $output .= '
-            <a href="'.$link.'">
-            <video class="video-modal" 
+            $output .= '<video class="video-modal" 
             data-alt="' . Html::encode($image->alt) . '" 
-            data-src="' . $image->src . '" autoplay loop muted playsinline src="' . $image->src . '" alt="' . $image->alt . '"></video>
-            </a>';
+            data-src="' . $image->src . '" autoplay loop muted playsinline src="' . $image->src . '" alt="' . $image->alt . '"></video>';
         } else {
-            $output .= '
-            <a href="'.$link.'">
-            <img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->src . '" src="' . $image->src . '" alt="' . $image->alt . '">
-            </a>
-            ';
+            $output .= '<img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->src . '" src="' . $image->src . '" alt="' . $image->alt . '">';
         }
 
         $output .= '<h5 class="card-title">' . Html::encode($image->alt) . '</h5>';
@@ -87,7 +70,7 @@ class ImagesWidget extends Widget
         $output .= $this->renderDropdown($image);
         $output .= '</div>';
 
-        $output .= '</div>';
+        $output .= '</div></div>';
         return $output;
     }
     private function renderDropdown($image)
@@ -128,18 +111,5 @@ class ImagesWidget extends Widget
     private function isVideo($filename)
     {
         return strtolower(pathinfo($filename, PATHINFO_EXTENSION)) === 'mp4';
-    }
-    private function renderLink($image)
-    {
-        $explode = explode('card/', $image->href);
-        $result = '/';
-        if($this->currentCategory !== false){
-            $result .=  $this->currentCategory->slug.'/';
-        }
-        if($this->currentSubCategory !== false){
-            $result .=  $this->currentSubCategory->slug.'/';
-        }
-        $result .=  'slug-card-' . $explode[1];
-        return $result;
     }
 }
