@@ -41,7 +41,8 @@ $form = ActiveForm::begin([
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://connect.ok.ru/connect.js"></script>
 </head>
 <body>
 
@@ -77,7 +78,7 @@ $form = ActiveForm::begin([
     ?>
         </div>
             <?php
-            echo Nav::widget([
+        /*    echo Nav::widget([
                 'options' => ['class' => 'navbar-nav ml-auto'],
                 'items' => [
                     Yii::$app->user->isGuest ? (
@@ -95,7 +96,7 @@ $form = ActiveForm::begin([
                         . '</li>'
                     )
                 ],
-            ]);
+            ]);*/
 
     NavBar::end();
     ?>
@@ -144,10 +145,11 @@ $form = ActiveForm::begin([
         d.documentElement.appendChild(js);
     }(document,"ok_group_widget","51957422030974",'{"width":240,"height":105}');
 </script>
+<?php /*LoginModalWidget::widget(['model' => $modelUser]);
+PasswordRecoveryFormWidget::widget(['model' => $modelUser]);
+RegistrationFormWidget::widget(['model' => $modelUser]);*/
+?>
 <?php $this->endBody() ?>
-<?=LoginModalWidget::widget(['model' => $modelUser])?>
-<?=PasswordRecoveryFormWidget::widget(['model' => $modelUser])?>
-<?=RegistrationFormWidget::widget(['model' => $modelUser])?>
 </body>
 </html>
 <?php $this->endPage() ?>

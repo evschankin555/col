@@ -31,7 +31,13 @@ return [
         [
             'class' => 'yii\web\UrlRule',
             'pattern' => 'register',
-            'route' => 'pages/register',
+            'route' => 'base/register',
+            'suffix' => ''
+        ],
+        [
+            'class' => 'yii\web\UrlRule',
+            'pattern' => 'register/validate',
+            'route' => 'pages/register-validate',
             'suffix' => ''
         ],
         [

@@ -2,13 +2,14 @@
 namespace app\assets;
 
 use yii\web\AssetBundle;
-class PasswordRecoveryFormWidgetAsset extends \yii\web\AssetBundle
+
+class PasswordRecoveryFormWidgetAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $js = [];
     public $jsOptions = [
-        'position' => \yii\web\View::POS_READY,
+        'position' => \yii\web\View::POS_HEAD,
     ];
     public $depends = [
         'yii\web\YiiAsset',
@@ -17,9 +18,9 @@ class PasswordRecoveryFormWidgetAsset extends \yii\web\AssetBundle
 
     public function init()
     {
-        $version = filemtime(\Yii::getAlias("@webroot/js/restore-form.js"));
+        $version = filemtime(\Yii::getAlias("@webroot/js/AuthWidget/restore-form.js"));
         $this->js = [
-            'js/restore-form.js?v=' . $version,
+            'js/AuthWidget/restore-form.js?v=' . $version,
         ];
 
         parent::init();

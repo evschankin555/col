@@ -39,7 +39,7 @@ class CategoryWidget extends Widget
                 $output .= '</p>';
             }
         }
-        $output = '<hr class="my-2"><hr class="my-2">'. $output.'<hr class="my-2"><hr class="my-2">';
+        $output = '<hr class="my-2">'. $output.'<hr class="my-2">';
         return $output;
     }
 }

@@ -1,48 +1,4 @@
 
-function isAgreement(form){
-    let cb = $(`form[name=${form}]`).find(`.agree-checkbox`);
-    if(cb.length) return cb.is(':checked');
-    return true;
-}
-
-function validateForm(form, fields) {
-    var inputs = $(`form[name=${form}]`).find('.myform__text');
-    var textarea = $(`form[name=${form}]`).find('.myform__textarea');
-
-    if(fields){
-        inputs = fields.inputs;
-        textarea = fields.textarea;
-        console.log(inputs);
-    }
-
-    var isValid = true;
-    inputs.each(function(){
-        var form_row = $(this).closest('.form-row');
-        $(this).trigger('blur');
-        if(form_row.hasClass('not-valid') || form_row.hasClass('not-empty')){
-            isValid = false;
-        }
-    })
-    textarea.each(function(){
-        var form_row = $(this).closest('.form-row');
-        $(this).trigger('blur');
-        if(form_row.hasClass('not-valid') || form_row.hasClass('not-empty')){
-            isValid = false;
-        }
-    })
-
-    if(!isAgreement(form)){
-        isValid = false;
-    }
-
-    if(!isValid) {
-        $(`form[name=${form}]`).addClass('not-valid')
-    } else {
-        $(`form[name=${form}]`).removeClass('not-valid')
-    }
-
-    return isValid;
-}
 
 $("#login-button").on("click", function (e) {
     e.preventDefault();

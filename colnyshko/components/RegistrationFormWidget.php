@@ -24,10 +24,13 @@ class RegistrationFormWidget extends Widget
 
         $form = ActiveForm::begin([
             'id' => 'register-form',
-            'action' => ['/register'],
-            'options' => ['class' => 'form-horizontal', 'data-ajax' => '1'],
+            'action' => ['register'],
+            'options' => ['class' => 'form-horizontal'],
             'enableAjaxValidation' => true,
-        ]); ?>
+            'validationUrl' => 'register/validate'
+        ]);
+        ?>
+
 
         <?= $form->field($this->model, 'username')->textInput() ?>
 

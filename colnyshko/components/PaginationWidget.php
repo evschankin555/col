@@ -25,6 +25,14 @@ class PaginationWidget extends Widget
     private function renderPageItem($pageItem)
     {
         $class = 'page-item';
+        if($pageItem['label'] == '«') {
+            $class .= ' arrow-left';
+            $pageItem['label'] = '&nbsp;';
+        }
+        if($pageItem['label'] == '»') {
+            $class .= ' arrow-right';
+            $pageItem['label'] = '&nbsp;';
+        }
         if ($pageItem['disabled']) {
             $class .= ' disabled';
         }

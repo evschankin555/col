@@ -2,13 +2,14 @@
 namespace app\assets;
 
 use yii\web\AssetBundle;
-class LoginFormWidgetAsset extends \yii\web\AssetBundle
+
+class LoginFormWidgetAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $js = [];
     public $jsOptions = [
-        'position' => \yii\web\View::PH_BODY_END,
+        'position' => \yii\web\View::POS_HEAD,
     ];
     public $depends = [
         'yii\web\YiiAsset',
@@ -17,9 +18,9 @@ class LoginFormWidgetAsset extends \yii\web\AssetBundle
 
     public function init()
     {
-        $version = filemtime(\Yii::getAlias("@webroot/js/login-form.js"));
+        $version = filemtime(\Yii::getAlias("@webroot/js/AuthWidget/login-form.js"));
         $this->js = [
-            'js/login-form.js?v=' . $version,
+            'js/AuthWidget/login-form.js?v=' . $version,
         ];
 
         parent::init();

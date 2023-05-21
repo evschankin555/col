@@ -56,31 +56,38 @@ class BaseController extends Controller
     public function actionRegister()
     {
         Yii::$app->response->headers->set('Content-Type', 'application/json; charset=utf-8');
+        Yii::$app->response->headers->add('X-Ie-Redirect-Compatibility', '1');
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
         $this->layout = 'json';
-        $username = Yii::$app->request->post('username');
-        $email = Yii::$app->request->post('email');
-        $password = Yii::$app->request->post('password');
+        $model = new User();
 
-        // Выход из метода, если какие-то из данных не переданы
-        if ($username === null || $email === null || $password === null) {
-            Yii::$app->response->data = ['success' => false, 'error' => 'Обязательные поля пустые.'];
-            return;
-        }
+        // загрузка данных из запроса в модель и проверка на валидность
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            // если данные прошли валидацию, производится регистрация пользователя
+            $userReg = $model->register($model->username, $model->email, $model->password);
 
-        $user = new User();
-        $userReg = $user->register($username, $email, $password);
-
-        if ($userReg === true) {
-            Yii::$app->response->data = ['success' => true];
-        } else {
-            // Формируем ответ с ошибками
-            $response = ['success' => false];
-            foreach ($userReg as $attribute => $errors) {
-                $response['errors'][$attribute] = implode(', ', $errors);
+            if ($userReg === true) {
+                Yii::$app->response->data = ['success' => true];
+            } else {
+                // Формируем ответ с ошибками
+                $response = ['success' => false];
+                foreach ($userReg as $attribute => $errors) {
+                    $response['errors'][$attribute] = implode(', ', $errors);
+                }
+                Yii::$app->response->data = $response;
             }
-            Yii::$app->response->data = $response;
+        } else {
+            // если данные не прошли валидацию, возвращаем ошибки
+            Yii::$app->response->data = ['success' => false, 'errors' => $model->errors];
+        }
+    }
+    public function actionRegisterValidate()
+    {
+        $model = new User();
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return \yii\widgets\ActiveForm::validate($model);
         }
     }
 
