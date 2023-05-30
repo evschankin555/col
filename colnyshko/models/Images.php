@@ -11,6 +11,8 @@ class Images extends Model
     public $src;
     public $alt;
     public $href;
+    public $category;
+    public $subCategory;
 
     private static $images;
 
@@ -21,7 +23,7 @@ class Images extends Model
 
             $cache = Yii::$app->cache;
 
-            $cacheKey = "new5_images_page{$page}_categorySlug{$categorySlug}_subCategorySlug{$subCategorySlug}";
+            $cacheKey = "new8_images_page{$page}_categorySlug{$categorySlug}_subCategorySlug{$subCategorySlug}";
             $imagesData = $cache->get($cacheKey);
 
             if ($imagesData === false) {
@@ -42,6 +44,8 @@ class Images extends Model
                 $model->src = $image['src'];
                 $model->alt = $image['alt'];
                 $model->href = $image['href'];
+                $model->category = $image['category'];
+                $model->subCategory = $image['subCategory'];
                 self::$images[] = $model;
             }
         }

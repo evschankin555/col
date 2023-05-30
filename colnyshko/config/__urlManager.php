@@ -72,7 +72,7 @@ return [
         ],
         [
             'class' => 'yii\web\UrlRule',
-            'pattern' => '<base:[\w_\/-]+>card-<hash>/',
+            'pattern' => '<base:[\w_\/-]+>card-<hash>',
             'route' => 'pages/card',
             'suffix' => ''
         ],
