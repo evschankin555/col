@@ -57,9 +57,9 @@ class ImageWidget extends Widget
         if ($this->isVideo($image->src)) {
             $output .= '<video class="video-modal" 
             data-alt="' . Html::encode($image->alt) . '" 
-            data-src="' . $image->src . '" autoplay loop muted playsinline src="' . $image->src . '" alt="' . $image->alt . '"></video>';
+            data-src="' . $image->src . '" autoplay loop muted playsinline src="' . $image->src . '" alt="' . $image->alt . '" data-href="'.$image->href.'"></video>';
         } else {
-            $output .= '<img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->src . '" src="' . $image->src . '" alt="' . $image->alt . '">';
+            $output .= '<img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->src . '" src="' . $image->src . '" alt="' . $image->alt . '" data-href="'.$image->href.'">';
         }
 
         $output .= '<h5 class="card-title">' . Html::encode($image->alt) . '</h5>';
@@ -92,10 +92,10 @@ class ImageWidget extends Widget
         $output .= '<a class="dropdown-item vk" href="#">Вконтакте</a>';
         $output .= '<a class="dropdown-item mm" href="#">Мой мир</a>';
         $output .= '<div class="dropdown-divider"></div>';
-        $output .= '<a class="dropdown-item whatsapp" rel="nofollow noopener" target="_blank" href="https://api.whatsapp.com/send?text={{ url }}">
+        $output .= '<a class="dropdown-item whatsapp" rel="nofollow noopener" target="_blank" href="https://api.whatsapp.com/send?text='.$url.'">
                                 WhatsUp</a>';
-        $output .= '<a class="dropdown-item telegram" rel="nofollow noopener" target="_blank" href="https://telegram.me/share/url?url={{ url }}">Телеграм</a>';
-        $output .= '<a class="dropdown-item viber" rel="nofollow noopener" target="_blank" href="viber://forward?text={{ url }}">Вайбер</a>';
+        $output .= '<a class="dropdown-item telegram" rel="nofollow noopener" target="_blank" href="https://telegram.me/share/url?url='.$url.'">Телеграм</a>';
+        $output .= '<a class="dropdown-item viber" rel="nofollow noopener" target="_blank" href="viber://forward?text='.$url.'">Вайбер</a>';
         $output .= '<div class="dropdown-divider"></div>';
         $output .= '<a class="dropdown-item link" href="#">Ссылка</a>';
         $output .= '<a class="dropdown-item html" href="#">HTML</a>';
@@ -112,4 +112,5 @@ class ImageWidget extends Widget
     {
         return strtolower(pathinfo($filename, PATHINFO_EXTENSION)) === 'mp4';
     }
+
 }
