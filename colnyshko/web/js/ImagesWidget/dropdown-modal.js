@@ -17,7 +17,7 @@ $(document).ready(function(){
         if ($(this).hasClass('html')) {
             isModal = true;
             content = `<p>Код открытки для вставки в блог (HTML)</p>
-                        <textarea class="form-control" id="exampleTextarea" rows="6" 
+                        <textarea class="form-control" id="exampleTextarea" rows="8" 
                          onclick="this.select();">&lt;a href='${href}' target="_blank"&gt;&lt;video autoplay loop muted playsinline src="${src}" alt="${alt}"/&gt;&lt;/video&gt;</textarea>`;
         } else if ($(this).hasClass('bb')) {
             isModal = true;

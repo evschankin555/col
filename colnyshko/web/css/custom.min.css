@@ -280,3 +280,10 @@ video {
 .card-image .card-title{
     margin-top: 20px;
 }
+#searchform-search, #w2 {
+    width: 200px;
+    transition: width 0.3s;
+}
+#searchform-search:focus, #w2:focus-within {
+    width: 500px;
+}
