@@ -60,19 +60,17 @@ $form = ActiveForm::begin([
 ?>
     <div class="collapse navbar-collapse center">
     <?php
-
     $form = ActiveForm::begin([
-        'action' => ['/site/search'],
+        'action' => ['/search'],
         'method' => 'get',
         'options' => [
             'class' => 'd-flex'
         ]
     ]);
 
-   echo $form->field($model, 'search')
-       ->textInput(['placeholder' => 'Поиск...', 'class' => 'form-control me-sm-2'])
-       ->label(false);
-
+    echo $form->field($model, 'q')
+        ->textInput(['placeholder' => 'Поиск...', 'class' => 'form-control me-sm-2'])
+        ->label(false);
 
     ActiveForm::end();
     ?>

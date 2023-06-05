@@ -113,6 +113,11 @@ video {
 }
 .breadcrumb{
     margin-bottom: 20px;
+    margin-top: 20px;
+}
+.jumbotron{
+    display: inline-block;
+    width: 100%;
 }
 .main-container{
 }

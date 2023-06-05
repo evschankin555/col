@@ -161,5 +161,33 @@ class PagesController extends BaseController
     }
 
 
+    public function actionSearch($q): string
+    {
+        $page = Yii::$app->request->get('page', 1);
+        $dopTitle = '';
+        if($page >  1) {
+            $dopTitle = ', страница '.$page;
+        }
+
+        $this->view->params['title'] = 'Поиск по фразе: '. $q.$dopTitle;
+
+        if (!empty($q)) {
+            $this->view->params['breadcrumbs'][] = ['label' => 'Поиск по фразе: "' . $q.'"'.$dopTitle];
+        }
+
+        $imagesData = Images::search($q, $page);
+
+        $images = $imagesData['images'];
+        $totalPages = $imagesData['pages'];
+
+        $pagination = Images::getPagination($page, $totalPages, $categorySlug = null, $subCategorySlug = null, $q);
+
+        return $this->render('search', [
+            'images' => $images,
+            'pagination' => $pagination,
+            'query' => $q
+        ]);
+    }
+
 
 }

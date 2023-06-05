@@ -57,7 +57,7 @@ class Images extends Model
         ];
     }
 
-    public static function getPagination($currentPage, $totalPages, $categorySlug = null, $subCategorySlug = null) {
+    public static function getPagination($currentPage, $totalPages, $categorySlug = null, $subCategorySlug = null, $q = null) {
         if ($totalPages <= 1) {
             return [];
         }
@@ -66,7 +66,7 @@ class Images extends Model
         // Создаем объект пагинации для кнопки "назад"
         $pagination[] = [
             'label' => '«',
-            'url' => self::buildPageUrl($currentPage - 1, $categorySlug, $subCategorySlug),
+            'url' => self::buildPageUrl($currentPage - 1, $categorySlug, $subCategorySlug, $q),
             'disabled' => $currentPage == 1,
             'active' => false
         ];
@@ -74,7 +74,7 @@ class Images extends Model
         // Создаем объект пагинации для первой страницы
         $pagination[] = [
             'label' => 1,
-            'url' => self::buildPageUrl(1, $categorySlug, $subCategorySlug),
+            'url' => self::buildPageUrl(1, $categorySlug, $subCategorySlug, $q),
             'disabled' => false,
             'active' => $currentPage == 1
         ];
@@ -94,7 +94,7 @@ class Images extends Model
             if ($i >= ($currentPage - 2) && $i <= ($currentPage + 2)) {
                 $pagination[] = [
                     'label' => $i,
-                    'url' => self::buildPageUrl($i, $categorySlug, $subCategorySlug),
+                    'url' => self::buildPageUrl($i, $categorySlug, $subCategorySlug, $q),
                     'disabled' => false,
                     'active' => $i == $currentPage
                 ];
@@ -114,7 +114,7 @@ class Images extends Model
         // Создаем объект пагинации для последней страницы
         $pagination[] = [
             'label' => $totalPages,
-            'url' => self::buildPageUrl($totalPages, $categorySlug, $subCategorySlug),
+            'url' => self::buildPageUrl($totalPages, $categorySlug, $subCategorySlug, $q),
             'disabled' => false,
             'active' => $currentPage == $totalPages
         ];
@@ -122,7 +122,7 @@ class Images extends Model
         // Создаем объект пагинации для кнопки "вперед"
         $pagination[] = [
             'label' => '»',
-            'url' => self::buildPageUrl($currentPage + 1, $categorySlug, $subCategorySlug),
+            'url' => self::buildPageUrl($currentPage + 1, $categorySlug, $subCategorySlug, $q),
             'disabled' => $currentPage == $totalPages,
             'active' => false
         ];
@@ -131,7 +131,13 @@ class Images extends Model
     }
 
 
-    private static function buildPageUrl($page, $categorySlug = null, $subCategorySlug = null) {
+    private static function buildPageUrl($page, $categorySlug = null, $subCategorySlug = null, $q = null) {
+        // Если предоставлен поисковый запрос, строим URL для поиска
+        if ($q !== null) {
+            return "/search?q=" . urlencode($q) . "&page=$page";
+        }
+
+        // В противном случае строим URL для обычного просмотра
         $url = "";
         if ($categorySlug !== null) {
             $url .= "/{$categorySlug}";
@@ -141,11 +147,12 @@ class Images extends Model
         }
         if ($page != 1) {
             $url .= "/page/{$page}";
-        }else{
+        } else {
             $url .= "/";
         }
         return $url;
     }
+
 
     private static function renderLink($image)
     {
@@ -194,4 +201,37 @@ class Images extends Model
         $string = preg_replace('/-+/', '-', $string); // Замена повторяющихся тире на один
         return $string;
     }
+
+    public static function search($q, $page = 1)
+    {
+        $client = new Client(['base_uri' => 'https://legkie-otkrytki.ru/api/']);
+
+        $cache = Yii::$app->cache;
+        $cacheKey = "search_images3_page{$page}_q{$q}";
+        $imagesData = $cache->get($cacheKey);
+
+        if ($imagesData === false) {
+            $query = ['page' => $page, 'q' => $q];
+            $response = $client->request('POST', 'images', ['query' => $query]);
+            $imagesData = json_decode($response->getBody(), true);
+            $cache->set($cacheKey, $imagesData, 300);
+        }
+
+        foreach ($imagesData['data'] as $image) {
+            $model = new static;
+            $model->src = $image['src'];
+            $model->alt = $image['alt'];
+            $model->href = self::renderLink($image);
+            $model->category = $image['category'];
+            $model->subCategory = $image['subCategory'];
+            self::$images[] = $model;
+        }
+
+        return [
+            'images' => self::$images,
+            'pages' => $imagesData['pages'],
+            'currentPage' => $page,
+        ];
+    }
+
 }

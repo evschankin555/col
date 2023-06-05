@@ -5,12 +5,18 @@ use yii\base\Model;
 
 class SearchForm extends Model
 {
-    public $search;
+    public $q;
 
     public function rules()
     {
         return [
-            ['search', 'string'],
+            ['q', 'string'],
         ];
+    }
+
+    // Переопределение метода formName().
+    public function formName()
+    {
+        return '';
     }
 }
