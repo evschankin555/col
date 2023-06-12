@@ -15,7 +15,25 @@ class Images extends Model
     public $subCategory;
 
     private static $images;
+/*
+ {
+  "@context": "http://schema.org",
+  "@type": "VideoObject",
+  "name": "Название видео",
+  "description": "Описание видео",
+  "thumbnailUrl": "URL изображения-миниатюры для видео",
+  "uploadDate": "Дата загрузки видео в формате ISO 8601",
+  "duration": "Продолжительность видео в формате ISO 8601",
+  "contentUrl": "URL видео",
+  "embedUrl": "URL для встраивания видео",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": { "@type": "WatchAction" },
+    "userInteractionCount": "Количество просмотров видео"
+  }
+}
 
+ * */
     public static function getAll($page = 1, $categorySlug = null, $subCategorySlug = null)
     {
         if (self::$images === null) {
@@ -39,6 +57,8 @@ class Images extends Model
                 $cache->set($cacheKey, $imagesData, 300);
             }
 
+            $jsonLdData = [];
+            $img = '';
             foreach ($imagesData['data'] as $image) {
                 $model = new static;
                 $model->src = $image['src'];
@@ -47,6 +67,13 @@ class Images extends Model
                 $model->category = $image['category'];
                 $model->subCategory = $image['subCategory'];
                 self::$images[] = $model;
+
+                // Добавляем данные JSON-LD для этого изображения/видео
+                $jsonLdData[] = self::generateJsonLdData($model);
+
+                if($img == ''){
+                    $img = $image['src'];
+                }
             }
         }
 
@@ -54,6 +81,8 @@ class Images extends Model
             'images' => self::$images,
             'pages' => $imagesData['pages'],
             'currentPage' => $page,
+            'jsonLdData' => $jsonLdData,
+            'img' => $img,
         ];
     }
 
@@ -217,6 +246,7 @@ class Images extends Model
             $cache->set($cacheKey, $imagesData, 300);
         }
 
+        $jsonLdData = [];
         foreach ($imagesData['data'] as $image) {
             $model = new static;
             $model->src = $image['src'];
@@ -225,13 +255,42 @@ class Images extends Model
             $model->category = $image['category'];
             $model->subCategory = $image['subCategory'];
             self::$images[] = $model;
+
+            // Добавляем данные JSON-LD для этого изображения/видео
+            $jsonLdData[] = self::generateJsonLdData($model);
         }
 
         return [
             'images' => self::$images,
             'pages' => $imagesData['pages'],
             'currentPage' => $page,
+            'jsonLdData' => $jsonLdData,
         ];
     }
 
+    private static function isVideo($filename)
+    {
+        return strtolower(pathinfo($filename, PATHINFO_EXTENSION)) === 'mp4';
+    }
+
+    private static function generateJsonLdData($model) {
+        $jsonData = [
+            "@context" => "http://schema.org",
+            "description" => $model->alt,
+            "url" => $model->href
+        ];
+
+        if (self::isVideo($model->src)) {
+            // Это видеофайл, добавляем соответствующие свойства
+            $jsonData["@type"] = "VideoObject";
+            $jsonData["contentUrl"] = $model->src;
+            // Здесь можно добавить другие свойства VideoObject, если они доступны
+        } else {
+            // Это изображение, добавляем соответствующие свойства
+            $jsonData["@type"] = "ImageObject";
+            $jsonData["contentUrl"] = $model->src;
+            // Здесь можно добавить другие свойства ImageObject, если они доступны
+        }
+        return $jsonData;
+    }
 }

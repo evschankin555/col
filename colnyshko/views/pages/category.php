@@ -13,7 +13,6 @@ use app\components\CategoryWidget;
 use app\components\ImagesWidget;
 use app\components\PaginationWidget;
 
-$this->title = 'Солнышко';
 ?>
 
 <div class="jumbotron">

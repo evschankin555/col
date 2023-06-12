@@ -15,6 +15,7 @@ use app\models\SourceList;
 use app\models\UploadForm;
 use yii\web\UploadedFile;
 use app\models\Images;
+use app\modules\SeoModule;
 
 class BaseController extends Controller
 {
@@ -45,6 +46,13 @@ class BaseController extends Controller
         $totalPages = $imagesData['pages'];
 
         $pagination = Images::getPagination($page, $totalPages);
+
+        $homeData = [];
+        $homeData['name'] = $this->view->params['title'];
+        $seoModule = \Yii::$app->getModule('seo-module');
+        $seoModule->setHomePageData($homeData);
+        $seoModule->registerSeoTags();
+        $seoModule->registerJsonLdScript($imagesData['jsonLdData']);
 
         return $this->render('home', [
             'categories' => $categories,

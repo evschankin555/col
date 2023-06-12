@@ -12,6 +12,7 @@ use app\models\SearchForm;
 use app\models\Category;
 use app\models\Images;
 use app\models\Image;
+use app\modules\SeoModule;
 
 class PagesController extends BaseController
 {
@@ -50,10 +51,20 @@ class PagesController extends BaseController
             if ($page != 1) {
                 $this->view->params['breadcrumbs'][] = ['label' => $currentCategory->name, 'url' => '/' . $currentCategory->slug];
                 $this->view->params['breadcrumbs'][] = ['label' => 'Страница ' . $page];
+                $this->view->title = $currentCategory->name . ' - Страница ' . $page;
             } else {
                 $this->view->params['breadcrumbs'][] = ['label' => $currentCategory->name];
+                $this->view->title = $currentCategory->name;
             }
         }
+
+        $homeData = [];
+        $homeData['name'] = $this->view->title;
+
+        $seoModule = \Yii::$app->getModule('seo-module');
+        $seoModule->setCategoryPageData($homeData);
+        $seoModule->registerSeoTags();
+        $seoModule->registerJsonLdScript($imagesData['jsonLdData']);
 
         return $this->render('category', [
             'categories' => $categories,
@@ -63,6 +74,7 @@ class PagesController extends BaseController
             'currentSubCategory' => $currentSubCategory,
         ]);
     }
+/**/
     public function actionSubcategory($category, $subcategory)
     {
         $categories = Category::getAll();
@@ -102,10 +114,20 @@ class PagesController extends BaseController
             if ($page != 1) {
                 $this->view->params['breadcrumbs'][] = ['label' => $currentSubCategory->name, 'url' => '/' . $currentCategory->slug . '/' . $currentSubCategory->slug];
                 $this->view->params['breadcrumbs'][] = ['label' => 'Страница ' . $page];
+                $this->view->title = $currentSubCategory->name . ' - Страница ' . $page;
             } else {
                 $this->view->params['breadcrumbs'][] = ['label' => $currentSubCategory->name];
+                $this->view->title = $currentSubCategory->name;
             }
         }
+
+        $homeData = [];
+        $homeData['name'] = $this->view->title;
+
+        $seoModule = \Yii::$app->getModule('seo-module');
+        $seoModule->setSubcategoryPageData($homeData);
+        $seoModule->registerSeoTags();
+        $seoModule->registerJsonLdScript($imagesData['jsonLdData']);
 
         return $this->render('category', [
             'categories' => $categories,
@@ -147,7 +169,19 @@ class PagesController extends BaseController
         if ($currentSubCategory !== null) {
             $this->view->params['breadcrumbs'][] = ['label' => $currentSubCategory->name, 'url' => '/' . $currentCategory->slug . '/' . $currentSubCategory->slug];
             $this->view->params['breadcrumbs'][] = ['label' => $image->alt];
+
+            $this->view->title = $image->alt;
         }
+
+        $homeData = [];
+        $homeData['name'] = $this->view->title;
+
+        $seoModule = \Yii::$app->getModule('seo-module');
+        $seoModule->setImageData($image->src, $image->width, $image->height);
+
+        $seoModule->setImagePageData($homeData, $image);
+        $seoModule->registerSeoTags();
+        $seoModule->registerJsonLdScript($image['jsonLdData']);
 
         return $this->render('card', [
             'image' => $image,
@@ -175,12 +209,22 @@ class PagesController extends BaseController
             $this->view->params['breadcrumbs'][] = ['label' => 'Поиск по фразе: "' . $q.'"'.$dopTitle];
         }
 
+        $this->view->title = $this->view->params['title'];
+
         $imagesData = Images::search($q, $page);
 
         $images = $imagesData['images'];
         $totalPages = $imagesData['pages'];
 
         $pagination = Images::getPagination($page, $totalPages, $categorySlug = null, $subCategorySlug = null, $q);
+
+        $homeData = [];
+        $homeData['query'] = $q.$dopTitle;
+
+        $seoModule = \Yii::$app->getModule('seo-module');
+        $seoModule->setSearchPageData($homeData);
+        $seoModule->registerSeoTags();
+        $seoModule->registerJsonLdScript($imagesData['jsonLdData']);
 
         return $this->render('search', [
             'images' => $images,

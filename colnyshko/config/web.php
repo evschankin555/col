@@ -44,6 +44,13 @@ $config = [
         'db' => $db,
         'urlManager' => require(__DIR__ . '/__urlManager.php'),
     ],
+    'modules' => [
+        'seo-module' => [
+            'class' => 'app\modules\SeoModule',
+            'enableOpenGraph' => true,
+            'enableTwitter' => false,
+        ],
+    ],
     'params' => $params,
 ];
 

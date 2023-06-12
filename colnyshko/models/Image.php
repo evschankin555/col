@@ -9,7 +9,12 @@ class Image extends Model
 {
     public $src;
     public $alt;
+    public $width;
+    public $height;
     public $href;
+    public $category;
+    public $subCategory;
+    public $jsonLdData;
 
     private static $image;
 
@@ -35,8 +40,16 @@ class Image extends Model
             $model = new static;
             $model->src = $imageData['src'];
             $model->alt = $imageData['alt'];
+            $model->width = $imageData['width'];
+            $model->height = $imageData['height'];
+            $model->category = $imageData['category'];
+            $model->subCategory = $imageData['subCategory'];
             $model->href = self::renderLink($imageData);
+            // Добавляем данные JSON-LD для этого изображения/видео
+            $jsonLdData[] = self::generateJsonLdData($model);
             self::$image = $model;
+            self::$image['jsonLdData'] = $jsonLdData;
+
         }
 
         return self::$image;
@@ -88,4 +101,30 @@ class Image extends Model
         $result .=self::translit($image['alt']) . '-card-' . $explode[1];
         return $result;
     }
+    private static function isVideo($filename)
+    {
+        return strtolower(pathinfo($filename, PATHINFO_EXTENSION)) === 'mp4';
+    }
+
+    private static function generateJsonLdData($model) {
+        $jsonData = [
+            "@context" => "http://schema.org",
+            "description" => $model->alt,
+            "url" => $model->href
+        ];
+
+        if (self::isVideo($model->src)) {
+            // Это видеофайл, добавляем соответствующие свойства
+            $jsonData["@type"] = "VideoObject";
+            $jsonData["contentUrl"] = $model->src;
+            // Здесь можно добавить другие свойства VideoObject, если они доступны
+        } else {
+            // Это изображение, добавляем соответствующие свойства
+            $jsonData["@type"] = "ImageObject";
+            $jsonData["contentUrl"] = $model->src;
+            // Здесь можно добавить другие свойства ImageObject, если они доступны
+        }
+        return $jsonData;
+    }
+
 }

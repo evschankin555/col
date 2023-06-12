@@ -16,6 +16,7 @@ use app\components\LoginButtonWidget;
 use app\components\PasswordRecoveryFormWidget;
 use app\components\RegistrationFormWidget;
 
+
 AppAsset::register($this);
 
 $model = new \app\models\SearchForm();
@@ -34,7 +35,7 @@ $form = ActiveForm::begin([
 <?php $this->beginPage() ?>
 
 <!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>">
+<html lang="<?= Yii::$app->language ?>" itemscope itemtype="http://schema.org/WebSite">
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
