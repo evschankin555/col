@@ -63,18 +63,18 @@ class ImagesWidget extends Widget
         $output = '<div class="card mb-3">';
         $output .= '<div class="card-body media-card-body" data-id="'.$id.'">';
         $url = $image->href;
-
-        if ($this->isVideo($image->src)) {
+        $src = $image->is_prev ? $image->prev['href'] : $image->src;
+        if ($this->isVideo($src)) {
             $output .= '
             <a href="'.$url.'">
             <video class="video-modal" 
             data-alt="' . Html::encode($image->alt) . '" 
-            data-src="' . $image->src . '" autoplay loop muted playsinline src="' . $image->src . '" alt="' . $image->alt . '" data-href="'.$image->href.'"></video>
+            data-src="' . $image->src . '" autoplay loop muted playsinline src="' . $src . '" alt="' . $image->alt . '" data-href="'.$image->href.'"></video>
             </a>';
         } else {
             $output .= '
             <a href="'.$url.'">
-            <img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->src . '" src="' . $image->src . '" alt="' . $image->alt . '" data-href="'.$image->href.'">
+            <img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->src . '" src="' . $src . '" alt="' . $image->alt . '" data-href="'.$image->href.'">
             </a>
             ';
         }
@@ -85,6 +85,7 @@ class ImagesWidget extends Widget
 
         $output .= '<div class="card-footer">';
         $output .= $this->renderDropdown($image);
+        $output .= $this->renderDownloadMenu($image);
         $output .= '</div>';
 
         $output .= '</div>';
@@ -129,5 +130,20 @@ class ImagesWidget extends Widget
     private function isVideo($filename)
     {
         return strtolower(pathinfo($filename, PATHINFO_EXTENSION)) === 'mp4';
+    }
+    private function renderDownloadMenu($image)
+    {
+        $output = '<ul class="nav nav-pills">';
+        $output .= '<li class="nav-item dropdown images-menu-download">';
+        $output .= '<a class="nav-link show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Скачать</a>';
+        $output .= '<div class="dropdown-menu" data-popper-placement="bottom-start">';
+        foreach ($image->files as $file) {
+            $output .= '<a class="dropdown-item ' . $file['type'] . '" href="' . $file['href'] . '" download target="_blanck">&nbsp;</a>';
+        }
+        $output .= '</div>';
+        $output .= '</li>';
+        $output .= '</ul>';
+
+        return $output;
     }
 }

@@ -12,6 +12,7 @@ class Category extends Model
     public $name;
     public $count;
     public $slug;
+    public $alphabet;
     public $isActive;
     public $subCategories = [];
 
@@ -45,6 +46,7 @@ class Category extends Model
                 $model->id = $category['id'];
                 $model->name = $category['name'];
                 $model->slug = $category['slug'];
+                $model->alphabet = ($category['alphabet'] == 1) ? true : false;
                 $model->isActive = false; // по умолчанию все категории неактивны
 
                 $count = 0;

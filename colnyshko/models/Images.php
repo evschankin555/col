@@ -13,7 +13,9 @@ class Images extends Model
     public $href;
     public $category;
     public $subCategory;
-
+    public $files;
+    public $is_prev;
+    public $prev;
     private static $images;
 /*
  {
@@ -41,7 +43,7 @@ class Images extends Model
 
             $cache = Yii::$app->cache;
 
-            $cacheKey = "new8_images_page{$page}_categorySlug{$categorySlug}_subCategorySlug{$subCategorySlug}";
+            $cacheKey = "new_5_images_page{$page}_categorySlug{$categorySlug}_subCategorySlug{$subCategorySlug}";
             $imagesData = $cache->get($cacheKey);
 
             if ($imagesData === false) {
@@ -61,7 +63,21 @@ class Images extends Model
             $img = '';
             foreach ($imagesData['data'] as $image) {
                 $model = new static;
-                $model->src = $image['src'];
+                $model->files = $image['files'];
+                if ($image['is_prev'] == 1) {
+                    $model->is_prev = true;
+                    $model->prev = $image['prev'];
+                }else{
+                    $model->is_prev = false;
+                }
+                foreach ($model->files as $file) {
+                    if($file['type'] == 'mp4') {
+                        $model->src = $file['href'];
+                        break;
+                    }elseif( $file['type'] == 'webp'){
+                        $model->src = $file['href'];
+                    }
+                }
                 $model->alt = $image['alt'];
                 $model->href = self::renderLink($image);
                 $model->category = $image['category'];
@@ -211,20 +227,21 @@ class Images extends Model
             'ь' => '',    'ы' => 'y',   'ъ' => '',
             'э' => 'e',   'ю' => 'yu',  'я' => 'ya',
 
-            'А' => 'A',   'Б' => 'B',   'В' => 'V',
-            'Г' => 'G',   'Д' => 'D',   'Е' => 'E',
-            'Ё' => 'E',   'Ж' => 'Zh',  'З' => 'Z',
-            'И' => 'I',   'Й' => 'Y',   'К' => 'K',
-            'Л' => 'L',   'М' => 'M',   'Н' => 'N',
-            'О' => 'O',   'П' => 'P',   'Р' => 'R',
-            'С' => 'S',   'Т' => 'T',   'У' => 'U',
-            'Ф' => 'F',   'Х' => 'H',   'Ц' => 'C',
-            'Ч' => 'Ch',  'Ш' => 'Sh',  'Щ' => 'Sch',
-            'Ь' => '',    'Ы' => 'Y',   'Ъ' => '',
-            'Э' => 'E',   'Ю' => 'Yu',  'Я' => 'Ya',
+            'А' => 'a',   'Б' => 'b',   'В' => 'v',
+            'Г' => 'g',   'Д' => 'd',   'Е' => 'e',
+            'Ё' => 'e',   'Ж' => 'zh',  'З' => 'z',
+            'И' => 'i',   'Й' => 'y',   'К' => 'k',
+            'Л' => 'l',   'М' => 'm',   'Н' => 'n',
+            'О' => 'o',   'П' => 'p',   'Р' => 'r',
+            'С' => 's',   'Т' => 't',   'У' => 'u',
+            'Ф' => 'f',   'Х' => 'h',   'Ц' => 'c',
+            'Ч' => 'ch',  'Ш' => 'sh',  'Щ' => 'sch',
+            'Ь' => '',    'Ы' => 'y',   'Ъ' => '',
+            'Э' => 'e',   'Ю' => 'yu',  'Я' => 'ya',
         );
 
         $string = strtr($string, $converter); // Транслитерация
+        $string = strtolower($string); // Преобразование в нижний регистр
         $string = preg_replace('/\s+/', '-', $string); // Замена пробелов на тире
         $string = preg_replace('/[^a-zA-Z0-9\-]/', '', $string); // Удаление всего, что не буква или цифра или тире
         $string = preg_replace('/-+/', '-', $string); // Замена повторяющихся тире на один

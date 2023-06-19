@@ -15,6 +15,7 @@ class Image extends Model
     public $category;
     public $subCategory;
     public $jsonLdData;
+    public $files;
 
     private static $image;
 
@@ -24,7 +25,7 @@ class Image extends Model
             $client = new Client(['base_uri' => 'https://legkie-otkrytki.ru/api/']);
 
             $cache = Yii::$app->cache;
-            $cacheKey = "image_new_{$hash}";
+            $cacheKey = "image_new_{$hash}_7";
             $imageData = $cache->get($cacheKey);
 
             if ($imageData === false) {
@@ -38,7 +39,15 @@ class Image extends Model
                 }
             }
             $model = new static;
-            $model->src = $imageData['src'];
+            $model->files = $imageData['files'];
+            foreach ($model->files as $file) {
+                if($file['type'] == 'mp4') {
+                    $model->src = $file['href'];
+                    break;
+                }elseif( $file['type'] == 'webp'){
+                    $model->src = $file['href'];
+                }
+            }
             $model->alt = $imageData['alt'];
             $model->width = $imageData['width'];
             $model->height = $imageData['height'];
@@ -49,7 +58,6 @@ class Image extends Model
             $jsonLdData[] = self::generateJsonLdData($model);
             self::$image = $model;
             self::$image['jsonLdData'] = $jsonLdData;
-
         }
 
         return self::$image;
@@ -68,20 +76,21 @@ class Image extends Model
             'ь' => '',    'ы' => 'y',   'ъ' => '',
             'э' => 'e',   'ю' => 'yu',  'я' => 'ya',
 
-            'А' => 'A',   'Б' => 'B',   'В' => 'V',
-            'Г' => 'G',   'Д' => 'D',   'Е' => 'E',
-            'Ё' => 'E',   'Ж' => 'Zh',  'З' => 'Z',
-            'И' => 'I',   'Й' => 'Y',   'К' => 'K',
-            'Л' => 'L',   'М' => 'M',   'Н' => 'N',
-            'О' => 'O',   'П' => 'P',   'Р' => 'R',
-            'С' => 'S',   'Т' => 'T',   'У' => 'U',
-            'Ф' => 'F',   'Х' => 'H',   'Ц' => 'C',
-            'Ч' => 'Ch',  'Ш' => 'Sh',  'Щ' => 'Sch',
-            'Ь' => '',    'Ы' => 'Y',   'Ъ' => '',
-            'Э' => 'E',   'Ю' => 'Yu',  'Я' => 'Ya',
+            'А' => 'a',   'Б' => 'b',   'В' => 'v',
+            'Г' => 'g',   'Д' => 'd',   'Е' => 'e',
+            'Ё' => 'e',   'Ж' => 'zh',  'З' => 'z',
+            'И' => 'i',   'Й' => 'y',   'К' => 'k',
+            'Л' => 'l',   'М' => 'm',   'Н' => 'n',
+            'О' => 'o',   'П' => 'p',   'Р' => 'r',
+            'С' => 's',   'Т' => 't',   'У' => 'u',
+            'Ф' => 'f',   'Х' => 'h',   'Ц' => 'c',
+            'Ч' => 'ch',  'Ш' => 'sh',  'Щ' => 'sch',
+            'Ь' => '',    'Ы' => 'y',   'Ъ' => '',
+            'Э' => 'e',   'Ю' => 'yu',  'Я' => 'ya',
         );
 
         $string = strtr($string, $converter); // Транслитерация
+        $string = strtolower($string); // Преобразование в нижний регистр
         $string = preg_replace('/\s+/', '-', $string); // Замена пробелов на тире
         $string = preg_replace('/[^a-zA-Z0-9\-]/', '', $string); // Удаление всего, что не буква или цифра или тире
         $string = preg_replace('/-+/', '-', $string); // Замена повторяющихся тире на один
@@ -105,26 +114,25 @@ class Image extends Model
     {
         return strtolower(pathinfo($filename, PATHINFO_EXTENSION)) === 'mp4';
     }
-
     private static function generateJsonLdData($model) {
         $jsonData = [
             "@context" => "http://schema.org",
             "description" => $model->alt,
-            "url" => $model->href
+            "url" => $model->href,
+            "associatedMedia" => []
         ];
 
-        if (self::isVideo($model->src)) {
-            // Это видеофайл, добавляем соответствующие свойства
-            $jsonData["@type"] = "VideoObject";
-            $jsonData["contentUrl"] = $model->src;
-            // Здесь можно добавить другие свойства VideoObject, если они доступны
-        } else {
-            // Это изображение, добавляем соответствующие свойства
-            $jsonData["@type"] = "ImageObject";
-            $jsonData["contentUrl"] = $model->src;
-            // Здесь можно добавить другие свойства ImageObject, если они доступны
+        foreach ($model->files as $file) {
+            $mediaType = self::isVideo($file['href']) ? 'VideoObject' : 'ImageObject';
+            $jsonData['associatedMedia'][] = [
+                "@type" => $mediaType,
+                "contentUrl" => $file['href'],
+                "width" => $model->width,
+                "height" => $model->height
+                // Здесь можно добавить другие свойства ImageObject или VideoObject, если они доступны
+            ];
         }
+
         return $jsonData;
     }
-
 }

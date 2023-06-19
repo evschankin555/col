@@ -68,6 +68,7 @@ class ImageWidget extends Widget
 
         $output .= '<div class="card-footer">';
         $output .= $this->renderDropdown($image);
+        $output .= $this->renderDownloadMenu($image);
         $output .= '</div>';
 
         $output .= '</div></div>';
@@ -111,6 +112,21 @@ class ImageWidget extends Widget
     private function isVideo($filename)
     {
         return strtolower(pathinfo($filename, PATHINFO_EXTENSION)) === 'mp4';
+    }
+    private function renderDownloadMenu($image)
+    {
+        $output = '<ul class="nav nav-pills">';
+        $output .= '<li class="nav-item dropdown images-menu-download">';
+        $output .= '<a class="nav-link show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Скачать</a>';
+        $output .= '<div class="dropdown-menu" data-popper-placement="bottom-start">';
+        foreach ($image->files as $file) {
+            $output .= '<a class="dropdown-item ' . $file['type'] . '" href="' . $file['href'] . '" download target="_blanck">&nbsp;</a>';
+        }
+        $output .= '</div>';
+        $output .= '</li>';
+        $output .= '</ul>';
+
+        return $output;
     }
 
 }
