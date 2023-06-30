@@ -9,6 +9,7 @@ class SubCategory extends Model
     public $name;
     public $slug;
     public $count;
+    public $month;
     public $isActive;
 
     /**
@@ -22,6 +23,7 @@ class SubCategory extends Model
             ['count', 'integer'],
             ['name', 'string'],
             ['slug', 'string'],
+            ['month', 'integer'],
         ];
     }
 
@@ -35,6 +37,7 @@ class SubCategory extends Model
             'name' => 'Name',
             'slug' => 'Slug',
             'count' => 'Count',
+            'month' => 'Month',
         ];
     }
 }

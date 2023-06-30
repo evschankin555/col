@@ -72,4 +72,98 @@ $(document).ready(function(){
                 '{"sz":30,"st":"straight","ck":4,"bgclr":"ED8207","txclr":"ffffff"}',"","","");
         });
     });
+// Initialize popovers
+    const popoverElements = document.querySelectorAll('[data-bs-toggle="popover"]');
+    console.log(popoverElements);
+    for (const popover of popoverElements) {
+        new bootstrap.Popover(popover); // eslint-disable-line no-new
+    }
+    function getQueryParameters(url) {
+        var queryString = url.split('?')[1] || '';
+        var pairs = queryString.split('&');
+        var result = {};
+        pairs.forEach(function(pair) {
+            pair = pair.split('=');
+            if (pair[0]) {
+                result[pair[0]] = decodeURIComponent(pair[1] || '');
+            }
+        });
+        return result;
+    }
+
+    function updateQueryStringParameter(url, key, value, defaultValue) {
+        var baseUrl = url.split('?')[0];
+        var params = getQueryParameters(url);
+
+        if (value == defaultValue) {
+            delete params[key];
+        } else {
+            params[key] = value;
+        }
+
+        var newQueryParams = Object.keys(params).map(function(key) {
+            return encodeURIComponent(key) + "=" + encodeURIComponent(params[key]);
+        }).join('&');
+
+        return baseUrl + (newQueryParams ? '?' + newQueryParams : '');
+    }
+
+// Теперь функцию можно использовать следующим образом:
+
+// jQuery('.display-buttons .dropdown-item').click(function() {
+//    ...
+//    var newUrl = updateQueryStringParameter(window.location.href, 'display', value, 'all');
+//    ...
+// });
+
+// jQuery('.sort-buttons .dropdown-item').click(function() {
+//    ...
+//    var newUrl = updateQueryStringParameter(window.location.href, 'sort', value, 'new');
+//    ...
+// });
+
+
+
+
+    jQuery('.display-buttons .dropdown-item').click(function() {
+        var value = jQuery(this).data('value');
+        var text = jQuery(this).text();
+        var buttonClass = 'btn-secondary';
+
+        if (value === 'animations') {
+            buttonClass = 'btn-primary';
+        } else if (value === 'static') {
+            buttonClass = 'btn-danger';
+        }
+
+        jQuery('#displayButton')
+            .text('Отобразить: ' + text)
+            .removeClass('btn-secondary btn-primary btn-danger')
+            .addClass(buttonClass);
+
+        jQuery('#displayDropdownButton')
+            .removeClass('btn-secondary btn-primary btn-danger')
+            .addClass(buttonClass);
+
+        // Обновляем URL, добавляя параметр `display`, если его значение не равно 'all'
+        var newUrl = updateQueryStringParameter(window.location.href, 'display', value, 'all');
+        window.location.href = newUrl;
+    });
+
+    jQuery('.sort-buttons .dropdown-item').click(function() {
+        var value = jQuery(this).data('value');
+        var text = jQuery(this).text();
+
+        jQuery('#sortButton')
+            .text('Сортировать: ' + text);
+
+        jQuery('#sortDropdownButton');
+
+        // Обновляем URL, добавляя параметр `sort`, если его значение не равно 'new'
+        var newUrl = updateQueryStringParameter(window.location.href, 'sort', value, 'new');
+        window.location.href = newUrl;
+    });
+
+
+
 });

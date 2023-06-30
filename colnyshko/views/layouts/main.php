@@ -116,11 +116,7 @@ $form = ActiveForm::begin([
     <div class="row">
         <div class="col-lg-12">
             <ul class="list-unstyled">
-                <li class="float-end"><a href="#top">На верх</a></li>
-                <li><a href="#">Blog</a></li>
-                <li><a href="#">RSS</a></li>
-                <li><a href="#">Twitter</a></li>
-                <li><a href="#">API</a></li>
+                <li class="float-end top"><a href="#top">На верх</a></li>
                 <li class="float-end"><div id="ok_group_widget" style="margin-left: -30px;"></div></li>
             </ul>
             <p class="pull-left">&copy; Солнышко - коллекция открыток <?= date('Y') ?></p>

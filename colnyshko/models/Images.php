@@ -287,8 +287,13 @@ class Images extends Model
 
     private static function isVideo($filename)
     {
+        if ($filename === null) {
+            return false;
+        }
+
         return strtolower(pathinfo($filename, PATHINFO_EXTENSION)) === 'mp4';
     }
+
 
     private static function generateJsonLdData($model) {
         $jsonData = [

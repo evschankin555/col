@@ -64,19 +64,21 @@ class ImagesWidget extends Widget
         $output .= '<div class="card-body media-card-body" data-id="'.$id.'">';
         $url = $image->href;
         $src = $image->is_prev ? $image->prev['href'] : $image->src;
+
         if ($this->isVideo($src)) {
             $output .= '
             <a href="'.$url.'">
             <video class="video-modal" 
             data-alt="' . Html::encode($image->alt) . '" 
-            data-src="' . $image->src . '" autoplay loop muted playsinline src="' . $src . '" alt="' . $image->alt . '" data-href="'.$image->href.'"></video>
-            </a>';
+            data-src="' . $image->src . '" autoplay loop muted playsinline src="' . $src . '" alt="' . $image->alt . '" data-href="'.$image->href.'"></video>';
+            $output .= $this->renderBadges($image);
+            $output .= '</a>';
         } else {
             $output .= '
             <a href="'.$url.'">
-            <img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->src . '" src="' . $src . '" alt="' . $image->alt . '" data-href="'.$image->href.'">
-            </a>
-            ';
+            <img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->src . '" src="' . $src . '" alt="' . $image->alt . '" data-href="'.$image->href.'">';
+            $output .= $this->renderBadges($image);
+            $output .= '</a>';
         }
 
         $output .= '<h5 class="card-title">' . Html::encode($image->alt) . '</h5>';
@@ -137,13 +139,49 @@ class ImagesWidget extends Widget
         $output .= '<li class="nav-item dropdown images-menu-download">';
         $output .= '<a class="nav-link show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Скачать</a>';
         $output .= '<div class="dropdown-menu" data-popper-placement="bottom-start">';
-        foreach ($image->files as $file) {
-            $output .= '<a class="dropdown-item ' . $file['type'] . '" href="' . $file['href'] . '" download target="_blanck">&nbsp;</a>';
+
+        if (is_array($image->files) || is_object($image->files)) {
+            foreach ($image->files as $file) {
+                $output .= '<a class="dropdown-item ' . $file['type'] . '" href="' . $file['href'] . '" download target="_blanck">&nbsp;</a>';
+            }
         }
+
         $output .= '</div>';
         $output .= '</li>';
         $output .= '</ul>';
 
         return $output;
+    }
+    private function renderBadges($image) {
+        $class = '';
+        if(count($image->files) < 4){
+            $class = ' short';
+        }
+        $output = '<div class="badges-container'.$class.'">';
+
+        foreach ($image->files as $file) {
+            $badgeColor = $this->getBadgeColor($file['type']);
+            $fileType = ucfirst($file['type']);
+            $output .= '<span class="badge bg-'.$badgeColor.'">' . $fileType . '</span>';
+
+        }
+
+        $output .= '</div>';
+
+        return $output;
+    }
+    private function getBadgeColor($fileType) {
+        switch($fileType) {
+            case 'mp4':
+                return 'primary';
+            case 'gif':
+                return 'success';
+            case 'webp':
+                return 'info';
+            case 'jpg':
+                return 'danger';
+            default:
+                return 'secondary';
+        }
     }
 }

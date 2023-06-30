@@ -54,6 +54,7 @@ class ImageWidget extends Widget
         $output = '<div class="row cards-images"><div class="card mb-3">';
         $output .= '<div class="card-body media-card-body" data-id="'.$id.'">';
 
+        $output .= $this->renderBadges($image);
         if ($this->isVideo($image->src)) {
             $output .= '<video class="video-modal" 
             data-alt="' . Html::encode($image->alt) . '" 
@@ -69,6 +70,7 @@ class ImageWidget extends Widget
         $output .= '<div class="card-footer">';
         $output .= $this->renderDropdown($image);
         $output .= $this->renderDownloadMenu($image);
+        $output .= $this->renderInfoMenu($image);
         $output .= '</div>';
 
         $output .= '</div></div>';
@@ -87,7 +89,7 @@ class ImageWidget extends Widget
         $output .= '</li>';*/
 
         $output .= '<li class="nav-item dropdown images-menu">';
-        $output .= '<a class="nav-link show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отправить</a>';
+        $output .= '<a class="nav-link show" data-bs-toggle="dropdown" href="" role="button" aria-haspopup="true" aria-expanded="false">Отправить</a>';
         $output .= '<div class="dropdown-menu" data-popper-placement="bottom-start">';
         $output .= '<a class="dropdown-item ok" rel="nofollow noopener" target="_blank" href="https://connect.ok.ru/dk?st.cmd=WidgetSharePreview&st.shareUrl='.$url.'">Одноклассники</a>';
         $output .= '<a class="dropdown-item vk" rel="nofollow noopener" target="_blank" href="https://vk.com/share.php?url='.$url.'">Вконтакте</a>';
@@ -117,7 +119,7 @@ class ImageWidget extends Widget
     {
         $output = '<ul class="nav nav-pills">';
         $output .= '<li class="nav-item dropdown images-menu-download">';
-        $output .= '<a class="nav-link show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Скачать</a>';
+        $output .= '<a class="nav-link show" data-bs-toggle="dropdown" href="" role="button" aria-haspopup="true" aria-expanded="false">Скачать</a>';
         $output .= '<div class="dropdown-menu" data-popper-placement="bottom-start">';
         foreach ($image->files as $file) {
             $output .= '<a class="dropdown-item ' . $file['type'] . '" href="' . $file['href'] . '" download target="_blanck">&nbsp;</a>';
@@ -127,6 +129,51 @@ class ImageWidget extends Widget
         $output .= '</ul>';
 
         return $output;
+    }
+
+    private function renderInfoMenu($image)
+    {
+        $output = '<ul class="nav nav-pills">';
+        $output .= '<li class="nav-item dropdown images-menu-info">';
+        $output .= '<button class="nav-link show" href="" role="button" data-bs-container="body" data-bs-toggle="popover" data-bs-html="true" data-bs-placement="top" data-bs-content="<b>Автор:</b> неизвестен<br><b>Источник:</b> <a href=\'https://otkritkis.com\' target=\'_blank\' rel=\'nofollow noopener\' class=\'external-link-icon\'>otkritkis.com</a>" data-bs-original-title="Информация о открытке" aria-describedby="popover18801">Инфо</button>';
+        $output .= '</li>';
+        $output .= '</ul>';
+        return $output;
+    }
+
+
+
+    private function renderBadges($image) {
+        $class = '';
+        if(count($image->files) < 4){
+            $class = ' short';
+        }
+        $output = '<div class="badges-container-image'.$class.'">';
+
+        foreach ($image->files as $file) {
+            $badgeColor = $this->getBadgeColor($file['type']);
+            $fileType = ucfirst($file['type']);
+            $output .= '<span class="badge bg-'.$badgeColor.'">' . $fileType . '</span>';
+
+        }
+
+        $output .= '</div>';
+
+        return $output;
+    }
+    private function getBadgeColor($fileType) {
+        switch($fileType) {
+            case 'mp4':
+                return 'primary';
+            case 'gif':
+                return 'success';
+            case 'webp':
+                return 'info';
+            case 'jpg':
+                return 'danger';
+            default:
+                return 'secondary';
+        }
     }
 
 }

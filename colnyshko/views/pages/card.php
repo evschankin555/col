@@ -16,7 +16,7 @@ use app\components\PaginationWidget;
 ?>
 
 <div class="jumbotron">
-    <?= CategoryWidget::widget(['categories' => $categories])?>
+    <?= CategoryWidget::widget(['categories' => $categories, 'filters' => false])?>
 </div>
 
 <div class="row card-image">

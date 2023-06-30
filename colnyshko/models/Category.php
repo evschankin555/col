@@ -39,7 +39,8 @@ class Category extends Model
             $allCategoryModel->id = 0;
             $allCategoryModel->name = 'Все';
             $allCategoryModel->isActive = false; // по умолчанию категория "Все" активна
-            self::$categories[] = $allCategoryModel;
+
+            $allCount = 0;  // Вводим переменную для подсчета общего количества картинок
 
             foreach ($categories['data'] as $category) {
                 $model = new static;
@@ -56,13 +57,23 @@ class Category extends Model
                     $subCategoryModel->id = $subCategory['id'];
                     $subCategoryModel->name = $subCategory['name'];
                     $subCategoryModel->slug = $subCategory['slug'];
-                    $count += $subCategoryModel->count = $subCategory['count'];
+                    $subCategoryModel->month = $subCategory['month'];
+                    $count += $subCategoryModel->count = self::formatCount($subCategory['count']);
                     $model->subCategories[] = $subCategoryModel;
                 }
 
-                $model->count = $count;
+                $model->count = self::formatCount($count);
                 self::$categories[] = $model;
+
+                // Прибавляем количество картинок в категории к общему количеству
+                $allCount += $count;
             }
+
+            // Присваиваем общее количество картинок модели "Все"
+            $allCategoryModel->count = self::formatCount($allCount);
+
+            // Добавляем модель "Все" в начало списка категорий
+            array_unshift(self::$categories, $allCategoryModel);
         }
 
         return self::$categories;
@@ -91,5 +102,13 @@ class Category extends Model
         }
     }
 
+    public static function formatCount($count)
+    {
+        if ($count > 999) {
+            return number_format($count, 0, '', ' ');
+        } else {
+            return $count;
+        }
+    }
 
 }
