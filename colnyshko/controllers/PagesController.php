@@ -26,7 +26,8 @@ class PagesController extends BaseController
      */
     public function actionCategory($category)
     {
-        $categories = Category::getAll();
+        $display = Yii::$app->request->get('display');
+        $categories = Category::getAll($display);
         Category::setActive($category);
 
         $currentCategory = false;
@@ -39,7 +40,9 @@ class PagesController extends BaseController
         }
 
         $page = Yii::$app->request->get('page', 1);
-        $imagesData = Images::getAll($page, $category);
+        $sort = Yii::$app->request->get('sort');
+        $imagesData = Images::getAll($page, $category, null, $display, $sort);
+
 
         $images = $imagesData['images'];
         $totalPages = $imagesData['pages'];
@@ -77,7 +80,8 @@ class PagesController extends BaseController
 /**/
     public function actionSubcategory($category, $subcategory)
     {
-        $categories = Category::getAll();
+        $display = Yii::$app->request->get('display');
+        $categories = Category::getAll($display);
         Category::setActiveSubCategory($subcategory);
 
         $currentCategory = false;
@@ -98,7 +102,8 @@ class PagesController extends BaseController
         }
 
         $page = Yii::$app->request->get('page', 1);
-        $imagesData = Images::getAll($page, null, $subcategory);
+        $sort = Yii::$app->request->get('sort');
+        $imagesData = Images::getAll($page, null, $subcategory, $display, $sort);
 
         $images = $imagesData['images'];
         $totalPages = $imagesData['pages'];
@@ -139,11 +144,12 @@ class PagesController extends BaseController
     }
     public function actionCard($base, $hash)
     {
+        $display = Yii::$app->request->get('display');
         $explode = explode('/', $base);
         $category = $explode[0];
         $subcategory = $explode[1];
         $image = Image::get($hash);
-        $categories = Category::getAll();
+        $categories = Category::getAll($display);
         Category::setActiveSubCategory($subcategory);
 
         $currentCategory = null;

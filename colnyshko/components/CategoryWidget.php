@@ -54,9 +54,9 @@ class CategoryWidget extends Widget
             $output .= '
     <div class="filters-wrapper">
         ' . $this->renderDisplayFilter($display) . '
-        ' . $this->renderSortFilter($sort) . '
+       
     </div>
-';
+';// ' . $this->renderSortFilter($sort) . '
 
         }
         $output = '<hr class="my-2">'. $output.'<hr class="my-2">';

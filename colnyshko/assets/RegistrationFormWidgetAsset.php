@@ -9,7 +9,7 @@ class RegistrationFormWidgetAsset extends AssetBundle
     public $baseUrl = '@web';
     public $js = [];
     public $jsOptions = [
-        'position' => \yii\web\View::POS_HEAD,
+        'position' => \yii\web\View::POS_END,
     ];
     public $depends = [
         'yii\web\YiiAsset',

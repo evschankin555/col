@@ -2,8 +2,11 @@
 
 namespace app\components;
 
+use yii;
 use yii\base\Widget;
 use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 
 class PaginationWidget extends Widget
 {
@@ -19,7 +22,6 @@ class PaginationWidget extends Widget
         }
         $output .= '</ul><hr class="my-2">';
         return $output;
-
     }
 
     private function renderPageItem($pageItem)
@@ -40,8 +42,17 @@ class PaginationWidget extends Widget
             $class .= ' active';
         }
         $url = $pageItem['url'];
+
+        // Получаем параметры текущего запроса
+        $queryParams = Yii::$app->request->getQueryParams();
+        // Удаляем ненужные параметры, которые уже присутствуют в URL пагинации
+        unset($queryParams['page'], $queryParams['category']);
+
+        // Объединяем их с URL каждого элемента пагинации
+        $urlWithParams = Url::to([$url] + $queryParams);
+
         $output = '<li class="' . $class . '">';
-        $output .= Html::a($pageItem['label'], $url, ['class' => $pageItem['label'] == '...' ? 'page-link page-dotted' : 'page-link']);
+        $output .= Html::a($pageItem['label'], $urlWithParams, ['class' => $pageItem['label'] == '...' ? 'page-link page-dotted' : 'page-link']);
         $output .= '</li>';
         return $output;
     }

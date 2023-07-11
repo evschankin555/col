@@ -15,6 +15,8 @@ use app\components\LoginModalWidget;
 use app\components\LoginButtonWidget;
 use app\components\PasswordRecoveryFormWidget;
 use app\components\RegistrationFormWidget;
+use app\components\UserMenuButtonWidget;
+use app\components\UserMenuContentWidget;
 
 
 AppAsset::register($this);
@@ -42,7 +44,7 @@ $form = ActiveForm::begin([
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>/-->
     <script src="https://connect.ok.ru/connect.js"></script>
 </head>
 <body>
@@ -77,7 +79,7 @@ $form = ActiveForm::begin([
     ?>
         </div>
             <?php
-        /*    echo Nav::widget([
+            echo Nav::widget([
                 'options' => ['class' => 'navbar-nav ml-auto'],
                 'items' => [
                     Yii::$app->user->isGuest ? (
@@ -86,16 +88,12 @@ $form = ActiveForm::begin([
                         . '</li>'
                     ) : (
                         '<li class="nav-item">'
-                        . Html::beginForm(['/site/logout'], 'post')
-                        . Html::submitButton(
-                            'Выйти (' . Yii::$app->user->identity->username . ')',
-                            ['class' => 'btn btn-link nav-link']
-                        )
-                        . Html::endForm()
+                        . UserMenuButtonWidget::widget()
                         . '</li>'
                     )
                 ],
-            ]);*/
+            ]);
+
 
     NavBar::end();
     ?>
@@ -103,7 +101,7 @@ $form = ActiveForm::begin([
     <div class="container main-container">
         <?= BootstrapBreadcrumbs::widget([
             'homeLink' => [
-                'label' => 'Главная',
+                'label' => 'Каталог',
                 'url' => '/',
             ],
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
@@ -124,6 +122,7 @@ $form = ActiveForm::begin([
     </div>
     </div>
 </footer>
+
 <script>
     !function (d, id, did, st) {
         var js = d.createElement("script");
@@ -140,11 +139,13 @@ $form = ActiveForm::begin([
         d.documentElement.appendChild(js);
     }(document,"ok_group_widget","51957422030974",'{"width":240,"height":105}');
 </script>
-<?php /*LoginModalWidget::widget(['model' => $modelUser]);
-PasswordRecoveryFormWidget::widget(['model' => $modelUser]);
-RegistrationFormWidget::widget(['model' => $modelUser]);*/
-?>
 <?php $this->endBody() ?>
+<?php
+echo LoginModalWidget::widget(['model' => $modelUser]);
+echo PasswordRecoveryFormWidget::widget(['model' => $modelUser]);
+echo RegistrationFormWidget::widget(['model' => $modelUser]);
+echo UserMenuContentWidget::widget();
+?>
 </body>
 </html>
 <?php $this->endPage() ?>

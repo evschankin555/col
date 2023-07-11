@@ -35,12 +35,15 @@ class BaseController extends Controller
     public function actionHome(): string
     {
 
+        $display = Yii::$app->request->get('display');
         $this->view->params['title'] = 'Солнышко';
-        $categories = Category::getAll();
+        $categories = Category::getAll($display);
         Category::setActive(0);
 
         $page = Yii::$app->request->get('page', 1);
-        $imagesData = Images::getAll($page);
+        $sort = Yii::$app->request->get('sort');
+        $imagesData = Images::getAll($page, null, null, $display, $sort);
+
 
         $images = $imagesData['images'];
         $totalPages = $imagesData['pages'];
@@ -106,8 +109,9 @@ class BaseController extends Controller
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
         $userModel = new User();
-        $email = Yii::$app->request->post('email');
-        $password = Yii::$app->request->post('password');
+        $postData = Yii::$app->request->post('User');
+        $email = isset($postData['email']) ? $postData['email'] : null;
+        $password = isset($postData['password']) ? $postData['password'] : null;
 
         // Выход из метода, если какие-то из данных не переданы
         if ($email === null || $password === null) {
@@ -125,6 +129,7 @@ class BaseController extends Controller
             ];
         }
     }
+
     public function actionRestore()
     {
         Yii::$app->response->headers->set('Content-Type', 'application/json; charset=utf-8');

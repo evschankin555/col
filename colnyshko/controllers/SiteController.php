@@ -59,7 +59,8 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        $categories = Category::getAll();
+        $display = Yii::$app->request->get('display');
+        $categories = Category::getAll($display);
         Category::setActive(0);
 
         return $this->render('index', [
@@ -69,7 +70,8 @@ class SiteController extends Controller
 
     public function actionCategory($slug)
     {
-        $categories = Category::getAll();
+        $display = Yii::$app->request->get('display');
+        $categories = Category::getAll($display);
         Category::setActive($slug);
 
         return $this->render('index', [
@@ -79,7 +81,8 @@ class SiteController extends Controller
 
     public function actionSubCategory($slug)
     {
-        $categories = Category::getAll();
+        $display = Yii::$app->request->get('display');
+        $categories = Category::getAll($display);
         Category::setActiveSubCategory($slug);
 
         return $this->render('index', [

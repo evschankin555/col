@@ -13,23 +13,21 @@ class LoginModalWidget extends Widget
 
     public function run()
     {
-        $output = '';
-
         ob_start();
+
         Modal::begin([
             'title' => 'Войти на Солнышко',
             'id' => 'login-modal',
             'clientOptions' => ['backdrop' => 'static', 'keyboard' => false]
         ]);
-        $modal = ob_get_clean();
 
-        ob_start();
         $form = ActiveForm::begin([
             'id' => 'login-form',
             'action' => ['/auth'],
             'options' => ['class' => 'form-horizontal', 'data-ajax' => '1'],
             'enableAjaxValidation' => false,
         ]);
+
         echo $form->field($this->model, 'email')->textInput(['autofocus' => true]);
         echo $form->field($this->model, 'password')->passwordInput();
         echo Html::tag('div',
@@ -44,13 +42,10 @@ class LoginModalWidget extends Widget
         );
 
         ActiveForm::end();
-        $formOutput = ob_get_clean();
 
-        $output .= $modal;
-        $output .= $formOutput;
-        $output .= '<hr class="my-2">';
+        echo '<hr class="my-2">';
 
-        $output .= Html::tag('div',
+        echo Html::tag('div',
             Html::tag('span','Ещё не зарегистрированы? ',  ['class' => 'js-btn', 'data-link' => 'register']).
             Html::a('Регистрация', '#', [
                 'class' => 'js-btn',
@@ -60,13 +55,11 @@ class LoginModalWidget extends Widget
             ])
             , ['class' => 'not-registered-wrapper']);
 
-
-        ob_start();
         Modal::end();
-        $output .= ob_get_clean();
 
         LoginFormWidgetAsset::register($this->view);
 
-        return $output;
+        return ob_get_clean();
     }
+
 }

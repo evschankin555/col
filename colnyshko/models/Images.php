@@ -36,14 +36,14 @@ class Images extends Model
 }
 
  * */
-    public static function getAll($page = 1, $categorySlug = null, $subCategorySlug = null)
+    public static function getAll($page = 1, $categorySlug = null, $subCategorySlug = null, $display = null, $sort = null)
     {
         if (self::$images === null) {
             $client = new Client(['base_uri' => 'https://legkie-otkrytki.ru/api/']);
 
             $cache = Yii::$app->cache;
 
-            $cacheKey = "new_5_images_page{$page}_categorySlug{$categorySlug}_subCategorySlug{$subCategorySlug}";
+            $cacheKey = "new_6_images_page{$page}_categorySlug{$categorySlug}_subCategorySlug{$subCategorySlug}";
             $imagesData = $cache->get($cacheKey);
 
             if ($imagesData === false) {
@@ -53,6 +53,12 @@ class Images extends Model
                 }
                 if ($subCategorySlug !== null) {
                     $query['subCategory_slug'] = $subCategorySlug;
+                }
+                if ($display !== null) {
+                    $query['display'] = $display;
+                }
+                if ($sort !== null) {
+                    $query['sort'] = $sort;
                 }
                 $response = $client->request('GET', 'images', ['query' => $query]);
                 $imagesData = json_decode($response->getBody(), true);

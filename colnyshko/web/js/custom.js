@@ -112,4 +112,6 @@
     for (const tooltip of tooltipElements) {
         new bootstrap.Tooltip(tooltip); // eslint-disable-line no-new
     }
+    var myOffcanvas = document.getElementById('offcanvasExample');
+    var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
 })();

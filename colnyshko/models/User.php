@@ -4,7 +4,6 @@ namespace app\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
-
 class User extends ActiveRecord implements IdentityInterface
 {
     public static function tableName()
@@ -16,7 +15,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             [['username', 'email', 'password', 'agreement'], 'required'],
-            [['username', 'email'], 'string', 'max' => 255],
+            [['username', 'email', 'avatar'], 'string', 'max' => 255],  // добавлено поле 'avatar'
             [['password'], 'string', 'max' => 64],
             [['created_at'], 'safe'],
             [['is_confirmed'], 'boolean'],
@@ -27,6 +26,7 @@ class User extends ActiveRecord implements IdentityInterface
             ['email', 'email', 'message' => 'Invalid email format.'],
         ];
     }
+
     public function attributeLabels()
     {
         return [
@@ -34,9 +34,19 @@ class User extends ActiveRecord implements IdentityInterface
             'email' => 'Eмейл',
             'password' => 'Пароль',
             'agreement' => 'Согласие на обработку персональных данных',
+            'avatar' => 'Аватар',  // добавлено поле 'avatar'
             // и так далее для всех ваших полей...
         ];
     }
+
+    public function getAvatarUrl()
+    {
+        // Если у пользователя есть аватар, то возвращаем путь до него, иначе возвращаем путь до дефолтной картинки
+        return !empty($this->avatar) ? $this->avatar : Yii::getAlias('@web') . '/svg/account-avatar-profile-user-14-svgrepo-com.svg';
+    }
+
+
+
     public static function findIdentity($id)
     {
         return static::findOne($id);
