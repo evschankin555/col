@@ -83,9 +83,7 @@ $form = ActiveForm::begin([
                 'options' => ['class' => 'navbar-nav ml-auto'],
                 'items' => [
                     Yii::$app->user->isGuest ? (
-                        '<li class="nav-item">'
-                        . LoginButtonWidget::widget()
-                        . '</li>'
+                    ['label' => 'Войти', 'url' => ['/login']]
                     ) : (
                         '<li class="nav-item">'
                         . UserMenuButtonWidget::widget()
@@ -144,7 +142,9 @@ $form = ActiveForm::begin([
 echo LoginModalWidget::widget(['model' => $modelUser]);
 echo PasswordRecoveryFormWidget::widget(['model' => $modelUser]);
 echo RegistrationFormWidget::widget(['model' => $modelUser]);
-echo UserMenuContentWidget::widget();
+if(!Yii::$app->user->isGuest){
+    echo UserMenuContentWidget::widget();
+}
 ?>
 </body>
 </html>

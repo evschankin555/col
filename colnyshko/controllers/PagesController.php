@@ -13,6 +13,7 @@ use app\models\Category;
 use app\models\Images;
 use app\models\Image;
 use app\modules\SeoModule;
+use app\models\User;
 
 class PagesController extends BaseController
 {
@@ -201,43 +202,77 @@ class PagesController extends BaseController
     }
 
 
-    public function actionSearch($q): string
+        public function actionSearch($q): string
+        {
+            $page = Yii::$app->request->get('page', 1);
+            $dopTitle = '';
+            if($page >  1) {
+                $dopTitle = ', страница '.$page;
+            }
+
+            $this->view->params['title'] = 'Поиск по фразе: '. $q.$dopTitle;
+
+            if (!empty($q)) {
+                $this->view->params['breadcrumbs'][] = ['label' => 'Поиск по фразе: "' . $q.'"'.$dopTitle];
+            }
+
+            $this->view->title = $this->view->params['title'];
+
+            $imagesData = Images::search($q, $page);
+
+            $images = $imagesData['images'];
+            $totalPages = $imagesData['pages'];
+
+            $pagination = Images::getPagination($page, $totalPages, $categorySlug = null, $subCategorySlug = null, $q);
+
+            $homeData = [];
+            $homeData['query'] = $q.$dopTitle;
+
+            $seoModule = \Yii::$app->getModule('seo-module');
+            $seoModule->setSearchPageData($homeData);
+            $seoModule->registerSeoTags();
+            $seoModule->registerJsonLdScript($imagesData['jsonLdData']);
+
+            return $this->render('search', [
+                'images' => $images,
+                'pagination' => $pagination,
+                'query' => $q
+            ]);
+        }
+
+    public function actionLogin()
     {
-        $page = Yii::$app->request->get('page', 1);
-        $dopTitle = '';
-        if($page >  1) {
-            $dopTitle = ', страница '.$page;
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
         }
 
-        $this->view->params['title'] = 'Поиск по фразе: '. $q.$dopTitle;
-
-        if (!empty($q)) {
-            $this->view->params['breadcrumbs'][] = ['label' => 'Поиск по фразе: "' . $q.'"'.$dopTitle];
+        $model = new LoginForm();
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            return $this->goBack();
+        } else {
+            return $this->render('login', [
+                'model' => $model,
+            ]);
         }
-
-        $this->view->title = $this->view->params['title'];
-
-        $imagesData = Images::search($q, $page);
-
-        $images = $imagesData['images'];
-        $totalPages = $imagesData['pages'];
-
-        $pagination = Images::getPagination($page, $totalPages, $categorySlug = null, $subCategorySlug = null, $q);
-
-        $homeData = [];
-        $homeData['query'] = $q.$dopTitle;
-
-        $seoModule = \Yii::$app->getModule('seo-module');
-        $seoModule->setSearchPageData($homeData);
-        $seoModule->registerSeoTags();
-        $seoModule->registerJsonLdScript($imagesData['jsonLdData']);
-
-        return $this->render('search', [
-            'images' => $images,
-            'pagination' => $pagination,
-            'query' => $q
-        ]);
     }
+
+    public function actionLogout()
+    {
+        $user = new User();
+        $userLogout = $user->logout();
+
+        if ($userLogout) {
+            // После успешного выхода перенаправляем пользователя на главную страницу
+            return $this->goHome();
+        } else {
+            // Если выход не удался, можно перенаправить пользователя обратно на страницу, с которой он пришел,
+            // или показать ему сообщение об ошибке
+            Yii::$app->session->setFlash('error', 'Error logout');
+            return $this->goBack();
+        }
+    }
+
+
 
 
 }

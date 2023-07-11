@@ -12,8 +12,8 @@ return [
     'rules' => [
         '/' => '/base/home',
         'page/<page:\d+>' => '/base/home',
-        'login' => 'site/login',
-        'logout' => 'site/logout',
+        'login' => 'pages/login',
+        'logout' => 'pages/logout',
         'contact' => 'site/contact',
         'about' => 'site/about',
         [
