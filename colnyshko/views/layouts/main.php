@@ -54,10 +54,10 @@ $form = ActiveForm::begin([
 <div class="wrap">
 <?php
     NavBar::begin([
-        'brandLabel' => 'Солнышко - коллекция открыток',
+        'brandLabel' => 'Солнышко',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
-            'class' => 'navbar navbar-expand-lg fixed-top navbar-dark bg-primary',
+            'class' => 'navbar navbar-expand-lg fixed-top navbar-dark bg-primary  ',
         ],
     ]);
 ?>
@@ -79,18 +79,23 @@ $form = ActiveForm::begin([
     ?>
         </div>
             <?php
-            echo Nav::widget([
-                'options' => ['class' => 'navbar-nav ml-auto'],
-                'items' => [
-                    Yii::$app->user->isGuest ? (
-                    ['label' => 'Войти', 'url' => ['/login']]
-                    ) : (
-                        '<li class="nav-item">'
-                        . UserMenuButtonWidget::widget()
-                        . '</li>'
-                    )
-                ],
-            ]);
+            $currentRoute = Yii::$app->controller->getRoute();
+
+            if ($currentRoute != 'pages/login') {
+                echo Nav::widget([
+                    'options' => ['class' => 'navbar-nav ml-auto'],
+                    'items' => [
+                        Yii::$app->user->isGuest ? (
+                        ['label' => 'Войти', 'url' => ['/login']]
+                        ) : (
+                            '<li class="nav-item">'
+                            . UserMenuButtonWidget::widget()
+                            . '</li>'
+                        )
+                    ],
+                ]);
+            }
+
 
 
     NavBar::end();

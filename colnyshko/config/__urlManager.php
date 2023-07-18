@@ -13,8 +13,9 @@ return [
         '/' => '/base/home',
         'page/<page:\d+>' => '/base/home',
         'login' => 'pages/login',
+        'signup' => 'pages/signup',
         'logout' => 'pages/logout',
-        'contact' => 'site/contact',
+        'restore' => 'pages/restore',
         'about' => 'site/about',
         [
             'class' => 'yii\web\UrlRule',

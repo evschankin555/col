@@ -14,16 +14,14 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'email', 'password', 'agreement'], 'required'],
+            [['username', 'email', 'password', 'agreement'], 'required', 'message' => 'Это поле необходимо заполнить.'],
             [['username', 'email', 'avatar'], 'string', 'max' => 255],  // добавлено поле 'avatar'
             [['password'], 'string', 'max' => 64],
             [['created_at'], 'safe'],
             [['is_confirmed'], 'boolean'],
             [['confirmation_code'], 'string', 'max' => 255],
-            [['email'], 'email'],
-            [['email'], 'unique'],
-            ['email', 'unique', 'message' => 'This email is already taken.'],
-            ['email', 'email', 'message' => 'Invalid email format.'],
+            [['email'], 'email', 'message' => 'Неверный формат электронной почты.'],
+            [['email'], 'unique', 'message' => 'Этот адрес электронной почты уже используется.'],
         ];
     }
 
@@ -108,7 +106,6 @@ class User extends ActiveRecord implements IdentityInterface
         return null;
     }
 
-    // Функция для авторизации
     public function login($email, $password)
     {
         $user = static::findOne(['email' => $email]);
@@ -117,6 +114,7 @@ class User extends ActiveRecord implements IdentityInterface
         }
         return false;
     }
+
 
     // Функция для выхода
     public function logout()

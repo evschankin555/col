@@ -14,10 +14,11 @@ use app\models\Images;
 use app\models\Image;
 use app\modules\SeoModule;
 use app\models\User;
+use app\models\SignupForm;
+use app\models\PasswordRecoveryForm;
 
 class PagesController extends BaseController
 {
-
     public $enableCsrfValidation = false;
     /**
      * @param $url
@@ -200,9 +201,7 @@ class PagesController extends BaseController
     {
           return $this->render('base', []);
     }
-
-
-        public function actionSearch($q): string
+    public function actionSearch($q): string
         {
             $page = Yii::$app->request->get('page', 1);
             $dopTitle = '';
@@ -239,7 +238,6 @@ class PagesController extends BaseController
                 'query' => $q
             ]);
         }
-
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
@@ -255,7 +253,6 @@ class PagesController extends BaseController
             ]);
         }
     }
-
     public function actionLogout()
     {
         $user = new User();
@@ -271,7 +268,34 @@ class PagesController extends BaseController
             return $this->goBack();
         }
     }
+    public function actionSignup()
+    {
+        $model = new SignupForm();
+        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+            return $this->goHome();
+        } else {
+            return $this->render('signup', [
+                'model' => $model,
+            ]);
+        }
+    }
 
+    public function actionRestore()
+    {
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        $model = new PasswordRecoveryForm();
+        if ($model->load(Yii::$app->request->post()) && $model->sendEmail()) {
+            Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
+            return $this->goHome();
+        }
+
+        return $this->render('restore', [
+            'model' => $model,
+        ]);
+    }
 
 
 
