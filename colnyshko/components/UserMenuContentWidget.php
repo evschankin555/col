@@ -11,29 +11,16 @@ class UserMenuContentWidget extends Widget
     public function run()
     {
         $menuItems = [
-            ['label' => 'Каталог', 'url' => '/'],
-            ['label' => 'Моя страница', 'url' => '/user-panel/my-page'],
-            ['label' => 'Мои друзья', 'url' => '/user-panel/my-friends'],
+            ['label' => 'Мои коллекции', 'url' => 'http://localhost/'. Html::encode(Yii::$app->user->identity->username)],
             'divider',
-            ['label' => 'Сохраненные подборки', 'url' => '/user-panel/saved-collections'],
-            ['label' => 'Любимые открытки', 'url' => '/user-panel/favorite-cards'],
-            ['label' => 'Закладки', 'url' => '/user-panel/bookmarks'],
+            ['label' => 'Подписки', 'url' => '/profile/subscriptions'],
+            ['label' => 'Подписчики', 'url' => '/profile/followers'],
             'divider',
-            ['label' => 'Мои подборки', 'url' => '/user-panel/my-collections'],
-            ['label' => 'Мои Персонализированные открытки', 'url' => '/user-panel/personalized-cards'],
-            'divider',
-            ['label' => 'Мои загрузки', 'url' => '/user-panel/my-uploads'],
-            ['label' => 'Музыкальные треки', 'url' => '/user-panel/music-tracks'],
-            ['label' => 'Мои текстовые пожелания', 'url' => '/user-panel/my-text-wishes'],
-            'divider',
-            ['label' => 'Мои события', 'url' => '/user-panel/my-events'],
-            ['label' => 'События моих друзей', 'url' => '/user-panel/friends-events'],
-            ['label' => 'Настройки профиля', 'url' => '/user-panel/profile-settings'],
-
-            'divider',
+            ['label' => 'Настройки профиля', 'url' => '/profile/settings'],
             ['label' => 'Выйти', 'url' => '/logout'],
             'divider',
         ];
+
 
         $items = [];
         foreach ($menuItems as $item) {

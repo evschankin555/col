@@ -38,8 +38,9 @@ $this->title = 'Регистрация';
             'enableAjaxValidation' => false,
         ]); ?>
 
-        <?= $form->field($model, 'username')->textInput(['autofocus' => true, 'placeholder' => 'Введите ваше имя'])->label('Ваше имя или Никнейм') ?>
+        <?= $form->field($model, 'username')->textInput(['autofocus' => true, 'placeholder' => 'Введите никнейм'])->label('Никнейм') ?>
         <?= $form->field($model, 'email')->textInput(['placeholder' => 'Введите ваш адрес электронной почты'])->label('Электронная почта') ?>
+        <?= $form->field($model, 'display_name')->textInput(['autofocus' => true, 'placeholder' => 'Введите ваше отображаемое имя'])->label('Отображаемое имя') ?>
         <?= $form->field($model, 'password')->passwordInput(['placeholder' => 'Введите ваш пароль', 'value' => ''])->label('Пароль') ?>
         <?= $form->field($model, 'agreement')->checkbox()->label('Согласен с условиями') ?>
 

@@ -1,6 +1,7 @@
 <?php
 namespace app\models;
 use app\models\User;
+use yii;
 use yii\base\Model;
 
 class SignupForm extends Model
@@ -9,6 +10,7 @@ class SignupForm extends Model
     public $email;
     public $password;
     public $agreement;
+    public $display_name;
 
     /**
      * @return array the validation rules.
@@ -22,7 +24,9 @@ class SignupForm extends Model
             ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => 'Данный электронный адрес уже зарегистрирован.'],
             ['password', 'string', 'min' => 6],
             ['agreement', 'boolean'],
-            ['agreement', 'compare', 'compareValue' => 1, 'message' => 'Вы должны принять условия соглашения.']
+            ['agreement', 'compare', 'compareValue' => 1, 'message' => 'Вы должны принять условия соглашения.'],
+            ['display_name', 'required'],
+            ['display_name', 'string', 'max' => 255]
         ];
     }
 
@@ -42,7 +46,15 @@ class SignupForm extends Model
         $user->email = $this->email;
         $user->setPassword($this->password);
         $user->agreement = $this->agreement;
+        $user->display_name = $this->display_name;
 
-        return $user->save() && $user->sendConfirmationEmail();
+        // Если пользователь был успешно сохранен и ему было отправлено подтверждение по электронной почте,
+        // мы авторизуем его в системе.
+        if ($user->save() && $user->sendConfirmationEmail()) {
+            Yii::$app->user->login($user);
+            return true;
+        }
+        return false;
     }
+
 }

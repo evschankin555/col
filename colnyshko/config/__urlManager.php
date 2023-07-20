@@ -25,6 +25,19 @@ return [
         ],
         [
             'class' => 'yii\web\UrlRule',
+            'pattern' => 'profile/settings',
+            'route' => 'profile/settings',
+            'suffix' => ''
+        ],
+        [
+            'class' => 'yii\web\UrlRule',
+            'pattern' => 'profile/update-avatar',
+            'route' => 'profile/update-avatar',
+            'suffix' => ''
+        ],
+
+        [
+            'class' => 'yii\web\UrlRule',
             'pattern' => 'base',
             'route' => 'pages/base', // соответствует действию actionError в SiteController
             'suffix' => ''
@@ -77,6 +90,8 @@ return [
             'route' => 'pages/search',
             'suffix' => ''
         ],
+        '<username:\w+>' => 'user/view',
+
         [
             'class' => 'yii\web\UrlRule',
             'pattern' => '<base:[\w_\/-]+>card-<hash>',

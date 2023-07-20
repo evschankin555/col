@@ -22,6 +22,8 @@ class User extends ActiveRecord implements IdentityInterface
             [['confirmation_code'], 'string', 'max' => 255],
             [['email'], 'email', 'message' => 'Неверный формат электронной почты.'],
             [['email'], 'unique', 'message' => 'Этот адрес электронной почты уже используется.'],
+            ['display_name', 'required'],
+            ['display_name', 'string', 'max' => 255],
         ];
     }
 

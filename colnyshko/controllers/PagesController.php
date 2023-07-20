@@ -240,19 +240,18 @@ class PagesController extends BaseController
         }
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            // Замените goBack() на редирект на профиль пользователя
+            return $this->redirect(['/'. Yii::$app->user->identity->username]);
         } else {
             return $this->render('login', [
                 'model' => $model,
             ]);
         }
     }
+
     public function actionLogout()
     {
         $user = new User();
@@ -272,7 +271,7 @@ class PagesController extends BaseController
     {
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            return $this->goHome();
+            return $this->redirect(['/'. Yii::$app->user->identity->username]);
         } else {
             return $this->render('signup', [
                 'model' => $model,

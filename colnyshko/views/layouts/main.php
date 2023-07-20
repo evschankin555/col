@@ -120,7 +120,9 @@ $form = ActiveForm::begin([
                 <li class="float-end top"><a href="#top">На верх</a></li>
                 <li class="float-end"><div id="ok_group_widget" style="margin-left: -30px;"></div></li>
             </ul>
-            <p class="pull-left">&copy; Солнышко - коллекция открыток <?= date('Y') ?></p>
+            <p class="pull-left">&copy; Солнышко - коллекция открыток <?= date('Y') ?><br />
+            Территория хорошего настроения 😂🤣😂
+            </p>
         </div>
     </div>
     </div>
