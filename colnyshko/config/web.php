@@ -43,6 +43,9 @@ $config = [
         ],
         'db' => $db,
         'urlManager' => require(__DIR__ . '/__urlManager.php'),
+        'formatter' => [
+            'thousandSeparator' => ' ',
+        ],
     ],
     'modules' => [
         'seo-module' => [

@@ -168,4 +168,55 @@ class User extends ActiveRecord implements IdentityInterface
         return static::findOne(['confirmation_code' => $code]);
     }
 
+    public function getFormattedSubscribersCount()
+    {
+        $subscribersCount = Subscription::find()->where(['user_id' => $this->id])->count();
+        if ($subscribersCount >= 1000000) {
+            return Yii::$app->formatter->asDecimal($subscribersCount / 1000000, 3) . 'М';
+        }
+        else if ($subscribersCount >= 1000) {
+            return Yii::$app->formatter->asDecimal($subscribersCount, 0);
+        }
+        else {
+            return $subscribersCount;
+        }
+    }
+
+    public function getFormattedSubscriptionsCount()
+    {
+        $subscriptionsCount = Subscription::find()->where(['subscriber_id' => $this->id])->count();
+        if ($subscriptionsCount >= 1000000) {
+            return Yii::$app->formatter->asDecimal($subscriptionsCount / 1000000, 3) . 'М';
+        }
+        else if ($subscriptionsCount >= 1000) {
+            return Yii::$app->formatter->asDecimal($subscriptionsCount, 0);
+        }
+        else {
+            return $subscriptionsCount;
+        }
+    }
+    public function actionGetSubscribersCount($username)
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $user = User::find()->where(['username' => $username])->one();
+
+        if (!$user) {
+            return ['success' => false, 'message' => 'Пользователь не найден.'];
+        }
+
+        return ['success' => true, 'count' => $user->getFormattedSubscribersCount()];
+    }
+
+    public function actionGetSubscriptionsCount($username)
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $user = User::find()->where(['username' => $username])->one();
+
+        if (!$user) {
+            return ['success' => false, 'message' => 'Пользователь не найден.'];
+        }
+
+        return ['success' => true, 'count' => $user->getFormattedSubscriptionsCount()];
+    }
+
 }

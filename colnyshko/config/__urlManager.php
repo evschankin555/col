@@ -91,6 +91,18 @@ return [
             'suffix' => ''
         ],
         '<username:\w+>' => 'user/view',
+        [
+            'class' => 'yii\web\UrlRule',
+            'pattern' => 'user/subscribe',
+            'route' => 'user/subscribe',
+            'suffix' => ''
+        ],
+        [
+            'class' => 'yii\web\UrlRule',
+            'pattern' => 'user/unsubscribe',
+            'route' => 'user/unsubscribe',
+            'suffix' => ''
+        ],
 
         [
             'class' => 'yii\web\UrlRule',

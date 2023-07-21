@@ -3,7 +3,6 @@
 use yii\helpers\Html;
 use yii\bootstrap5\ActiveForm;
 
-$this->title = 'Ваш профиль';
 ?>
 <style>
     .form-group.buttons {
@@ -43,9 +42,11 @@ $this->title = 'Ваш профиль';
     #user-avatar{
         margin-bottom: 20px;
     }
+    #user-login{
+        font-size: 14px;
+        font-weight: 400;
+    }
 </style>
-
-
 
 <div class="row">
     <div class="col-md-3">
@@ -55,22 +56,32 @@ $this->title = 'Ваш профиль';
                         <?= Html::encode($model->display_name) ?></a>
             </div>
             <div class="card-body text-center">
-                <img id="user-avatar" class="d-block user-select-none" src="<?= $model->getAvatarUrl() ?>" width="100%" height="200"
+                <img id="user-avatar" class="d-block user-select-none"
+                     src="<?= $model->getAvatarUrl() ?>" width="100%" height="100%"
                      alt="">
-
+                <div class="user-username">
+                    <h3 id="user-login">@<?= Html::encode($model->username) ?></h3>
+                </div>
                 <div class="form-group buttons">
-                    <?= Html::a('Создать категорию', ['category/create'], ['class' => 'btn btn-primary btn-sm']) ?>
-                    <?= Html::a('Создать открытку', ['card/create'], ['class' => 'btn btn-info btn-sm']) ?>
-                    <?= Html::a('Подписаться', ['category/create'], ['class' => 'btn btn-secondary btn-sm']) ?>
+                    <?php if ($currentUser && $currentUser->id == $model->id): ?>
+                        <?= Html::a('Создать коллекцию', ['category/create'], ['class' => 'btn btn-primary btn-sm']) ?>
+                        <?= Html::a('Создать категорию', ['card/create'], ['class' => 'btn btn-info btn-sm']) ?>
+                        <?= Html::a('Создать открытку', ['card/create'], ['class' => 'btn btn-danger btn-sm']) ?>
+                    <?php endif; ?>
+                    <?php if (!$currentUser || $currentUser->id != $model->id): ?>
+                        <?php if ($isSubscribed) : ?>
+                            <button id="unsubscribe-btn" class="btn btn-secondary btn-sm" data-username="<?= Html::encode($model->username) ?>">Отписаться</button>
+                        <?php else: ?>
+                            <button id="subscribe-btn" class="btn btn-danger btn-sm" data-username="<?= Html::encode($model->username) ?>">Подписаться</button>
+                        <?php endif; ?>
+                    <?php endif; ?>
                 </div>
 
-
             </div>
+
             <div class="card-footer statistics">
-                <small> <strong>Подписчиков:</strong> 234 456</small>
-                <small> <strong>Коллекций:</strong> 1 234</small>
-                <small> <strong>Категорий:</strong> 234</small>
-                <small> <strong>Открыток:</strong> 234 456</small>
+                <small><strong>Подписчиков:</strong> <span class="subscribersCount"><?= $model->getFormattedSubscribersCount() ?></span></small>
+                <small><strong>Подписок:</strong> <span class="subscriptionsCount"><?= $model->getFormattedSubscriptionsCount() ?></span></small>
             </div>
         </div>
 
@@ -87,5 +98,51 @@ $this->title = 'Ваш профиль';
             </div>
         </div>
     </div>
-
 </div>
+<?php
+$script = <<< JS
+$(document).on('click', '#subscribe-btn', function() {
+    var button = $(this);
+    $.ajax({
+        url: '/user/subscribe?username=' + encodeURIComponent(button.data('username')),
+        type: 'POST',
+        success: function(data) {
+            if (data.success) {
+                button.text('Отписаться')
+                      .attr('id', 'unsubscribe-btn')
+                      .toggleClass('btn-secondary btn-danger');
+                $('.subscribersCount').text(data.subscribersCount);
+                $('.subscriptionsCount').text(data.subscriptionsCount);
+            } else {
+                alert(data.message);
+            }
+        }
+    });
+    return false;
+});
+
+$(document).on('click', '#unsubscribe-btn', function() {
+    var button = $(this);
+    $.ajax({
+        url: '/user/unsubscribe?username=' + encodeURIComponent(button.data('username')),
+        type: 'POST',
+        success: function(data) {
+            if (data.success) {
+                button.text('Подписаться')
+                      .attr('id', 'subscribe-btn')
+                      .toggleClass('btn-danger btn-secondary');
+                $('.subscribersCount').text(data.subscribersCount);
+                $('.subscriptionsCount').text(data.subscriptionsCount);
+            } else {
+                alert(data.message);
+            }
+        }
+    });
+    return false;
+});
+
+
+
+JS;
+$this->registerJs($script);
+?>
