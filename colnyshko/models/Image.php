@@ -5,6 +5,7 @@ use GuzzleHttp\Client;
 use Yii;
 use yii\base\Model;
 
+use app\components\ApiTimer;
 class Image extends Model
 {
     public $src;
@@ -22,6 +23,15 @@ class Image extends Model
     public static function get($hash)
     {
         if (self::$image === null) {
+            // Запрос
+            $query = ['hash' => $hash];
+
+
+            // Идентификатор замера времени, состоящий из URL и параметров запроса.
+            $timerId = 'https://legkie-otkrytki.ru/api/image?' . http_build_query($query);
+
+            // Начало замера времени.
+            ApiTimer::start($timerId);
             $client = new Client(['base_uri' => 'https://legkie-otkrytki.ru/api/']);
 
             $cache = Yii::$app->cache;
@@ -29,7 +39,9 @@ class Image extends Model
             $imageData = $cache->get($cacheKey);
 
             if ($imageData === false) {
-                $response = $client->request('GET', 'image', ['query' => ['hash' => $hash]]);
+                $response = $client->request('GET', 'image', ['query' => $query]);
+
+
                 $imageData = json_decode($response->getBody(), true);
                 if($imageData['result'] === 'success') {
                     $cache->set($cacheKey, $imageData['image'], 300);
@@ -38,6 +50,8 @@ class Image extends Model
                     return false;
                 }
             }
+            // Завершение замера времени.
+            ApiTimer::end($timerId, $timerId);
             $model = new static;
             $model->files = $imageData['files'];
             foreach ($model->files as $file) {

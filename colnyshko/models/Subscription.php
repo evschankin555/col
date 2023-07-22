@@ -2,9 +2,9 @@
 namespace app\models;
 
 use Yii;
-use yii\db\ActiveRecord;
+use app\components\TimedActiveRecord;
 
-class Subscription extends ActiveRecord
+class Subscription extends TimedActiveRecord
 {
     public static function tableName()
     {

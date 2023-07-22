@@ -9,6 +9,8 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use app\models\User;
 use app\models\Subscription;
+use app\models\user_related\Collection;
+use app\models\user_related\Category;
 use yii\helpers\Html;
 
 class UserController extends Controller{
@@ -25,12 +27,53 @@ class UserController extends Controller{
         $currentUser = Yii::$app->user->identity;
         $isSubscribed = Subscription::find()->where(['user_id' => $model->id, 'subscriber_id' => $currentUser->id])->exists();
 
+        $collections = $model->getCollections()->all();
+        $allCollection = (object) ['id' => 0, 'name' => 'Все', 'images' => $model->getImages()->all()];
+
+        array_unshift($collections, $allCollection);
+
         return $this->render('view', [
             'model' => $model,
             'currentUser' => $currentUser,
             'isSubscribed' => $isSubscribed,
+            'collections' => $collections,
+            'collection' => $allCollection,
         ]);
     }
+
+    public function actionCollection($username, $id)
+    {
+        $user = User::find()->where(['username' => $username])->one();
+
+        if ($user === null) {
+            throw new NotFoundHttpException("The user was not found.");
+        }
+
+        $collection = Collection::find()->where(['id' => $id, 'user_id' => $user->id])->one();
+
+        if ($collection === null) {
+            throw new NotFoundHttpException("The collection was not found.");
+        }
+
+        $this->view->title = "Коллекция " . Html::encode($collection->name) . " пользователя " . Html::encode($user->display_name);
+
+        $currentUser = Yii::$app->user->identity;
+        $isSubscribed = Subscription::find()->where(['user_id' => $user->id, 'subscriber_id' => $currentUser->id])->exists();
+        $collections = $user->getCollections()->all();
+        $allCollection = (object) ['id' => 0, 'name' => 'Все', 'images' => $user->getImages()->all()];
+
+        array_unshift($collections, $allCollection);
+
+        return $this->render('view', [
+            'model' => $user,
+            'currentUser' => $currentUser,
+            'isSubscribed' => $isSubscribed,
+            'collections' => $collections,
+            'collection' => $collection,
+        ]);
+    }
+
+
     public function actionSubscribe($username)
     {
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -92,6 +135,21 @@ class UserController extends Controller{
             }
         } else {
             return ['success' => false, 'message' => 'Вы не подписаны на этого пользователя.'];
+        }
+    }
+
+    public function actionCreateCollection()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $model = new Collection();
+        $model->user_id = Yii::$app->user->identity->id;
+        $model->name = Yii::$app->request->post('name');
+
+        if ($model->save()) {
+            return ['success' => true, 'message' => 'Коллекция успешно создана.'];
+        } else {
+            return ['success' => false, 'message' => 'Не удалось создать коллекцию.'];
         }
     }
 

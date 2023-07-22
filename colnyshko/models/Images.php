@@ -5,6 +5,7 @@ namespace app\models;
 use GuzzleHttp\Client;
 use Yii;
 use yii\base\Model;
+use app\components\ApiTimer;
 
 class Images extends Model
 {
@@ -39,6 +40,25 @@ class Images extends Model
     public static function getAll($page = 1, $categorySlug = null, $subCategorySlug = null, $display = null, $sort = null)
     {
         if (self::$images === null) {
+            $query = ['page' => $page];
+            if ($categorySlug !== null) {
+                $query['category_slug'] = $categorySlug;
+            }
+            if ($subCategorySlug !== null) {
+                $query['subCategory_slug'] = $subCategorySlug;
+            }
+            if ($display !== null) {
+                $query['display'] = $display;
+            }
+            if ($sort !== null) {
+                $query['sort'] = $sort;
+            }
+
+            // Идентификатор замера времени, состоящий из URL и параметров запроса.
+            $timerId = 'https://legkie-otkrytki.ru/api/images?' . http_build_query($query);
+
+            // Начало замера времени.
+            ApiTimer::start($timerId);
             $client = new Client(['base_uri' => 'https://legkie-otkrytki.ru/api/']);
 
             $cache = Yii::$app->cache;
@@ -47,24 +67,16 @@ class Images extends Model
             $imagesData = $cache->get($cacheKey);
 
             if ($imagesData === false) {
-                $query = ['page' => $page];
-                if ($categorySlug !== null) {
-                    $query['category_slug'] = $categorySlug;
-                }
-                if ($subCategorySlug !== null) {
-                    $query['subCategory_slug'] = $subCategorySlug;
-                }
-                if ($display !== null) {
-                    $query['display'] = $display;
-                }
-                if ($sort !== null) {
-                    $query['sort'] = $sort;
-                }
+
                 $response = $client->request('GET', 'images', ['query' => $query]);
+
                 $imagesData = json_decode($response->getBody(), true);
                 $cache->set($cacheKey, $imagesData, 300);
             }
 
+
+            // Завершение замера времени.
+            ApiTimer::end($timerId, $timerId);
             $jsonLdData = [];
             $img = '';
             foreach ($imagesData['data'] as $image) {

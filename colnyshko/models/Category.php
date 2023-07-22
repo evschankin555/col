@@ -5,6 +5,7 @@ use GuzzleHttp\Client;
 use Yii;
 use yii\base\Model;
 use app\models\SubCategory;
+use app\components\ApiTimer;
 
 class Category extends Model
 {
@@ -22,6 +23,17 @@ class Category extends Model
     public static function getAll($display = null)
     {
         if (self::$categories === null) {
+
+            $query = [];
+            if ($display !== null) {
+                $query['display'] = $display;
+            }
+
+            // Идентификатор замера времени, состоящий из URL и параметров запроса.
+            $timerId = 'https://legkie-otkrytki.ru/api/categories?' . http_build_query($query);
+
+            // Начало замера времени.
+            ApiTimer::start($timerId);
             $client = new Client(['base_uri' => 'https://legkie-otkrytki.ru/api/']);
 
             $cache = Yii::$app->cache;
@@ -30,14 +42,13 @@ class Category extends Model
             $categories = $cache->get($cacheKey);
 
             if ($categories === false) {
-                $query = [];
-                if ($display !== null) {
-                    $query['display'] = $display;
-                }
                 $response = $client->request('GET', 'categories', ['query' => $query]);
                 $categories = json_decode($response->getBody(), true);
                 $cache->set($cacheKey, $categories, 300);
             }
+
+            // Завершение замера времени.
+            ApiTimer::end($timerId, $timerId);
             // Проверяем наличие ключа "data" в $categories
             if (!isset($categories['data']) || !is_array($categories['data'])) {
                 return []; // или какой-либо другой дефолтный ответ

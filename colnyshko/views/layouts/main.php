@@ -4,6 +4,14 @@
 /* @var $content string */
 /* @var $model \app\models\SearchForm */
 
+            // Запись времени окончания выполнения скрипта.
+            $endTime = microtime(true);
+            // Вычисление времени загрузки сайта.
+            $executionTimeStart = $endTime - $_SERVER["REQUEST_TIME_FLOAT"];
+
+
+$startTime = microtime(true);
+
 use yii\helpers\Html;
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
@@ -17,6 +25,8 @@ use app\components\PasswordRecoveryFormWidget;
 use app\components\RegistrationFormWidget;
 use app\components\UserMenuButtonWidget;
 use app\components\UserMenuContentWidget;
+use app\components\ApiTimer;
+use app\components\DbTimer;
 
 
 AppAsset::register($this);
@@ -121,7 +131,25 @@ $form = ActiveForm::begin([
                 <li class="float-end"><div id="ok_group_widget" style="margin-left: -30px;"></div></li>
             </ul>
             <p class="pull-left">&copy; Солнышко - коллекция открыток <?= date('Y') ?><br />
-            Территория хорошего настроения 😂🤣😂
+                Территория хорошего настроения 😂🤣😂<br /><br />
+                <small>Время до рендеринга:
+                <?php
+                echo number_format($executionTimeStart, 6) . ' сек.';
+                ?><br />
+                Время рендеринга:
+                <?php
+                // Запись времени окончания выполнения скрипта.
+                $endTime = microtime(true);
+                // Вычисление времени загрузки сайта.
+                $executionTime = $endTime - $startTime;
+
+                // Вывод времени загрузки с точностью до микросекунд.
+                echo number_format($executionTime, 6) . ' сек.';
+
+                ?>
+                <?= ApiTimer::getExecutionTimes() ?></small>
+                <?= DbTimer::getExecutionTimes() ?>
+
             </p>
         </div>
     </div>

@@ -90,7 +90,10 @@ return [
             'route' => 'pages/search',
             'suffix' => ''
         ],
+
+        '<username:\w+>/collection/<id:\d+>' => 'user/collection',
         '<username:\w+>' => 'user/view',
+
         [
             'class' => 'yii\web\UrlRule',
             'pattern' => 'user/subscribe',
@@ -101,6 +104,12 @@ return [
             'class' => 'yii\web\UrlRule',
             'pattern' => 'user/unsubscribe',
             'route' => 'user/unsubscribe',
+            'suffix' => ''
+        ],
+        [
+            'class' => 'yii\web\UrlRule',
+            'pattern' => 'user/create-collection',
+            'route' => 'user/create-collection',
             'suffix' => ''
         ],
 

@@ -29,9 +29,13 @@ class AppAsset extends AssetBundle
     public function init()
     {
         $customCssVersion = filemtime(\Yii::getAlias("@webroot/css/custom.min.css"));
+        $toastJsVersion = filemtime(\Yii::getAlias("@webroot/js/toast-messages.js"));
         $this->css = [
             'css/bootstrap.min.css',
             'css/custom.min.css?v=' . $customCssVersion,
+        ];
+        $this->js = [
+            'js/toast-messages.js?v=' . $toastJsVersion,
         ];
 
         parent::init();

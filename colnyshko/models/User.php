@@ -1,10 +1,12 @@
 <?php
 namespace app\models;
 
+use app\models\user_related\Collection;
+use app\models\user_related\Image;
 use Yii;
-use yii\db\ActiveRecord;
+use app\components\TimedActiveRecord;
 use yii\web\IdentityInterface;
-class User extends ActiveRecord implements IdentityInterface
+class User extends TimedActiveRecord implements IdentityInterface
 {
     public static function tableName()
     {
@@ -218,5 +220,12 @@ class User extends ActiveRecord implements IdentityInterface
 
         return ['success' => true, 'count' => $user->getFormattedSubscriptionsCount()];
     }
-
+    public function getCollections()
+    {
+        return $this->hasMany(Collection::className(), ['user_id' => 'id']);
+    }
+    public function getImages()
+    {
+        return $this->hasMany(Image::className(), ['id' => 'image_id'])->via('collections');
+    }
 }
