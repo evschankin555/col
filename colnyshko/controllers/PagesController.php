@@ -16,6 +16,7 @@ use app\modules\SeoModule;
 use app\models\User;
 use app\models\SignupForm;
 use app\models\PasswordRecoveryForm;
+use app\components\PageCache;
 
 class PagesController extends BaseController
 {
@@ -150,6 +151,18 @@ class PagesController extends BaseController
         $explode = explode('/', $base);
         $category = $explode[0];
         $subcategory = $explode[1];
+
+        // Уникальный ID кеша для этой страницы
+        $cacheId = 'card-page-' . $base . '-' . $hash;
+
+        $cachedHtml = PageCache::start($cacheId);
+
+        if ($cachedHtml !== null) {
+            Yii::$app->params['startTime'] = microtime(true);
+            return $cachedHtml;
+        }
+
+
         $image = Image::get($hash);
         $categories = Category::getAll($display);
         Category::setActiveSubCategory($subcategory);
@@ -191,12 +204,14 @@ class PagesController extends BaseController
         $seoModule->registerSeoTags();
         $seoModule->registerJsonLdScript($image['jsonLdData']);
 
-        return $this->render('card', [
+        $renderResult = $this->render('card', [
             'image' => $image,
             'categories' => $categories,
         ]);
 
+        return PageCache::end($renderResult);
     }
+
     public function actionBase()
     {
           return $this->render('base', []);

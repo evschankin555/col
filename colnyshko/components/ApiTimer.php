@@ -34,4 +34,15 @@ class ApiTimer {
 
         return $result;
     }
+    public static function getTotalExecutionTime() {
+        $endTime = microtime(true);
+        $executionTime = $endTime - $_SERVER["REQUEST_TIME_FLOAT"];
+        return 'Время до рендеринга: ' . number_format($executionTime, 6) . ' сек.<br />';
+    }
+    public static function getRenderingTime() {
+        $endTime = microtime(true);
+        $executionTime = $endTime - Yii::$app->params['startTime'];
+        return 'Время рендеринга: ' . number_format($executionTime, 6) . ' сек.<br />';
+    }
+
 }
