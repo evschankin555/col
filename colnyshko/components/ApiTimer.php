@@ -40,9 +40,22 @@ class ApiTimer {
         return 'Время до рендеринга: ' . number_format($executionTime, 6) . ' сек.<br />';
     }
     public static function getRenderingTime() {
+        if (!isset(Yii::$app->params['startTime'])) {
+            // Можете вернуть какое-то умолчательное значение или пустую строку
+            return 'Время рендеринга не определено<br />';
+        }
+
         $endTime = microtime(true);
         $executionTime = $endTime - Yii::$app->params['startTime'];
         return 'Время рендеринга: ' . number_format($executionTime, 6) . ' сек.<br />';
     }
+
+    public static function getSystemInfo() {
+        // Версия PHP
+        $phpVersion = phpversion();
+        return 'PHP Version: ' . $phpVersion;
+
+    }
+
 
 }

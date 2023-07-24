@@ -84,6 +84,21 @@ class PagesController extends BaseController
     public function actionSubcategory($category, $subcategory)
     {
         $display = Yii::$app->request->get('display');
+        $page = Yii::$app->request->get('page', 1);
+        $sort = Yii::$app->request->get('sort');
+
+        // Уникальный ID кеша для этой страницы
+        $cacheId = 'subcategory-page-' . $category . '-' . $subcategory . '-' . $display . '-' . $page . '-' . $sort;
+
+        // Пытаемся получить закешированные данные страницы
+        $cachedHtml = Yii::$app->cache->get($cacheId);
+
+        if ($cachedHtml !== false) {
+            Yii::$app->params['startTime'] = microtime(true);
+            return $cachedHtml;
+        }
+
+
         $categories = Category::getAll($display);
         Category::setActiveSubCategory($subcategory);
 
@@ -104,8 +119,6 @@ class PagesController extends BaseController
             }
         }
 
-        $page = Yii::$app->request->get('page', 1);
-        $sort = Yii::$app->request->get('sort');
         $imagesData = Images::getAll($page, null, $subcategory, $display, $sort);
 
         $images = $imagesData['images'];
@@ -137,13 +150,18 @@ class PagesController extends BaseController
         $seoModule->registerSeoTags();
         $seoModule->registerJsonLdScript($imagesData['jsonLdData']);
 
-        return $this->render('category', [
+        $renderResult = $this->render('category', [
             'categories' => $categories,
             'images' => $images,
             'pagination' => $pagination,
             'currentCategory' => $currentCategory,
             'currentSubCategory' => $currentSubCategory,
         ]);
+
+        // Сохраняем результат рендеринга в кеше на 3 суток
+        Yii::$app->cache->set($cacheId, $renderResult, 60 * 60 * 24 * 3);
+
+        return $renderResult;
     }
     public function actionCard($base, $hash)
     {

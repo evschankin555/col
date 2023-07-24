@@ -46,6 +46,19 @@ use yii\bootstrap5\ActiveForm;
         font-size: 14px;
         font-weight: 400;
     }
+
+    #collections-list.card-body {
+        flex: 1 1 auto;
+        color: var(--bs-card-color);
+        line-height: 2.1;
+        text-align: center;
+        padding: 1rem;
+    }
+    #createCollectionButton{
+
+        width: 150px;
+        margin: 0 10px 10px;
+    }
 </style>
 
 <div class="row">
@@ -64,14 +77,11 @@ use yii\bootstrap5\ActiveForm;
                 </div>
                 <div class="form-group buttons">
                     <?php if ($currentUser && $currentUser->id == $model->id): ?>
-                        <button type="button" class="btn btn-primary btn-sm" id="createCollectionButton" data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="<?= htmlspecialchars(\app\models\Tooltip::getTooltip('createCollection', 'ru')->message); ?>">
-                            Создать коллекцию
-                        </button>
                         <button type="button" class="btn btn-info btn-sm"  data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="<?= htmlspecialchars(\app\models\Tooltip::getTooltip('createCategory', 'ru')->message); ?>">
                             Создать категорию
                         </button>
                         <button type="button" class="btn btn-danger btn-sm"  data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="<?= htmlspecialchars(\app\models\Tooltip::getTooltip('createCard', 'ru')->message); ?>">
-                            Создать открытку
+                            Добавить открытку
                         </button>
                     <?php endif; ?>
 
@@ -100,13 +110,19 @@ use yii\bootstrap5\ActiveForm;
     </div>
     <div class="col-md-9">
         <div class="card border-info mb-3">
-            <div class="card-body">
+            <div id="collections-list" class="card-body">
                 <?php foreach($collections as $collectionItem): ?>
                     <a class="btn btn-secondary btn-sm<?= $collection->id == $collectionItem->id ? ' active' : '' ?>" href="/<?= $model->username ?>/collection/<?= $collectionItem->id ?>" title="<?= Html::encode($collectionItem->name) ?>">
                         <?= Html::encode($collectionItem->name) ?><span class="badge bg-secondary"><?= count($collectionItem->images) ?></span>
                     </a>
+
                 <?php endforeach; ?>
             </div>
+            <?php if ($currentUser && $currentUser->id == $model->id): ?>
+                <button type="button" data-username="<?= Html::encode($model->username) ?>" class="btn btn-primary btn-sm" id="createCollectionButton" data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="<?= htmlspecialchars(\app\models\Tooltip::getTooltip('createCollection', 'ru')->message); ?>">
+                    Создать коллекцию
+                </button>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -171,13 +187,17 @@ $(document).on('click', '#unsubscribe-btn', function() {
     });
     return false;
 });
-document.getElementById('createCollectionButton').addEventListener('click', function () {
-  var myModal = new bootstrap.Modal(document.getElementById('createCollection'), {})
-  myModal.show()
-})
+let createCollectionButton = document.getElementById('createCollectionButton');
+if (createCollectionButton !== null) {
+    createCollectionButton.addEventListener('click', function () {
+        myModal = new bootstrap.Modal(document.getElementById('createCollection'), {});
+        myModal.show();
+    });
+}
 
 $('#create-collection-btn').click(function() {
     let collectionName = $('#new-collection-name').val();
+    let username = $('#createCollectionButton').data('username');  
 
     $.ajax({
         url: '/user/create-collection',
@@ -186,16 +206,27 @@ $('#create-collection-btn').click(function() {
         success: function(data) {
             if (data.success) {
                 showToast(data.message, 'success', 1500);
+
+                // Добавьте новую коллекцию в список
+                let newCollection = $('<a></a>')
+                    .attr('href', '/' + username + '/collection/' + data.newCollection.id) 
+                    .addClass('btn btn-secondary btn-sm')
+                    .attr('title', data.newCollection.name)
+                    .text(data.newCollection.name)
+                    .append('<span class="badge bg-secondary">0</span>');
+                /*$('#collections-list').append(newCollection);*/
+                newCollection.insertAfter('#collections-list a:last-child');
             } else {
                 showToast(data.message, 'danger', 15000);
             }
         }
     });
-
     // Очистите поле ввода и закройте модальное окно
     $('#new-collection-name').val('');
-    $('#createCollectionModal').modal('hide');
+    $('#createCollection').modal('hide');
 });
+
+
 JS;
 $this->registerJs($script);
 

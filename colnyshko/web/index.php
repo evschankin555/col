@@ -15,20 +15,31 @@ $app->on(yii\web\Application::EVENT_AFTER_REQUEST, function ($event) {
     /* @var $event \yii\base\Event */
     /* @var $app yii\web\Application */
     $app = $event->sender;
-    $app->params['timingOutput'] = '<br /><br /><small>'
-        . app\components\ApiTimer::getTotalExecutionTime()
-        . app\components\ApiTimer::getRenderingTime()
-        . app\components\ApiTimer::getExecutionTimes()
-        . app\components\DbTimer::getExecutionTimes()
-        . '</small>';
-});
+    if ($app->response->format == \yii\web\Response::FORMAT_JSON) {
+        $app->response->data['timingOutput'] = [
+            'totalExecutionTime' => app\components\ApiTimer::getTotalExecutionTime(),
+            'renderingTime' => app\components\ApiTimer::getRenderingTime(),
+            'executionTimes' => app\components\ApiTimer::getExecutionTimes(),
+            'dbExecutionTimes' => app\components\DbTimer::getExecutionTimes()
+        ];
+    } else {
+        $app->params['timingOutput'] = '<br /><br /><small>'
+            . app\components\ApiTimer::getTotalExecutionTime()
+            . app\components\ApiTimer::getRenderingTime()
+            . app\components\ApiTimer::getExecutionTimes()
+            . app\components\ApiTimer::getSystemInfo()
+            . '</small>';
+    }
 
+});
 
 $app->response->on(yii\web\Response::EVENT_AFTER_SEND, function ($event) {
     /* @var $event \yii\base\Event */
     /* @var $response yii\web\Response */
     $response = $event->sender;
-    echo Yii::$app->params['timingOutput'];
+    if ($response->format != \yii\web\Response::FORMAT_JSON) {
+        echo Yii::$app->params['timingOutput'];
+    }
 });
 
 $app->run();

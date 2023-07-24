@@ -12,6 +12,7 @@ use app\models\Subscription;
 use app\models\user_related\Collection;
 use app\models\user_related\Category;
 use yii\helpers\Html;
+use yii\web\NotFoundHttpException;
 
 class UserController extends Controller{
     public function actionView($username)
@@ -147,10 +148,18 @@ class UserController extends Controller{
         $model->name = Yii::$app->request->post('name');
 
         if ($model->save()) {
-            return ['success' => true, 'message' => 'Коллекция успешно создана.'];
+            return [
+                'success' => true,
+                'message' => 'Коллекция успешно создана.',
+                'newCollection' => [
+                    'id' => $model->id,
+                    'name' => $model->name
+                ]
+            ];
         } else {
             return ['success' => false, 'message' => 'Не удалось создать коллекцию.'];
         }
     }
+
 
 }
