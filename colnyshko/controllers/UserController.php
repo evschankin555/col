@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\user_related\Image;
 use Yii;
 use app\models\ProfileForm;
 use yii\web\Controller;
@@ -160,6 +161,24 @@ class UserController extends Controller{
             return ['success' => false, 'message' => 'Не удалось создать коллекцию.'];
         }
     }
+    public function actionDeleteCollection()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $id = Yii::$app->request->post('id');
+        $model = Collection::findOne($id);
+
+        if ($model && $model->user_id == Yii::$app->user->identity->id) {
+            if ($model->delete()) {
+                return ['success' => true, 'message' => 'Коллекция успешно удалена.'];
+            } else {
+                return ['success' => false, 'message' => 'Не удалось удалить коллекцию.'];
+            }
+        } else {
+            return ['success' => false, 'message' => 'Коллекция не найдена.'];
+        }
+    }
+
 
 
 }

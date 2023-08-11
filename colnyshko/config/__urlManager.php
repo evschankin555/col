@@ -14,6 +14,7 @@ return [
         'user/subscribe' => 'user/subscribe',
         'user/unsubscribe' => 'user/unsubscribe',
         'user/create-collection' => 'user/create-collection',
+        'user/delete-collection' => 'user/delete-collection',
         'login' => 'pages/login',
         'signup' => 'pages/signup',
         'logout' => 'pages/logout',
@@ -25,7 +26,6 @@ return [
         'reset-password' => 'pages/reset-password',
         'confirm-email' => 'pages/confirm-email',
         'restore' => 'pages/restore',
-        '404' => 'site/error',
         'page/<page:\d+>' => '/base/home',
         'base' => 'pages/base',
         '<username:\w+>/collection/<id:\d+>' => 'user/collection',
@@ -60,6 +60,7 @@ return [
             'route' => 'pages/category',
             'suffix' => ''
         ],
+        '404' => 'site/error',
     ],
 
 
