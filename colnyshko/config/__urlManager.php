@@ -15,8 +15,6 @@ return [
         'user/unsubscribe' => 'user/unsubscribe',
         'user/create-collection' => 'user/create-collection',
         'user/delete-collection' => 'user/delete-collection',
-        'user/upload-to-server' => 'user/upload-to-server',
-        'user/upload-to-cloud' => 'user/upload-to-cloud',
         'login' => 'pages/login',
         'signup' => 'pages/signup',
         'logout' => 'pages/logout',
