@@ -154,24 +154,24 @@ function uploadFile(file, onSuccess, onError) {
     formData.append('file', file);
 
     $.ajax({
-        url: '/upload', // убедитесь, что URL верный
+        url: '/user/upload',
         type: 'POST',
         data: formData,
         processData: false,
         contentType: false,
-        success: function(data) {
+        success: function (data) {
             if (data.success) {
                 onSuccess(data);
             } else {
                 onError();
             }
         },
-        error: function() {
+        error: function () {
             onError();
         },
-        xhr: function() {
+        xhr: function () {
             const xhr = new window.XMLHttpRequest();
-            xhr.upload.addEventListener('progress', function(evt) {
+            xhr.upload.addEventListener('progress', function (evt) {
                 if (evt.lengthComputable) {
                     const percentComplete = evt.loaded / evt.total;
 
@@ -188,9 +188,69 @@ function uploadFile(file, onSuccess, onError) {
         }
     });
 }
-
 function formatFileSize(size) {
+    // Если меньше 1 000 000 байт, отображаем в килобайтах
+    if(size < 1000000) {
+        return Math.round(size / 1024) + 'кб';
+    }
+    // Иначе отображаем в мегабайтах
     return (size / (1024 * 1024)).toFixed(2) + 'мб';
+}
+
+function uploadFileToServer(file, onSuccess, onError) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    $.ajax({
+        url: '/user/upload-to-server',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            if (data.success) {
+                onSuccess(data);
+            } else {
+                onError();
+            }
+        },
+        error: function () {
+            onError();
+        },
+        xhr: function () {
+            const xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener('progress', function (evt) {
+                if (evt.lengthComputable) {
+                    const percentComplete = evt.loaded / evt.total;
+                    $('.upload-progress').css('width', percentComplete * 100 + '%');
+                    $('.file-info-sub').text(
+                        formatFileSize(evt.loaded) + ' из ' +
+                        formatFileSize(evt.total) + ' (' +
+                        (percentComplete * 100).toFixed(1) + '%)'
+                    );
+                }
+            }, false);
+            return xhr;
+        }
+    });
+}
+
+function uploadFileToCloud(file_id, onSuccess, onError) {
+    $.ajax({
+        url: '/user/upload-to-cloud',
+        type: 'POST',
+        data: { file_id: file_id },
+        success: function (data) {
+            if (data.success) {
+                onSuccess(data);
+            } else {
+                onError();
+            }
+        },
+        error: function () {
+            onError();
+        }
+    });
 }
 
 const gtfsUpload = $('#gtfs_upload');
@@ -279,25 +339,65 @@ function handleFileUpload(file) {
         return;
     }
 
-    uploadFile(
-        file,
-        function (response) {
-            if (response.success) {
-                $('#uploaded_file_id').val(response.file_id);
+        // Первый шаг: загрузка файла на сервер
+    $('.file-info').text('Идёт загрузка на сервер...');
 
-                $('.upload-progress').css('width', '0%');
-                // обновление текста размера файла после успешной загрузки
-                $('.file-info-sub').text(formatFileSize(file.size));
-                $('.label-file-upload-container .title-status').text('Загружено');
-                $('.upload-progress-bar').hide();
-            } else {
-                $('.error-text').html(response.error);
+    uploadFileToServer(file,
+            // При успешной загрузке на сервер:
+            function (serverResponse) {
+                if (serverResponse && serverResponse.file_id) {
+                    $('#uploaded_file_id').val(serverResponse.file_id);
+                    $('.upload-progress').css('width', '0%');
+                    $('.file-info-sub').text(formatFileSize(file.size));
+                    $('.file-info').text('Идёт загрузка в облако...');
+
+                    // Второй шаг: загрузка файла на облако
+                    uploadFileToCloud(serverResponse.file_id,
+                        // При успешной загрузке на облако:
+                        function(cloudResponse) {
+                            if (cloudResponse && cloudResponse.cloud_url) {
+                                $('.file-upload-container-process').hide();  // Скрыть контейнер с прогрессом
+                                $('.file-info').text('Загружено на облако');
+                                console.log(cloudResponse.cloud_url);
+
+                                const fileUrl = cloudResponse.cloud_url;
+                                const container = $('.file-upload-container-image');
+                                container.css('display', 'flex');
+
+                                // Удаляем предыдущее изображение или видео, если они существуют
+                                container.find('img, video').remove();
+
+                                if (fileUrl.endsWith('.jpg') || fileUrl.endsWith('.png') || fileUrl.endsWith('.webp') || fileUrl.endsWith('.gif')) {
+                                    container.append('<img src="' + fileUrl + '" alt="Uploaded Image" />');
+                                } else if (fileUrl.endsWith('.mp4')) {
+                                    container.append('<video autoplay loop muted playsinline src="' + fileUrl + '"></video>');
+                                } else {
+                                    $('.error-text').html('Неизвестный формат файла.');
+                                }
+
+                            } else {
+                                $('.error-text').html('Неожиданный ответ от сервера при загрузке на облако.');
+                            }
+                        },
+                        // При ошибке загрузки на облако:
+                        function(errorResponse) {
+                            $('.error-text').html('Ошибка при загрузке файла на облако.');
+                            console.error("Cloud Upload Error:", errorResponse);  // Логирование ошибки в консоль для отладки
+                        }
+                    );
+                } else {
+                    $('.error-text').html('Неожиданный ответ от сервера при загрузке на сервер.');
+                }
+            },
+            // При ошибке загрузки на сервер:
+            function (errorResponse) {
+                $('.error-text').html('Ошибка при загрузке файла на сервер.');
+                console.error("Server Upload Error:", errorResponse);  // Логирование ошибки в консоль для отладки
             }
-        },
-        function () {
-            $('.error-text').html('Ошибка при загрузке файла.');
-        }
-    );
+        );
+
+
+
 }
 
 
@@ -328,3 +428,29 @@ $('#del_file_upload').on('click', function (event) {
     $('.label-file-upload-container').addClass('uploading');
     $('.label-file-upload-container .title-status').text('Uploading file...').hide();
 });
+
+$('#del_file_upload-image').on('click', function (event) {
+    // Предотвращение всплытия события
+    event.stopPropagation();
+
+    // Удаляем содержимое контейнера, оставляя кнопку
+    $('.file-upload-container-image').hide().children().not('#del_file_upload-image').remove();
+
+    // Применяем ваш оригинальный код отмены загрузки
+    $('#gtfs_upload').val('');
+    $('.file-info').text('File not selected');
+    $('.upload-progress').css('width', '0%');
+    $('.upload-progress-bar').hide();
+    $('.file-info').hide();
+    $('.file-upload-container-process').hide();
+    $('.file-upload-container').removeClass('not-active').addClass('active');
+    $('.label-file-upload-container').removeClass('active');
+
+    $('.error-file').hide();
+    $('.block-download-links__size.file-info-sub').text('');
+    $('.label-file-upload-container.error').removeClass('error');
+    $('.label-file-upload-container').addClass('uploading');
+    $('.label-file-upload-container .title-status').text('Uploading file...').hide();
+});
+
+

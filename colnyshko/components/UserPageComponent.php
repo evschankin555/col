@@ -162,6 +162,9 @@ class UserPageComponent extends Component
                                     <input id="gtfs_upload" name="file" type="file" class="myform__file-upload" accept=".jpg, .jpeg, .png, .gif, .mp4, .webp" hidden>
                                 
                                 </div>
+                                <div class="file-upload-container-image">
+                                   <button id="del_file_upload-image" type="button" class="btn-close" aria-label="Close"></button>
+                                </div>
                                 <div class="file-upload-container-process">
                                   <div class="label-file-upload-container">
                                     <div class="title-status"><span class="icon-upload"></span>Загрузить открытку...</div>
@@ -180,10 +183,8 @@ class UserPageComponent extends Component
                                     </div>
                                     <input type="hidden" id="uploaded_file_id" name="uploaded_file_id" value="">
                                     <div class="error-file"></div>
+                                 </div>
                                 </div>
-                                  
-                                </div>
-                                
                             </div>
                         </div>
                         <div class="col-md-6">
