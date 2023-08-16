@@ -14,6 +14,10 @@ use app\models\user_related\Collection;
 use app\models\user_related\Category;
 use yii\helpers\Html;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
+use app\models\UploadForm;
+use app\models\Upload;
+
 
 class UserController extends Controller{
     public function actionView($username)
@@ -21,13 +25,18 @@ class UserController extends Controller{
         $model = User::find()->where(['username' => $username])->one();
 
         if ($model === null) {
-            throw new NotFoundHttpException("The user was not found.");
+            throw new NotFoundHttpException("Пользователь не найден.");
         }
 
         $this->view->title = "Коллекции пользователя " . Html::encode($model->display_name);
 
         $currentUser = Yii::$app->user->identity;
-        $isSubscribed = Subscription::find()->where(['user_id' => $model->id, 'subscriber_id' => $currentUser->id])->exists();
+        $isSubscribed = false; // устанавливаем значение по умолчанию
+
+        // Проверяем, авторизован ли пользователь
+        if ($currentUser !== null) {
+            $isSubscribed = Subscription::find()->where(['user_id' => $model->id, 'subscriber_id' => $currentUser->id])->exists();
+        }
 
         $collections = $model->getCollections()->all();
         $allCollection = (object) ['id' => 0, 'name' => 'Все', 'images' => $model->getImages()->all()];
@@ -42,6 +51,7 @@ class UserController extends Controller{
             'collection' => $allCollection,
         ]);
     }
+
 
     public function actionCollection($username, $id)
     {
@@ -177,6 +187,88 @@ class UserController extends Controller{
         } else {
             return ['success' => false, 'message' => 'Коллекция не найдена.'];
         }
+    }
+
+    public function actionUploadToServer() {
+        Yii::$app->response->headers->set('Content-Type', 'application/json; charset=utf-8');
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $user_id = Yii::$app->user->getId();
+        $user = User::findOne($user_id);
+
+        if ($user === null) {
+            return ['success' => false, 'error' => 'Пользователь не авторизован.'];
+        }
+
+        if (!Yii::$app->request->isPost) {
+            return ['success' => false, 'error' => 'Неверный метод запроса.'];
+        }
+
+        $model = new UploadForm();
+        $model->file = UploadedFile::getInstanceByName('file');
+        $uploadResponse = $model->upload();
+
+        if (!$uploadResponse || !$uploadResponse['success']) {
+            return ['success' => false, 'error' => 'Не удалось загрузить файл.'];
+        }
+
+        // Создаем запись в базе данных о загруженном файле
+        $uploadRecord = new Upload([
+            'user_id' => $user_id,
+            'file_name' => $uploadResponse['file_id'],
+            'uploaded_at' => date('Y-m-d H:i:s'),
+            'status' => 'uploaded',
+        ]);
+
+        if (!$uploadRecord->save()) {
+            Yii::error('Ошибка при сохранении записи о файле.');
+            return ['success' => false, 'error' => 'Ошибка при сохранении данных о файле.'];
+        }
+
+        return [
+            'success' => true,
+            'file_id' => $uploadResponse['file_id']
+        ];
+    }
+    public function actionUploadToCloud() {
+        Yii::$app->response->headers->set('Content-Type', 'application/json; charset=utf-8');
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $user_id = Yii::$app->user->getId();
+        $user = User::findOne($user_id);
+
+        if ($user === null) {
+            return ['success' => false, 'error' => 'Пользователь не авторизован.'];
+        }
+
+        if (!Yii::$app->request->isPost) {
+            return ['success' => false, 'error' => 'Неверный метод запроса.'];
+        }
+
+        $file_id = Yii::$app->request->post('file_id');
+
+        $uploadRecord = Upload::findOne(['file_name' => $file_id]);
+
+        if (!$uploadRecord) {
+            return ['success' => false, 'error' => 'Запись о файле не найдена.'];
+        }
+
+        $model = new UploadForm();
+        $cloudUrl = $model->uploadFileToCloud($user_id, $uploadRecord->file_name);
+
+        if (!$cloudUrl) {
+            return ['success' => false, 'error' => 'Ошибка при загрузке файла на облако.'];
+        }
+
+        // Обновляем статус файла в базе данных
+        $uploadRecord->status = 'cloud_uploaded';
+        $uploadRecord->save();
+
+        return [
+            'success' => true,
+            'file_id' => $uploadRecord->file_name,
+            'cloud_url' => $cloudUrl,
+        ];
     }
 
 
