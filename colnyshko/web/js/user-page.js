@@ -1,3 +1,4 @@
+window.isCanceled = false;
 
 $(document).on('click', '#subscribe-btn', function() {
     var button = $(this);
@@ -116,6 +117,7 @@ $('#confirm-delete-btn').click(function() {
 
 $('#addPostcardButton').click(function() {
     $('#addPostcard').modal('show');
+    window.isCanceled = false;
 });
 
 $('#save-postcard-btn').click(function() {
@@ -350,13 +352,15 @@ function handleFileUpload(file) {
                     $('.upload-progress').css('width', '0%');
                     $('.file-info-sub').text(formatFileSize(file.size));
                     $('.file-info').text('Идёт загрузка в облако...');
+                    $('#del_file_upload').attr('data-file-url', serverResponse.file_id);
 
-                    // Второй шаг: загрузка файла на облако
+                        // Второй шаг: загрузка файла на облако
                     uploadFileToCloud(serverResponse.file_id,
                         // При успешной загрузке на облако:
                         function(cloudResponse) {
-                            if (cloudResponse && cloudResponse.cloud_url) {
-                                $('.file-upload-container-process').hide();  // Скрыть контейнер с прогрессом
+                            if (cloudResponse && cloudResponse.cloud_url && window.isCanceled == false && $('.file-upload-container').css('display') == 'none') {
+                                $('#del_file_upload-image').attr('data-file-url', cloudResponse.cloud_url);
+                                $('.file-upload-container-process').hide();
                                 $('.file-info').text('Загружено на облако');
                                 console.log(cloudResponse.cloud_url);
 
@@ -375,7 +379,9 @@ function handleFileUpload(file) {
                                     $('.error-text').html('Неизвестный формат файла.');
                                 }
 
-                            } else {
+                            } else if(window.isCanceled) {
+                                window.isCanceled = false;
+                            }else{
                                 $('.error-text').html('Неожиданный ответ от сервера при загрузке на облако.');
                             }
                         },
@@ -408,11 +414,7 @@ function onSuccess(data) {
 function onError() {
     // Handle error case
 }
-$('#del_file_upload').on('click', function (event) {
-    // Предотвращение всплытия события
-    event.stopPropagation();
-
-    // Отменить загрузку файла
+function resetUploadUI() {
     $('#gtfs_upload').val('');
     $('.file-info').text('File not selected');
     $('.upload-progress').css('width', '0%');
@@ -421,36 +423,77 @@ $('#del_file_upload').on('click', function (event) {
     $('.file-upload-container-process').hide();
     $('.file-upload-container').removeClass('not-active').addClass('active');
     $('.label-file-upload-container').removeClass('active');
-
     $('.error-file').hide();
     $('.block-download-links__size.file-info-sub').text('');
     $('.label-file-upload-container.error').removeClass('error');
     $('.label-file-upload-container').addClass('uploading');
     $('.label-file-upload-container .title-status').text('Uploading file...').hide();
+}
+
+function sendAjaxRequest(url, fileUrl, onSuccess, onError) {
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: {
+            fileUrl: fileUrl
+        },
+        success: onSuccess,
+        error: onError
+    });
+}
+
+$('#del_file_upload').on('click', function (event) {
+    event.stopPropagation();
+    const fileUrl = $(this).attr('data-file-url');
+    window.isCanceled = true;
+
+    sendAjaxRequest('/user/delete-local-file', fileUrl, function(response) {
+        if (!response.success) {
+            console.error("Ошибка при удалении локального файла:", response.error);
+        }
+    }, function(xhr, status, error) {
+        console.error("Ошибка при отправке запроса на сервер:", error);
+    });
+
+    resetUploadUI();
 });
 
 $('#del_file_upload-image').on('click', function (event) {
-    // Предотвращение всплытия события
+    event.stopPropagation();
+    const fileUrl = $(this).attr('data-file-url');
+
+    sendAjaxRequest('/user/delete-from-cloud', fileUrl, function(response) {
+        if (!response.success) {
+            console.error("Ошибка при удалении файла:", response.error);
+        }
+    }, function(xhr, status, error) {
+        console.error("Ошибка при отправке запроса на сервер:", error);
+    });
+
+    $('.file-upload-container-image').hide().children().not('#del_file_upload-image').remove();
+    resetUploadUI();
+    window.isCanceled = false;
+});
+
+$('#closeModalButtonAddPostcard').on('click', function (event) {
     event.stopPropagation();
 
-    // Удаляем содержимое контейнера, оставляя кнопку
+    const fileUrl = $('#del_file_upload').attr('data-file-url');
+    if (!fileUrl) return;
+    window.isCanceled = true;
+
+    sendAjaxRequest('/user/delete-local-file', fileUrl, function(response) {
+        if (!response.success) {
+            console.error("Ошибка при удалении локального файла:", response.error);
+        }
+    }, function(xhr, status, error) {
+        console.error("Ошибка при отправке запроса на сервер:", error);
+    });
+
+    resetUploadUI();
     $('.file-upload-container-image').hide().children().not('#del_file_upload-image').remove();
-
-    // Применяем ваш оригинальный код отмены загрузки
-    $('#gtfs_upload').val('');
-    $('.file-info').text('File not selected');
-    $('.upload-progress').css('width', '0%');
-    $('.upload-progress-bar').hide();
-    $('.file-info').hide();
-    $('.file-upload-container-process').hide();
-    $('.file-upload-container').removeClass('not-active').addClass('active');
-    $('.label-file-upload-container').removeClass('active');
-
-    $('.error-file').hide();
-    $('.block-download-links__size.file-info-sub').text('');
-    $('.label-file-upload-container.error').removeClass('error');
-    $('.label-file-upload-container').addClass('uploading');
-    $('.label-file-upload-container .title-status').text('Uploading file...').hide();
+    $('#addPostcard').modal('hide');
 });
+
 
 

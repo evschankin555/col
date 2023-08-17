@@ -15,31 +15,24 @@ use yii\db\ActiveRecord;
  */
 class Upload extends ActiveRecord
 {
-    /**
-     * {@inheritdoc}
-     */
     public static function tableName()
     {
         return 'uploads';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
             [['user_id', 'file_name', 'status'], 'required'],
             [['user_id'], 'integer'],
             [['uploaded_at'], 'safe'],
-            [['status'], 'in', 'range' => ['uploading', 'uploaded', 'transferred', 'error']],
+            // Обновленные правила для статуса
+            [['status'], 'in', 'range' => ['uploading', 'uploaded', 'transferred', 'cloud_uploaded', 'error']],
             [['file_name'], 'string', 'max' => 255],
+            [['cloud_url'], 'string', 'max' => 1000],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function attributeLabels()
     {
         return [
@@ -48,6 +41,7 @@ class Upload extends ActiveRecord
             'file_name' => 'File Name',
             'uploaded_at' => 'Uploaded At',
             'status' => 'Status',
+            'cloud_url' => 'Cloud URL',
         ];
     }
 }

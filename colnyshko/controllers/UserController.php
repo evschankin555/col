@@ -260,8 +260,11 @@ class UserController extends Controller{
             return ['success' => false, 'error' => 'Ошибка при загрузке файла на облако.'];
         }
 
+        $model->deleteLocalFile($uploadRecord->file_name);
+
         // Обновляем статус файла в базе данных
         $uploadRecord->status = 'cloud_uploaded';
+        $uploadRecord->cloud_url = $cloudUrl;
         $uploadRecord->save();
 
         return [
@@ -271,6 +274,51 @@ class UserController extends Controller{
         ];
     }
 
+    public function actionDeleteFromCloud()
+    {
+        $fileUrl = Yii::$app->request->post('fileUrl');
 
+        // Получите запись файла по URL
+        $fileRecord = Upload::findOne(['cloud_url' => $fileUrl]);
 
+        if (!$fileRecord) {
+            return $this->asJson(['success' => false, 'error' => 'Файл не найден.']);
+        }
+
+        // Проверьте, совпадает ли user_id с ID текущего пользователя
+        if ($fileRecord->user_id != Yii::$app->user->id) {
+            return $this->asJson(['success' => false, 'error' => 'Недостаточно прав для удаления этого файла.']);
+        }
+
+        $model = new UploadForm();
+        $result = $model->deleteObjectFromCloud($fileUrl);
+
+        if ($result !== false) {
+            // Если вы хотите вернуть подробную информацию о результате удаления:
+            return $this->asJson(['success' => true, 'cloud_response' => $result->toArray()]);
+
+        } else {
+            return $this->asJson(['success' => false, 'error' => 'Не удалось удалить файл.']);
+        }
+    }
+
+    public function actionDeleteLocalFile()
+    {
+        $fileUrl = Yii::$app->request->post('fileUrl');
+
+        $fileRecord = Upload::findOne(['file_name' => $fileUrl]);
+
+        if (!$fileRecord) {
+            return $this->asJson(['success' => false, 'error' => 'Файл не найден.']);
+        }
+
+        if ($fileRecord->user_id != Yii::$app->user->id) {
+            return $this->asJson(['success' => false, 'error' => 'Недостаточно прав для удаления этого файла.']);
+        }
+
+        $fileRecord->is_canceled = 1;
+        $fileRecord->save();
+
+        return $this->asJson(['success' => true]);
+    }
 }
