@@ -189,11 +189,19 @@ class UserPageComponent extends Component
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="postcard-title" class="form-label">Название</label>
+                                <label for="postcard-title" class="form-label" 
+                                    data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" 
+                                    data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('postcardTitle', 'ru')->message) . '">
+                                    Название
+                                </label>
                                 <input type="text" id="postcard-title" class="form-control" placeholder="Добавить название">
                             </div>
                             <div class="mb-3">
-                                <label for="postcard-description" class="form-label">Описание</label>
+                                <label for="postcard-description" class="form-label" 
+                                    data-bs-toggle="popover" data-bs-placement="bottom" data-bs-html="true" 
+                                    data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('postcardDescription', 'ru')->message) . '">
+                                    Описание
+                                </label>
                                 <textarea id="postcard-description" class="form-control" rows="3" placeholder="Добавить описание"></textarea>
                             </div>
                         </div>

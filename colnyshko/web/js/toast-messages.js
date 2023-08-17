@@ -39,23 +39,45 @@ function showToast(message, messageType, delay) {
     var toast = new bootstrap.Toast(toastEl, { delay: delay });  // передаем delay как параметр
     toast.show();
 }
-
 document.addEventListener("DOMContentLoaded", function() {
+    // Initialize tooltips
     const tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     for (const tooltip of tooltipElements) {
         new bootstrap.Tooltip(tooltip);
     }
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    })
 
-// Initialize popovers
+    // Initialize popovers
     const popoverElements = document.querySelectorAll('[data-bs-toggle="popover"]');
+    let activePopover = null;  // Store reference to currently shown popover
 
     for (const popover of popoverElements) {
-        new bootstrap.Popover(popover, {
-            trigger: 'hover'
-        }); // eslint-disable-line no-new
+        const bsPopover = new bootstrap.Popover(popover, {
+            trigger: 'manual' // Important: set trigger to manual
+        });
+
+        // Show popover on hover
+        popover.addEventListener('mouseenter', function() {
+            if (activePopover) {
+                activePopover.hide();
+            }
+            bsPopover.show();
+            activePopover = bsPopover;
+        });
+
+        // Hide the popover when the same element is clicked
+        popover.addEventListener('click', function() {
+            if (activePopover) {
+                activePopover.hide();
+                activePopover = null;
+            }
+        });
     }
 
+    // Hide the popover when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('[data-bs-toggle="popover"]') && activePopover) {
+            activePopover.hide();
+            activePopover = null;
+        }
+    });
 });
