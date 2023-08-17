@@ -304,6 +304,7 @@
 #collections-list a {
     margin-right: 5px;
     padding: 7px 15px;
+    margin-bottom: 5px;
 }
 .collection-buttons .dropdown-item, .category-buttons .dropdown-item{
     padding-left: 2rem;
@@ -325,3 +326,12 @@
     text-align: left;
     font-size: 1rem;
 }
+.new-collection-form, .new-category-form {
+    display: flex;
+    align-items: center;
+    gap: 0px;
+}
+.new-collection-form button, .new-category-form button{
+    padding: 10px  15px;
+}
+

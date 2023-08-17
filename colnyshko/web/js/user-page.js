@@ -51,34 +51,16 @@ if (createCollectionButton !== null) {
 
 $('#create-collection-btn').click(function() {
     let collectionName = $('#new-collection-name').val();
-    let username = $('#createCollectionButton').data('username');
 
-    $.ajax({
-        url: '/user/create-collection',
-        type: 'POST',
-        data: { name: collectionName },
-        success: function(data) {
-            if (data.success) {
-                showToast(data.message, 'success', 1500);
-
-                // Добавьте новую коллекцию в список
-                let newCollection = $('<a></a>')
-                    .attr('href', '/' + username + '/collection/' + data.newCollection.id)
-                    .addClass('btn btn-secondary btn-sm')
-                    .attr('title', data.newCollection.name)
-                    .text(data.newCollection.name)
-                    .append('<span class="badge bg-secondary">0</span>');
-                /*$('#collections-list').append(newCollection);*/
-                newCollection.insertAfter('#collections-list a:last-child');
-            } else {
-                showToast(data.message, 'danger', 15000);
-            }
+    createAndAddCollection(collectionName, '#createCollectionButton', function(success) {
+        if (success) {
+            $('#new-collection-name').val('');
+            $('#createCollection').modal('hide');
         }
     });
-
-    $('#new-collection-name').val('');
-    $('#createCollection').modal('hide');
 });
+
+
 $('#deleteCollectionButton').click(function() {
     let collectionId = $(this).data('collection-id');
     let username = $(this).data('username');
@@ -127,6 +109,8 @@ $('#addPostcard').on('shown.bs.modal', function () {
 $('#addPostcardButton').click(function() {
     $('#addPostcard').modal('show');
     window.isCanceled = false;
+    fetchCollections();
+    fetchCategories();
 });
 
 $('#save-postcard-btn').click(function() {
@@ -529,3 +513,150 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 });
+
+function updateDropdownContent(dropdownId, list, isCategory = false) {
+    let $dropdown = $(dropdownId);
+    $dropdown.empty();
+
+    // Добавляем ссылку для создания новой категории или коллекции
+    if (isCategory) {
+        $dropdown.append('<a id="createCategoryButtonAddCard" class="dropdown-item" data-value="new">Создать категорию</a>');
+    } else {
+        $dropdown.append('<a id="createCollectionButtonAddCard" class="dropdown-item" data-value="new">Создать коллекцию</a>');
+    }
+
+    $dropdown.append('<div class="dropdown-divider"></div>');
+
+    list.forEach(item => {
+        $dropdown.append(`<a class="dropdown-item" data-value="${item.id}">${item.name}</a>`); // Изменим item.value на item.id
+    });
+}
+
+
+function fetchCollections() {
+    $.ajax({
+        url: '/user/get-collections',
+        type: 'GET',
+        success: function(response) {
+            if (response.success) {
+                updateDropdownContent(".collection-buttons .dropdown-menu", response.data);
+            } else {
+                console.error("Ошибка при получении списка коллекций:", response.error);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Ошибка при отправке запроса на сервер:", error);
+        }
+    });
+}
+
+function fetchCategories() {
+    $.ajax({
+        url: '/user/get-categories',
+        type: 'GET',
+        success: function(response) {
+            if (response.success) {
+                updateDropdownContent(".category-buttons .dropdown-menu", response.data, true);
+            } else {
+                console.error("Ошибка при получении списка категорий:", response.error);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Ошибка при отправке запроса на сервер:", error);
+        }
+    });
+}
+
+$(document).on('click', '.category-buttons .dropdown-item:not(#createCategoryButtonAddCard), .collection-buttons .dropdown-item:not(#createCollectionButtonAddCard)', function() {
+    let $this = $(this);
+    let name = $this.text();
+    let value = $this.data('value');
+
+    if ($this.closest('.dropdown-menu').attr('aria-labelledby') === 'dropdownCollectionButton') {
+        $('#collectionButton').text('Коллекция: ' + name).attr('data-value', value);
+    } else if ($this.closest('.dropdown-menu').attr('aria-labelledby') === 'dropdownCategoryButton') {
+        $('#categoryButton').text('Категория: ' + name).attr('data-value', value);
+    }
+});
+$(document).on('click', '#createCollectionButtonAddCard', function() {
+    $('.collection-buttons').hide();
+    $('.new-collection-form').removeClass('d-none').show();
+});
+
+$(document).on('click', '#createCategoryButtonAddCard', function() {
+    $('.category-buttons').hide();
+    $('.new-category-form').removeClass('d-none').show();
+});
+
+$(document).on('click', '#createCollectionButtonForm', function() {
+    let collectionName = $('.new-collection-form .form-control').val();
+
+    if(collectionName.trim() === "") {
+        showToast("Название коллекции не может быть пустым.", 'danger', 15000);
+        return;
+    }
+
+    createAndAddCollection(collectionName, '#collectionButton', function(success) {
+        if(success) {
+            $('.new-collection-form').addClass('d-none').hide();
+            $('.collection-buttons').show();
+        }
+    });
+});
+
+
+
+
+$(document).on('click', '#createCategoryButtonForm', function() {
+    // TODO: Отправить запрос на сервер с названием новой категории
+    // После успешного создания:
+    // 1. Обновите список категорий.
+    // 2. Сделайте новую категорию текущей.
+
+    $('.new-category-form').addClass('d-none').hide();
+    $('.category-buttons').show();
+});
+
+$(document).on('click', '#cancelCollectionButton', function() {
+    $('.new-collection-form').addClass('d-none').hide();
+    $('.collection-buttons').show();
+});
+$(document).on('click', '#cancelCategoryButton', function() {
+    $('.new-category-form').addClass('d-none').hide();
+    $('.category-buttons').show();
+});
+function createAndAddCollection(collectionName, usernameElementId, callback) {
+    let username = $('#createCollectionButton').data('username');
+    $.ajax({
+        url: '/user/create-collection',
+        type: 'POST',
+        data: { name: collectionName },
+        success: function(data) {
+            if (data.success) {
+                showToast(data.message, 'success', 1500);
+
+                let newCollectionItem = $('<a></a>')
+                    .addClass('dropdown-item')
+                    .attr('data-value', data.newCollection.id)
+                    .text(data.newCollection.name);
+                $(".collection-buttons .dropdown-menu").append(newCollectionItem);
+
+                $('#collectionButton').text('Коллекция: ' + data.newCollection.name).attr('data-value', data.newCollection.id);
+
+                let newCollection = $('<a></a>')
+                    .attr('href', '/' + username + '/collection/' + data.newCollection.id)
+                    .addClass('btn btn-secondary btn-sm')
+                    .attr('title', data.newCollection.name)
+                    .text(data.newCollection.name)
+                    .append('<span class="badge bg-secondary">0</span>');
+                newCollection.insertAfter('#collections-list a:last-child');
+
+                callback(true);  // Если успешно создано
+            } else {
+                showToast(data.message, 'danger', 15000);
+                callback(false);  // Если ошибка
+            }
+        }
+    });
+}
+

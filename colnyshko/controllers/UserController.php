@@ -321,4 +321,39 @@ class UserController extends Controller{
 
         return $this->asJson(['success' => true]);
     }
+    public function actionGetCollections() {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        // Получение ID текущего пользователя
+        $userId = Yii::$app->user->identity->id;
+
+        // Запрос коллекций пользователя
+        $collections = Collection::find()->where(['user_id' => $userId])->all();
+
+        // Формирование ответа
+        $result = [['id' => 0, 'name' => 'Все']];  // По умолчанию "Все"
+        foreach ($collections as $collection) {
+            $result[] = ['id' => $collection->id, 'name' => $collection->name];
+        }
+
+        return ['success' => true, 'data' => $result];
+    }
+    public function actionGetCategories() {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        // Получение ID текущего пользователя
+        $userId = Yii::$app->user->identity->id;
+
+        // Запрос категорий пользователя
+        $categories = Category::find()->where(['user_id' => $userId])->all();
+
+        // Формирование ответа
+        $result = [['id' => 0, 'name' => 'Все']];  // По умолчанию "Все"
+        foreach ($categories as $category) {
+            $result[] = ['id' => $category->id, 'name' => $category->name];
+        }
+
+        return ['success' => true, 'data' => $result];
+    }
+
 }

@@ -200,21 +200,29 @@ class UserPageComponent extends Component
 </div>
 <div class="collection-wrapper">
     <div class="btn-group collection-buttons" role="group" aria-label="Button group with nested dropdown">
-        <button id="collectionButton" type="button" class="btn btn-primary btn-lg" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Коллекция: Доброе утро</button>
+        <button id="collectionButton" type="button" class="btn btn-primary btn-lg" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-value="0">Коллекция: Все</button>
                 <div class="btn-group" role="group">
             <button id="dropdownCollectionButton" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                         <div class="dropdown-menu" aria-labelledby="dropdownCollectionButton">
                 <a id="createCollectionButtonAddCard" class="dropdown-item" data-value="evening">Создать коллекцию</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" data-value="morning">Доброе утро</a>
-                <a class="dropdown-item" data-value="evening">Добрый вечер</a>
             </div>
         </div>
     </div>
+<!-- Скрытая мини-форма для создания коллекции -->
+<div class="new-collection-form d-none input-group">
+    <input type="text" class="form-control" placeholder="Название коллекции" aria-label="Название коллекции">
+    <button id="createCollectionButtonForm" class="btn btn-secondary btn-sm" type="button">Создать</button>
+    <button id="cancelCollectionButton" class="btn btn-secondary btn-sm" type="button">Отмена</button>
+</div>
+
+
+
+
 </div>
 <div class="category-wrapper">
     <div class="btn-group category-buttons" role="group" aria-label="Button group with nested dropdown">
-        <button id="categoryButton" type="button" class="btn btn-info btn-lg" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Категория: Доброе утро</button>
+        <button id="categoryButton" type="button" class="btn btn-info btn-lg" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-value="0">Категория: Все</button>
         
         <div class="btn-group" role="group">
             <button id="dropdownCategoryButton" type="button" class="btn btn-info btn-lg dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
@@ -222,12 +230,16 @@ class UserPageComponent extends Component
             <div class="dropdown-menu" aria-labelledby="dropdownCategoryButton">
                 <a id="createCategoryButtonAddCard" class="dropdown-item" data-value="evening">Создать категорию</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" data-value="morning">Доброе утро</a>
-                <a class="dropdown-item" data-value="evening">Добрый вечер</a>
-                <!-- ... добавьте другие элементы по необходимости -->
             </div>
         </div>
     </div>
+<!-- Скрытая мини-форма для создания категории -->
+<div class="new-category-form d-none input-group">
+    <input type="text" class="form-control" placeholder="Название категории" aria-label="Название категории">
+    <button id="createCategoryButtonForm" class="btn btn-secondary btn-sm" type="button">Создать</button>
+    <button id="cancelCategoryButton" class="btn btn-secondary btn-sm" type="button">Отмена</button>
+</div>
+
 </div>
 
 

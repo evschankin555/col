@@ -19,6 +19,8 @@ return [
         'user/upload-to-cloud' => 'user/upload-to-cloud',
         'user/delete-from-cloud' => 'user/delete-from-cloud',
         'user/delete-local-file' => 'user/delete-local-file',
+        'user/get-collections' => 'user/get-collections',
+        'user/get-categories' => 'user/get-categories',
         'login' => 'pages/login',
         'signup' => 'pages/signup',
         'logout' => 'pages/logout',
