@@ -188,22 +188,49 @@ class UserPageComponent extends Component
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="postcard-title" class="form-label" 
-                                    data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" 
-                                    data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('postcardTitle', 'ru')->message) . '">
-                                    Название
-                                </label>
-                                <input type="text" id="postcard-title" class="form-control" placeholder="Добавить название">
-                            </div>
-                            <div class="mb-3">
-                                <label for="postcard-description" class="form-label" 
-                                    data-bs-toggle="popover" data-bs-placement="bottom" data-bs-html="true" 
-                                    data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('postcardDescription', 'ru')->message) . '">
-                                    Описание
-                                </label>
-                                <textarea id="postcard-description" class="form-control" rows="3" placeholder="Добавить описание"></textarea>
-                            </div>
+                           <div class="mb-3" style="position: relative;"> 
+    <label for="postcard-title" ...>Название</label>
+    <input type="text" id="postcard-title" class="form-control" placeholder="Добавить название">
+    <div class="counter">0/100</div> 
+</div>
+<div class="mb-3" style="position: relative;">
+    <label for="postcard-description" ...>Описание</label>
+    <textarea id="postcard-description" class="form-control" rows="6" placeholder="Добавить описание"></textarea>
+    <div class="counter">0/1000</div> 
+</div>
+<div class="collection-wrapper">
+    <div class="btn-group collection-buttons" role="group" aria-label="Button group with nested dropdown">
+        <button id="collectionButton" type="button" class="btn btn-primary btn-lg" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Коллекция: Доброе утро</button>
+                <div class="btn-group" role="group">
+            <button id="dropdownCollectionButton" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownCollectionButton">
+                <a id="createCollectionButtonAddCard" class="dropdown-item" data-value="evening">Создать коллекцию</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" data-value="morning">Доброе утро</a>
+                <a class="dropdown-item" data-value="evening">Добрый вечер</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="category-wrapper">
+    <div class="btn-group category-buttons" role="group" aria-label="Button group with nested dropdown">
+        <button id="categoryButton" type="button" class="btn btn-info btn-lg" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Категория: Доброе утро</button>
+        
+        <div class="btn-group" role="group">
+            <button id="dropdownCategoryButton" type="button" class="btn btn-info btn-lg dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+            
+            <div class="dropdown-menu" aria-labelledby="dropdownCategoryButton">
+                <a id="createCategoryButtonAddCard" class="dropdown-item" data-value="evening">Создать категорию</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" data-value="morning">Доброе утро</a>
+                <a class="dropdown-item" data-value="evening">Добрый вечер</a>
+                <!-- ... добавьте другие элементы по необходимости -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
                         </div>
                     </div>
                 </form>

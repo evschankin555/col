@@ -114,7 +114,16 @@ $('#confirm-delete-btn').click(function() {
     var deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteCollection'));
     deleteModal.hide();
 });
-
+$('#addPostcard').on('shown.bs.modal', function () {
+    const buttons = document.querySelectorAll('.collection-buttons, .category-buttons');
+    buttons.forEach(btn => {
+        const width = btn.offsetWidth;
+        const dropdownMenu = btn.querySelector('.dropdown-menu');
+        if (dropdownMenu) {
+            dropdownMenu.style.width = `${width}px`;
+        }
+    });
+});
 $('#addPostcardButton').click(function() {
     $('#addPostcard').modal('show');
     window.isCanceled = false;
@@ -494,6 +503,29 @@ $('#closeModalButtonAddPostcard').on('click', function (event) {
     $('.file-upload-container-image').hide().children().not('#del_file_upload-image').remove();
     $('#addPostcard').modal('hide');
 });
+document.addEventListener("DOMContentLoaded", function() {
+    const titleInput = document.querySelector("#postcard-title");
+    const titleCounter = document.querySelector("#postcard-title + .counter");
+    const descriptionTextarea = document.querySelector("#postcard-description");
+    const descriptionCounter = document.querySelector("#postcard-description + .counter");
+
+    function updateCounter(inputElement, counterElement, maxLength) {
+        const wordCount = inputElement.value.length;
+        counterElement.textContent = `${wordCount}/${maxLength}`;
+    }
+
+    titleInput.addEventListener('input', () => {
+        updateCounter(titleInput, titleCounter, 100);
+    });
+
+    descriptionTextarea.addEventListener('input', () => {
+        updateCounter(descriptionTextarea, descriptionCounter, 1000);
+    });
+
+    // Initial setup
+    updateCounter(titleInput, titleCounter, 100);
+    updateCounter(descriptionTextarea, descriptionCounter, 1000);
 
 
 
+});

@@ -284,3 +284,44 @@
     padding: 10px;
     z-index: 1000;
 }
+.counter {
+    position: absolute;
+    color: rgb(255 255 255 / 40%);
+    pointer-events: none;
+    font-size: 0.9em;
+    bottom: 5px;
+    right: 10px;
+    text-align: right;
+}
+
+#postcard-title + .counter {
+    right: 10px;
+}
+
+#postcard-description + .counter {
+    right: 10px;
+}
+#collections-list a {
+    margin-right: 5px;
+    padding: 7px 15px;
+}
+.collection-buttons .dropdown-item, .category-buttons .dropdown-item{
+    padding-left: 2rem;
+    cursor: pointer;
+}
+.collection-buttons .dropdown-menu{
+    background-color: rgba(232, 50, 131, 0.76);
+}
+.collection-wrapper{
+    margin-bottom: 1rem;
+}
+.category-buttons .dropdown-menu{
+    background-color: rgba(57, 203, 251, 0.76);
+}
+.category-buttons, .collection-buttons{
+    width: 100%;
+}
+.category-buttons button, .collection-buttons button{
+    text-align: left;
+    font-size: 1rem;
+}
