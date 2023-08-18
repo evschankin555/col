@@ -28,9 +28,10 @@ class UserPageComponent extends Component
                 <div class="form-group buttons">';
 
         if ($this->currentUser && $this->currentUser->id == $this->model->id) {
-            $output .= '<button type="button" class="btn btn-info btn-sm"  data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('createCategory', 'ru')->message) . '">
-                            Создать категорию
-                        </button>
+            $output .= '<button type="button" id="createCategoryButton" data-username="' . Html::encode($this->model->username) . '" class="btn btn-info btn-sm" data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('createCategory', 'ru')->message) . '">
+    Создать категорию
+</button>
+
                         <button type="button" class="btn btn-info btn-sm" id="addPostcardButton" data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('createCard', 'ru')->message) . '">
                             Добавить открытку
                         </button>';
@@ -249,6 +250,27 @@ class UserPageComponent extends Component
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" id="save-postcard-btn">Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>';
+
+        return $output;
+    }
+    public function renderCreateCategoryModal()
+    {
+        $output = '<div class="modal fade" id="createCategory" tabindex="-1" aria-labelledby="createCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createCategoryModalLabel">Создать категорию</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="new-category-name" class="form-control" placeholder="Название категории">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="create-category-btn">Создать</button>
             </div>
         </div>
     </div>

@@ -28,3 +28,4 @@ $userPageComponent = new UserPageComponent([
 <?= $userPageComponent->renderCreateCollectionModal(); ?>
 <?= $userPageComponent->renderDeleteCollectionModal(); ?>
 <?= $userPageComponent->renderAddPostcardModal(); ?>
+<?= $userPageComponent->renderCreateCategoryModal(); ?>

@@ -604,18 +604,28 @@ $(document).on('click', '#createCollectionButtonForm', function() {
     });
 });
 
-
-
-
 $(document).on('click', '#createCategoryButtonForm', function() {
-    // TODO: Отправить запрос на сервер с названием новой категории
-    // После успешного создания:
-    // 1. Обновите список категорий.
-    // 2. Сделайте новую категорию текущей.
+    let categoryName = $('.new-category-form .form-control').val();
 
-    $('.new-category-form').addClass('d-none').hide();
-    $('.category-buttons').show();
+    // Проверяем, что название категории не пустое
+    if(categoryName.trim() === "") {
+        showToast("Название категории не может быть пустым.", 'danger', 15000);
+        return;
+    }
+
+    // Отправляем запрос на сервер с названием новой категории
+    createAndAddCategory(categoryName, '#categoryButton', function(success) {
+        if(success) {
+            // После успешного создания обновляем интерфейс:
+            // 1. Скрываем форму создания категории
+            $('.new-category-form').addClass('d-none').hide();
+
+            // 2. Показываем кнопки категории
+            $('.category-buttons').show();
+        }
+    });
 });
+
 
 $(document).on('click', '#cancelCollectionButton', function() {
     $('.new-collection-form').addClass('d-none').hide();
@@ -660,3 +670,54 @@ function createAndAddCollection(collectionName, usernameElementId, callback) {
     });
 }
 
+let createCategoryButton = document.getElementById('createCategoryButton');
+if (createCategoryButton !== null) {
+    createCategoryButton.addEventListener('click', function () {
+        myModal = new bootstrap.Modal(document.getElementById('createCategory'), {});
+        myModal.show();
+    });
+}
+$('#create-category-btn').click(function() {
+    let categoryName = $('#new-category-name').val();
+
+    createAndAddCategory(categoryName, '#createCategoryButton', function(success) {
+        if (success) {
+            $('#new-category-name').val('');
+            $('#createCategory').modal('hide');
+        }
+    });
+});
+function createAndAddCategory(categoryName, usernameElementId, callback) {
+    let username = $(usernameElementId).data('username');
+    $.ajax({
+        url: '/user/create-category',
+        type: 'POST',
+        data: { name: categoryName },
+        success: function(data) {
+            if (data.success) {
+                showToast(data.message, 'success', 1500);
+
+                let newCategoryItem = $('<a></a>')
+                    .addClass('dropdown-item')
+                    .attr('data-value', data.newCategory.id)
+                    .text(data.newCategory.name);
+                $(".category-buttons .dropdown-menu").append(newCategoryItem);
+
+                $('#categoryButton').text('Категория: ' + data.newCategory.name).attr('data-value', data.newCategory.id);
+
+                let newCategory = $('<a></a>')
+                    .attr('href', '/' + username + '/category/' + data.newCategory.id)
+                    .addClass('btn btn-info btn-sm')
+                    .attr('title', data.newCategory.name)
+                    .text(data.newCategory.name)
+                    .append('<span class="badge bg-info">0</span>');
+                newCategory.insertAfter('#categories-list a:last-child');
+
+                callback(true);  // Если успешно создано
+            } else {
+                showToast(data.message, 'danger', 15000);
+                callback(false);  // Если ошибка
+            }
+        }
+    });
+}

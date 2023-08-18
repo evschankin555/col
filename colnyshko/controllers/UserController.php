@@ -359,6 +359,27 @@ class UserController extends Controller{
 
         return ['success' => true, 'data' => $result];
     }
+    public function actionCreateCategory()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $model = new Category();
+        $model->user_id = Yii::$app->user->identity->id;
+        $model->name = Yii::$app->request->post('name');
+
+        if ($model->save()) {
+            return [
+                'success' => true,
+                'message' => 'Категория успешно создана.',
+                'newCategory' => [
+                    'id' => $model->id,
+                    'name' => $model->name
+                ]
+            ];
+        } else {
+            return ['success' => false, 'message' => 'Не удалось создать категорию.'];
+        }
+    }
 
 
 }

@@ -21,6 +21,7 @@ return [
         'user/delete-local-file' => 'user/delete-local-file',
         'user/get-collections' => 'user/get-collections',
         'user/get-categories' => 'user/get-categories',
+        'user/create-category' => 'user/create-category',
         'login' => 'pages/login',
         'signup' => 'pages/signup',
         'logout' => 'pages/logout',
