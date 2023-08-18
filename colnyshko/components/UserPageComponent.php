@@ -10,6 +10,8 @@ class UserPageComponent extends Component
     public $collection;
     public $currentUser;
     public $isSubscribed;
+    public $categories;
+    public $category;
 
     public function renderUserCard()
     {
@@ -28,9 +30,7 @@ class UserPageComponent extends Component
                 <div class="form-group buttons">';
 
         if ($this->currentUser && $this->currentUser->id == $this->model->id) {
-            $output .= '<button type="button" id="createCategoryButton" data-username="' . Html::encode($this->model->username) . '" class="btn btn-info btn-sm" data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('createCategory', 'ru')->message) . '">
-    Создать категорию
-</button>
+            $output .= '
 
                         <button type="button" class="btn btn-info btn-sm" id="addPostcardButton" data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('createCard', 'ru')->message) . '">
                             Добавить открытку
@@ -46,10 +46,10 @@ class UserPageComponent extends Component
         $output .= '</div>
             </div>
             <div class="card-footer statistics">
-                <small><strong>Подписчиков:</strong> <span class="subscribersCount">' . $this->model->getFormattedSubscribersCount() . '</span></small>
-                <small><strong>Подписок:</strong> <span class="subscriptionsCount">' . $this->model->getFormattedSubscriptionsCount() . '</span></small>
+                <small>Подписчиков: <span class="subscribersCount">' . $this->model->getFormattedSubscribersCount() . '</span></small>
+                <small>Подписок: <span class="subscriptionsCount">' . $this->model->getFormattedSubscriptionsCount() . '</span></small>
             </div>
-        </div>';
+        </div>'.$this->renderCategoriesList().'';
 
         return $output;
     }
@@ -275,6 +275,30 @@ class UserPageComponent extends Component
         </div>
     </div>
 </div>';
+
+        return $output;
+    }
+    public function renderCategoriesList()
+    {
+        $output = '<div class="card border-info mb-3">
+            <div id="categories-list" class="card-body">';
+        $output .= '<button type="button" id="createCategoryButton" data-username="' . Html::encode($this->model->username) . '" class="btn btn-info btn-sm" data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('createCategory', 'ru')->message) . '">
+    Создать категорию
+</button>';
+        foreach ($this->categories as $categoryItem) {
+            $output .= '<a class="btn btn-' . ($this->category->id == $categoryItem->id ? 'primary' : 'secondary') . ' btn-sm" href="/' . $this->model->username . '/category/' . $categoryItem->id . '" title="' . Html::encode($categoryItem->name) . '">
+                    ' . Html::encode($categoryItem->name) . '
+                </a>';
+        }
+
+        $output .= '</div>';
+
+        if ($this->currentUser && $this->currentUser->id == $this->model->id) {
+            $tooltipMessage = \app\models\Tooltip::getTooltip('createCategory', 'ru') ? htmlspecialchars(\app\models\Tooltip::getTooltip('createCategory', 'ru')->message) : '';
+
+        }
+
+        $output .= '</div>';
 
         return $output;
     }

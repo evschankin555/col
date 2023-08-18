@@ -228,4 +228,9 @@ class User extends TimedActiveRecord implements IdentityInterface
     {
         return $this->hasMany(Image::className(), ['id' => 'image_id'])->via('collections');
     }
+    public function getCategories()
+    {
+        return $this->hasMany(\app\models\user_related\Category::className(), ['user_id' => 'id']);
+    }
+
 }

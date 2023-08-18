@@ -12,6 +12,8 @@ $userPageComponent = new UserPageComponent([
     'collection' => $collection,
     'currentUser' => $currentUser,
     'isSubscribed' => $isSubscribed,
+    'categories' => $categories,
+    'category' => $category,
 ]);
 
 ?>

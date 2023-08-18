@@ -41,6 +41,10 @@ class UserController extends Controller{
         $collections = $model->getCollections()->all();
         $allCollection = (object) ['id' => 0, 'name' => 'Все', 'images' => $model->getImages()->all()];
 
+        $categories = $model->getCategories()->all();
+        $category = (object) ['id' => 0, 'name' => 'Все', 'images' => $model->getImages()->all()];
+
+
         array_unshift($collections, $allCollection);
 
         return $this->render('view', [
@@ -49,6 +53,9 @@ class UserController extends Controller{
             'isSubscribed' => $isSubscribed,
             'collections' => $collections,
             'collection' => $allCollection,
+            'categories' => $categories,
+            'category' => $category,
+
         ]);
     }
 
