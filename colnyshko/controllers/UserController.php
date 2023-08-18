@@ -71,7 +71,9 @@ class UserController extends Controller{
 
         $currentUser = Yii::$app->user->identity;
         $isSubscribed = Subscription::find()->where(['user_id' => $user->id, 'subscriber_id' => $currentUser->id])->exists();
-        $collections = $user->getCollections()->all();
+
+        // Получение коллекций пользователя с сортировкой по ID в порядке убывания
+        $collections = $user->getCollections()->orderBy(['id' => SORT_DESC])->all();
         $allCollection = (object) ['id' => 0, 'name' => 'Все', 'images' => $user->getImages()->all()];
 
         array_unshift($collections, $allCollection);
@@ -84,6 +86,7 @@ class UserController extends Controller{
             'collection' => $collection,
         ]);
     }
+
 
 
     public function actionSubscribe($username)
@@ -327,8 +330,8 @@ class UserController extends Controller{
         // Получение ID текущего пользователя
         $userId = Yii::$app->user->identity->id;
 
-        // Запрос коллекций пользователя
-        $collections = Collection::find()->where(['user_id' => $userId])->all();
+        // Запрос коллекций пользователя с сортировкой по ID в порядке убывания
+        $collections = Collection::find()->where(['user_id' => $userId])->orderBy(['id' => SORT_DESC])->all();
 
         // Формирование ответа
         $result = [['id' => 0, 'name' => 'Все']];  // По умолчанию "Все"
@@ -338,14 +341,15 @@ class UserController extends Controller{
 
         return ['success' => true, 'data' => $result];
     }
+
     public function actionGetCategories() {
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
         // Получение ID текущего пользователя
         $userId = Yii::$app->user->identity->id;
 
-        // Запрос категорий пользователя
-        $categories = Category::find()->where(['user_id' => $userId])->all();
+        // Запрос категорий пользователя с сортировкой по ID в порядке убывания
+        $categories = Category::find()->where(['user_id' => $userId])->orderBy(['id' => SORT_DESC])->all();
 
         // Формирование ответа
         $result = [['id' => 0, 'name' => 'Все']];  // По умолчанию "Все"
@@ -355,5 +359,6 @@ class UserController extends Controller{
 
         return ['success' => true, 'data' => $result];
     }
+
 
 }
