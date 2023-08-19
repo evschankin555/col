@@ -672,3 +672,8 @@ video {
 .popover {
     min-width: 350px;
 }
+.navbar-brand{
+    background-color: #ffc107;
+    padding: 10px 20px;
+    border-radius: 60px;
+}

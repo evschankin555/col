@@ -32,7 +32,7 @@ class UserPageComponent extends Component
         if ($this->currentUser && $this->currentUser->id == $this->model->id) {
             $output .= '
 
-                        <button type="button" class="btn btn-info btn-sm" id="addPostcardButton" data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('createCard', 'ru')->message) . '">
+                        <button type="button" class="btn btn-warning btn-sm" id="addPostcardButton" data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('createCard', 'ru')->message) . '">
                             Добавить открытку
                         </button>';
         } else {
@@ -74,7 +74,7 @@ class UserPageComponent extends Component
 
         if ($this->currentUser && $this->currentUser->id == $this->model->id) {
             if ($this->collection->id === 0) {
-                $output .= '<button type="button" data-username="' . Html::encode($this->model->username) . '" class="btn btn-secondary btn-sm" id="createCollectionButton" data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('createCollection', 'ru')->message) . '">
+                $output .= '<button type="button" data-username="' . Html::encode($this->model->username) . '" class="btn btn-warning btn-sm" id="createCollectionButton" data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('createCollection', 'ru')->message) . '">
                             Создать коллекцию
                         </button>';
             } else {
@@ -103,7 +103,7 @@ class UserPageComponent extends Component
                 <input type="text" id="new-collection-name" class="form-control" placeholder="Название коллекции">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="create-collection-btn">Создать</button>
+                <button type="button" class="btn btn-warning" id="create-collection-btn">Создать</button>
             </div>
         </div>
     </div>
@@ -212,7 +212,7 @@ class UserPageComponent extends Component
 <!-- Скрытая мини-форма для создания коллекции -->
 <div class="new-collection-form d-none input-group">
     <input type="text" class="form-control" placeholder="Название коллекции" aria-label="Название коллекции">
-    <button id="createCollectionButtonForm" class="btn btn-secondary btn-sm" type="button">Создать</button>
+    <button id="createCollectionButtonForm" class="btn btn-warning btn-sm" type="button">Создать</button>
     <button id="cancelCollectionButton" class="btn btn-secondary btn-sm" type="button">Отмена</button>
 </div>
 
@@ -236,7 +236,7 @@ class UserPageComponent extends Component
 <!-- Скрытая мини-форма для создания категории -->
 <div class="new-category-form d-none input-group">
     <input type="text" class="form-control" placeholder="Название категории" aria-label="Название категории">
-    <button id="createCategoryButtonForm" class="btn btn-secondary btn-sm" type="button">Создать</button>
+    <button id="createCategoryButtonForm" class="btn btn-warning btn-sm" type="button">Создать</button>
     <button id="cancelCategoryButton" class="btn btn-secondary btn-sm" type="button">Отмена</button>
 </div>
 
@@ -248,7 +248,7 @@ class UserPageComponent extends Component
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="save-postcard-btn">Добавить</button>
+                <button type="button" class="btn btn-warning" id="save-postcard-btn">Добавить</button>
             </div>
         </div>
     </div>
@@ -269,7 +269,7 @@ class UserPageComponent extends Component
                 <input type="text" id="new-category-name" class="form-control" placeholder="Название категории">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="create-category-btn">Создать</button>
+                <button type="button" class="btn btn-warning" id="create-category-btn">Создать</button>
             </div>
         </div>
     </div>
@@ -281,7 +281,7 @@ class UserPageComponent extends Component
     {
         $output = '<div class="card border-info mb-3">
             <div id="categories-list" class="card-body">';
-        $output .= '<button type="button" id="createCategoryButton" data-username="' . Html::encode($this->model->username) . '" class="btn btn-info btn-sm" data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('createCategory', 'ru')->message) . '">
+        $output .= '<button type="button" id="createCategoryButton" data-username="' . Html::encode($this->model->username) . '" class="btn btn-warning btn-sm" data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('createCategory', 'ru')->message) . '">
     Создать категорию
 </button>';
         foreach ($this->categories as $categoryItem) {
