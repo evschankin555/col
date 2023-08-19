@@ -285,10 +285,17 @@ class UserPageComponent extends Component
     Создать категорию
 </button>';
         foreach ($this->categories as $categoryItem) {
-            $output .= '<a class="btn btn-' . ($this->category->id == $categoryItem->id ? 'primary' : 'secondary') . ' btn-sm" href="/' . $this->model->username . '/category/' . $categoryItem->id . '" title="' . Html::encode($categoryItem->name) . '">
-                    ' . Html::encode($categoryItem->name) . '
+            if ($categoryItem->id === 0) {
+                $output .= '<a class="btn btn-' . ($this->category->id == $categoryItem->id ? 'primary' : 'secondary') . ' btn-sm" href="/' . $this->model->username . '" title="' . Html::encode($categoryItem->name) . '">
+                    ' . Html::encode($categoryItem->name) . '<span class="badge bg-secondary">' . count($categoryItem->images) . '</span>
                 </a>';
+            } else {
+                $output .= '<a class="btn btn-' . ($this->category->id == $categoryItem->id ? 'primary' : 'secondary') . ' btn-sm" href="/' . $this->model->username . '/category/' . $categoryItem->id . '" title="' . Html::encode($categoryItem->name) . '">
+                    ' . Html::encode($categoryItem->name) . '<span class="badge bg-secondary">' . count($categoryItem->images) . '</span>
+                </a>';
+            }
         }
+
 
         $output .= '</div>';
 

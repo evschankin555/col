@@ -36,6 +36,7 @@ return [
         'page/<page:\d+>' => '/base/home',
         'base' => 'pages/base',
         '<username:\w+>/collection/<id:\d+>' => 'user/collection',
+        '<username:\w+>/category/<id:\d+>' => 'user/category',
         '<username:\w+>' => 'user/view',
         [
             'class' => 'yii\web\UrlRule',

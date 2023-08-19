@@ -395,5 +395,45 @@ class UserController extends Controller{
         }
     }
 
+    public function actionCategory($username, $id)
+    {
+        $user = User::find()->where(['username' => $username])->one();
+
+        if ($user === null) {
+            throw new NotFoundHttpException("The user was not found.");
+        }
+
+        $category = Category::find()->where(['id' => $id, 'user_id' => $user->id])->one();
+
+        if ($category === null) {
+            throw new NotFoundHttpException("The category was not found.");
+        }
+
+        $this->view->title = "Категория " . Html::encode($category->name) . " пользователя " . Html::encode($user->display_name);
+
+        $currentUser = Yii::$app->user->identity;
+        $isSubscribed = Subscription::find()->where(['user_id' => $user->id, 'subscriber_id' => $currentUser->id])->exists();
+
+        // Получение коллекций пользователя с сортировкой по ID в порядке убывания
+        $collections = $user->getCollections()->orderBy(['id' => SORT_DESC])->all();
+
+        $allCollection = (object) ['id' => 0, 'name' => 'Все', 'images' => $user->getImages()->all()];
+
+        $categories = $user->getCategories()->all();
+        $allCategory = (object) ['id' => 0, 'name' => 'Все', 'images' => $user->getImages()->all()];
+
+        array_unshift($collections, $allCollection);
+        array_unshift($categories, $allCategory);
+
+        return $this->render('view', [
+            'model' => $user,
+            'currentUser' => $currentUser,
+            'isSubscribed' => $isSubscribed,
+            'collections' => $collections,
+            'collection' => $allCollection,
+            'categories' => $categories,
+            'category' => $category,
+        ]);
+    }
 
 }

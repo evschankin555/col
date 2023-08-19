@@ -4,7 +4,6 @@ namespace app\models\user_related;
 use Yii;
 use app\components\TimedActiveRecord;
 use app\models\User;
-
 class Category extends TimedActiveRecord
 {
     public static function tableName()
@@ -33,5 +32,11 @@ class Category extends TimedActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    // Добавлен метод для получения связанных изображений с категорией
+    public function getImages()
+    {
+        return $this->hasMany(Image::className(), ['id' => 'image_id'])->viaTable('image_relations', ['category_id' => 'id']);
     }
 }
