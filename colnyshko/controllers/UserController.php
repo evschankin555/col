@@ -46,6 +46,7 @@ class UserController extends Controller{
 
 
         array_unshift($collections, $allCollection);
+        array_unshift($categories, $category);
 
         return $this->render('view', [
             'model' => $model,
@@ -83,7 +84,11 @@ class UserController extends Controller{
         $collections = $user->getCollections()->orderBy(['id' => SORT_DESC])->all();
         $allCollection = (object) ['id' => 0, 'name' => 'Все', 'images' => $user->getImages()->all()];
 
+        $categories = $user->getCategories()->all();
+        $category = (object) ['id' => 0, 'name' => 'Все', 'images' => $user->getImages()->all()];
+
         array_unshift($collections, $allCollection);
+        array_unshift($categories, $category);
 
         return $this->render('view', [
             'model' => $user,
@@ -91,6 +96,8 @@ class UserController extends Controller{
             'isSubscribed' => $isSubscribed,
             'collections' => $collections,
             'collection' => $collection,
+            'categories' => $categories,
+            'category' => $category,
         ]);
     }
 

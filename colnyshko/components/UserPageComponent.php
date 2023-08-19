@@ -50,7 +50,6 @@ class UserPageComponent extends Component
                 <small>Подписок: <span class="subscriptionsCount">' . $this->model->getFormattedSubscriptionsCount() . '</span></small>
             </div>
         </div>'.$this->renderCategoriesList().'';
-
         return $output;
     }
 
