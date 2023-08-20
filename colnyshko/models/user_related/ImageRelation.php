@@ -15,10 +15,12 @@ class ImageRelation extends TimedActiveRecord
     {
         return [
             [['image_id'], 'required'],
-            [['collection_id', 'category_id', 'image_id'], 'integer'],
-            [['description'], 'string'],
+            [['collection_id', 'category_id', 'image_id'], 'default', 'value' => null],
+            [['title'], 'string', 'min' => 10, 'max' => 100],
+            [['description'], 'string', 'min' => 20, 'max' => 1000],
         ];
     }
+
 
     public function attributeLabels()
     {
@@ -27,6 +29,7 @@ class ImageRelation extends TimedActiveRecord
             'collection_id' => 'Collection ID',
             'category_id' => 'Category ID',
             'image_id' => 'Image ID',
+            'title' => 'Title',
             'description' => 'Description',
         ];
     }
@@ -45,4 +48,21 @@ class ImageRelation extends TimedActiveRecord
     {
         return $this->hasOne(Image::className(), ['id' => 'image_id']);
     }
+
+    public static function createNew($image_id, $collection_id, $category_id, $title, $description)
+    {
+        $relation = new ImageRelation();
+        $relation->image_id = $image_id;
+        $relation->collection_id = $collection_id !== 0 ? $collection_id : null;
+        $relation->category_id = $category_id !== 0 ? $category_id : null;
+        $relation->title = $title;
+        $relation->description = $description;
+
+        if ($relation->save()) {
+            return $relation;
+        } else {
+            return null;
+        }
+    }
+
 }

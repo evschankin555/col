@@ -3,6 +3,7 @@
 
     use Yii;
     use app\components\TimedActiveRecord;
+    use app\models\Upload;
 
     class Image extends TimedActiveRecord
     {
@@ -36,4 +37,26 @@
         {
             return $this->hasOne(Upload::class, ['id' => 'upload_id']);
         }
+
+        public static function createNew($imageUrl, $description = null) {
+            $image = new self();
+            $image->url = $imageUrl;
+            $image->description = $description;
+
+            // Извлекаем короткий URL
+            $image->short_url = basename($imageUrl);
+
+            // Извлекаем запись Upload по cloud_url
+            $upload = Upload::findOne(['cloud_url' => $imageUrl]);
+            if ($upload) {
+                $image->upload_id = $upload->id;
+            }
+
+            if ($image->save()) {
+                return $image;
+            }
+
+            return null;
+        }
+
     }
