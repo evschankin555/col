@@ -198,6 +198,10 @@ class UserPageComponent extends Component
     <textarea id="postcard-description" class="form-control" rows="6" placeholder="Добавить описание"></textarea>
     <div class="counter">0/1000</div> 
 </div>
+    <input type="hidden" id="input_file_upload-image" value="">
+
+
+
 <div class="collection-wrapper">
     <div class="btn-group collection-buttons" role="group" aria-label="Button group with nested dropdown">
         <button id="collectionButton" type="button" class="btn btn-primary btn-lg" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-value="0">Коллекция: Все</button>
@@ -241,6 +245,10 @@ class UserPageComponent extends Component
 </div>
 
 </div>
+<div class="error-messages">
+    <ul id="error-list" class="list-group"></ul>
+</div>
+
 
 
                         </div>

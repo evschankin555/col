@@ -351,3 +351,6 @@
 #categories-list a:last-child{
     border-radius: 0 0 5px 5px;
 }
+#postcard-upload-form .error-messages{
+    margin-top: 1rem;
+}

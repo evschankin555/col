@@ -116,12 +116,43 @@ $('#addPostcardButton').click(function() {
 $('#save-postcard-btn').click(function() {
     let postcardTitle = $('#postcard-title').val();
     let postcardDescription = $('#postcard-description').val();
-    let postcardImage = $('#postcard-image').prop('files')[0];
+    let postcardImageURL = $('#input_file_upload-image').val();
+    let collectionValue = $('#collectionButton').data('value');
+    let categoryValue = $('#categoryButton').data('value');
+
+    // Сбросим ошибки
+    $('#error-list').empty();
+
+    let errorClasses = ['list-group-item-primary', 'list-group-item-secondary'];
+    let currentErrorClassIndex = 0;
+    let hasErrors = false;
+
+    function appendError(message) {
+        $('#error-list').append(`<li class="list-group-item ${errorClasses[currentErrorClassIndex]}">${message}</li>`);
+        currentErrorClassIndex = (currentErrorClassIndex + 1) % 2;
+        hasErrors = true;
+    }
+
+    if(postcardTitle.length < 10) {
+        appendError('Название должно быть не менее 10 символов');
+    }
+    if(postcardDescription.length < 20) {
+        appendError('Описание должно быть не менее 20 символов');
+    }
+    if(!postcardImageURL) {
+        appendError('Нужно загрузить картинку');
+    }
+
+    if(hasErrors) {
+        return;
+    }
 
     let formData = new FormData();
     formData.append('title', postcardTitle);
     formData.append('description', postcardDescription);
-    formData.append('image', postcardImage);
+    formData.append('imageURL', postcardImageURL);
+    formData.append('collection', collectionValue);
+    formData.append('category', categoryValue);
 
     $.ajax({
         url: '/user/add-postcard',
@@ -132,7 +163,6 @@ $('#save-postcard-btn').click(function() {
         success: function(data) {
             if (data.success) {
                 showToast(data.message, 'success', 1500);
-                // Здесь можно добавить действия после успешной загрузки, например, обновление списка открыток на странице
             } else {
                 showToast(data.message, 'danger', 15000);
             }
@@ -141,9 +171,11 @@ $('#save-postcard-btn').click(function() {
 
     $('#postcard-title').val('');
     $('#postcard-description').val('');
-    $('#postcard-image').val('');
+    $('#input_file_upload-image').val('');
     $('#addPostcard').modal('hide');
 });
+
+
 function uploadFile(file, onSuccess, onError) {
     const formData = new FormData();
     formData.append('file', file);
@@ -353,6 +385,7 @@ function handleFileUpload(file) {
                         function(cloudResponse) {
                             if (cloudResponse && cloudResponse.cloud_url && window.isCanceled == false && $('.file-upload-container').css('display') == 'none') {
                                 $('#del_file_upload-image').attr('data-file-url', cloudResponse.cloud_url);
+                                $('#input_file_upload-image').val(cloudResponse.cloud_url);
                                 $('.file-upload-container-process').hide();
                                 $('.file-info').text('Загружено на облако');
                                 console.log(cloudResponse.cloud_url);
@@ -441,6 +474,7 @@ $('#del_file_upload').on('click', function (event) {
     window.isCanceled = true;
 
     sendAjaxRequest('/user/delete-local-file', fileUrl, function(response) {
+        $('#input_file_upload-image').val('');
         if (!response.success) {
             console.error("Ошибка при удалении локального файла:", response.error);
         }
@@ -456,6 +490,7 @@ $('#del_file_upload-image').on('click', function (event) {
     const fileUrl = $(this).attr('data-file-url');
 
     sendAjaxRequest('/user/delete-from-cloud', fileUrl, function(response) {
+        $('#input_file_upload-image').val('');
         if (!response.success) {
             console.error("Ошибка при удалении файла:", response.error);
         }
@@ -476,6 +511,7 @@ $('#closeModalButtonAddPostcard').on('click', function (event) {
     window.isCanceled = true;
 
     sendAjaxRequest('/user/delete-local-file', fileUrl, function(response) {
+        $('#input_file_upload-image').val('');
         if (!response.success) {
             console.error("Ошибка при удалении локального файла:", response.error);
         }
