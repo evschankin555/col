@@ -44,4 +44,9 @@ class Upload extends ActiveRecord
             'cloud_url' => 'Cloud URL',
         ];
     }
+
+    public function getImage()
+    {
+        return $this->hasOne(Image::class, ['upload_id' => 'id']);
+    }
 }

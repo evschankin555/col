@@ -15,8 +15,9 @@
         {
             return [
                 [['url'], 'required'],
-                [['url'], 'string', 'max' => 2048],
+                [['url', 'short_url'], 'string', 'max' => 2048],
                 [['description'], 'string'],
+                [['upload_id'], 'integer'],
             ];
         }
 
@@ -26,6 +27,13 @@
                 'id' => 'ID',
                 'url' => 'Image URL',
                 'description' => 'Description',
+                'upload_id' => 'Upload ID',
+                'short_url' => 'Short URL',
             ];
+        }
+
+        public function getUpload()
+        {
+            return $this->hasOne(Upload::class, ['id' => 'upload_id']);
         }
     }
