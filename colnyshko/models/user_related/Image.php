@@ -15,10 +15,10 @@
         public function rules()
         {
             return [
-                [['url'], 'required'],
+                [['url', 'user_id'], 'required'],
                 [['url', 'short_url'], 'string', 'max' => 2048],
                 [['description'], 'string'],
-                [['upload_id'], 'integer'],
+                [['upload_id', 'user_id'], 'integer'],
             ];
         }
 
@@ -29,6 +29,7 @@
                 'url' => 'Image URL',
                 'description' => 'Description',
                 'upload_id' => 'Upload ID',
+                'user_id' => 'User ID',
                 'short_url' => 'Short URL',
             ];
         }
@@ -38,10 +39,11 @@
             return $this->hasOne(Upload::class, ['id' => 'upload_id']);
         }
 
-        public static function createNew($imageUrl, $description = null) {
+        public static function createNew($imageUrl, $description = null, $userId = null) {
             $image = new self();
             $image->url = $imageUrl;
             $image->description = $description;
+            $image->user_id = $userId;
 
             // Извлекаем короткий URL
             $image->short_url = basename($imageUrl);
@@ -52,11 +54,6 @@
                 $image->upload_id = $upload->id;
             }
 
-            if ($image->save()) {
-                return $image;
-            }
-
-            return null;
+            return $image->save() ? $image : null;
         }
-
     }

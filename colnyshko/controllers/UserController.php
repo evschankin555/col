@@ -441,28 +441,33 @@ class UserController extends Controller{
     {
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-        if (Yii::$app->request->isPost) {
-            $title = Yii::$app->request->post('title');
-            $description = Yii::$app->request->post('description');
-            $imageURL = Yii::$app->request->post('imageURL');
-            $collection = Yii::$app->request->post('collection');
-            $category = Yii::$app->request->post('category');
+        if (!Yii::$app->user->isGuest) {
+            $currentUser = Yii::$app->user->identity;
+            if (Yii::$app->request->isPost) {
+                $title = Yii::$app->request->post('title');
+                $description = Yii::$app->request->post('description');
+                $imageURL = Yii::$app->request->post('imageURL');
+                $collection = Yii::$app->request->post('collection');
+                $category = Yii::$app->request->post('category');
 
-            // Создаем запись изображения
-            $image = Image::createNew($imageURL, $description);
-            if (!$image) {
-                return ['success' => false, 'message' => 'Ошибка при сохранении изображения.'];
+                // Создаем запись изображения
+                $image = Image::createNew($imageURL, $description, $currentUser->id);
+                if (!$image) {
+                    return ['success' => false, 'message' => 'Ошибка при сохранении изображения.'];
+                }
+
+                // Создаем запись для связи
+                $relation = ImageRelation::createNew($image->id, $collection, $category, $title, $description, $currentUser->id);
+                if (!$relation) {
+                    return ['success' => false, 'message' => 'Ошибка при добавлении связи изображения.'];
+                }
+
+                return ['success' => true, 'message' => 'Открытка успешно добавлена!'];
+            } else {
+                return ['success' => false, 'message' => 'Недопустимый тип запроса.'];
             }
-
-            // Создаем запись для связи
-            $relation = ImageRelation::createNew($image->id, $collection, $category, $title, $description);
-            if (!$relation) {
-                return ['success' => false, 'message' => 'Ошибка при добавлении связи изображения.'];
-            }
-
-            return ['success' => true, 'message' => 'Открытка успешно добавлена!'];
-        } else {
-            return ['success' => false, 'message' => 'Недопустимый тип запроса.'];
+        }else {
+            return ['success' => false, 'message' => 'Вы не авторизованы. Пожалуйста, авторизуйтесь сначала.'];
         }
     }
 

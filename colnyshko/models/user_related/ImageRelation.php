@@ -14,8 +14,8 @@ class ImageRelation extends TimedActiveRecord
     public function rules()
     {
         return [
-            [['image_id'], 'required'],
-            [['collection_id', 'category_id', 'image_id'], 'default', 'value' => null],
+            [['image_id', 'user_id'], 'required'],
+            [['collection_id', 'category_id', 'image_id', 'user_id'], 'default', 'value' => null],
             [['title'], 'string', 'min' => 10, 'max' => 100],
             [['description'], 'string', 'min' => 20, 'max' => 1000],
         ];
@@ -29,6 +29,7 @@ class ImageRelation extends TimedActiveRecord
             'collection_id' => 'Collection ID',
             'category_id' => 'Category ID',
             'image_id' => 'Image ID',
+            'user_id' => 'User ID',
             'title' => 'Title',
             'description' => 'Description',
         ];
@@ -49,7 +50,7 @@ class ImageRelation extends TimedActiveRecord
         return $this->hasOne(Image::className(), ['id' => 'image_id']);
     }
 
-    public static function createNew($image_id, $collection_id, $category_id, $title, $description)
+    public static function createNew($image_id, $collection_id, $category_id, $title, $description, $user_id)
     {
         $relation = new ImageRelation();
         $relation->image_id = $image_id;
@@ -57,6 +58,7 @@ class ImageRelation extends TimedActiveRecord
         $relation->category_id = $category_id !== 0 ? $category_id : null;
         $relation->title = $title;
         $relation->description = $description;
+        $relation->user_id = $user_id;
 
         if ($relation->save()) {
             return $relation;
