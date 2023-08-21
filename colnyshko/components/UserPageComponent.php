@@ -3,6 +3,8 @@ namespace app\components;
 
 use yii\base\Component;
 use yii\helpers\Html;
+use app\components\user\UserImagesWidget;
+
 class UserPageComponent extends Component
 {
     public $model;
@@ -12,6 +14,7 @@ class UserPageComponent extends Component
     public $isSubscribed;
     public $categories;
     public $category;
+    public $images;
 
     public function renderUserCard()
     {
@@ -49,13 +52,13 @@ class UserPageComponent extends Component
                 <small>Подписчиков: <span class="subscribersCount">' . $this->model->getFormattedSubscribersCount() . '</span></small>
                 <small>Подписок: <span class="subscriptionsCount">' . $this->model->getFormattedSubscriptionsCount() . '</span></small>
             </div>
-        </div>'.$this->renderCategoriesList().'';
+        </div>'.$this->renderCategoriesList();
         return $output;
     }
 
     public function renderCollectionsList()
     {
-        $output = '<div class="card border-info mb-3">
+        $output = '<div class="card border-info mb-2">
             <div id="collections-list" class="card-body">';
 
         foreach ($this->collections as $collectionItem) {
@@ -88,6 +91,14 @@ class UserPageComponent extends Component
         $output .= '</div>';
 
         return $output;
+    }
+    public function renderImagesList()
+    {
+        $listImages = UserImagesWidget::widget([
+            'images' => $this->images
+        ]);
+
+        return $listImages;
     }
 
     public function renderCreateCollectionModal()

@@ -67,4 +67,22 @@ class ImageRelation extends TimedActiveRecord
         }
     }
 
+    public static function getImagesByCriteria($userId, $collectionId = null, $categoryId = null)
+    {
+        $condition = ['user_id' => $userId];
+
+        if ($collectionId !== null && $collectionId != 0) {
+            $condition['collection_id'] = $collectionId;
+        }
+
+        if ($categoryId !== null && $categoryId != 0) {
+            $condition['category_id'] = $categoryId;
+        }
+
+        return self::find()
+            ->where($condition)
+            ->with('image')
+            ->all();
+    }
+
 }

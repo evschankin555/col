@@ -49,6 +49,8 @@ class UserController extends Controller{
         array_unshift($collections, $allCollection);
         array_unshift($categories, $category);
 
+        $images = ImageRelation::getImagesByCriteria($model->id);
+
         return $this->render('view', [
             'model' => $model,
             'currentUser' => $currentUser,
@@ -57,6 +59,7 @@ class UserController extends Controller{
             'collection' => $allCollection,
             'categories' => $categories,
             'category' => $category,
+            'images' => $images,
 
         ]);
     }

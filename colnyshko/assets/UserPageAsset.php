@@ -2,7 +2,6 @@
 namespace app\assets;
 
 use yii\web\AssetBundle;
-
 class UserPageAsset extends AssetBundle
 {
     public $basePath = '@webroot';
@@ -23,6 +22,8 @@ class UserPageAsset extends AssetBundle
         $cssVersion = filemtime(\Yii::getAlias("@webroot/css/user-page.css"));
 
         $this->js = [
+            'https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/imagesloaded/4.1.4/imagesloaded.pkgd.min.js', // Добавляем эту строку
             'js/user-page.js?v=' . $jsVersion,
         ];
 

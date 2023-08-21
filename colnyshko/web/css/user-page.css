@@ -354,3 +354,35 @@
 #postcard-upload-form .error-messages{
     margin-top: 1rem;
 }
+
+.grid-item {
+    width: 300px;
+    max-width: 300px;
+}
+
+@media (max-width: 768px){
+    .grid-item {
+        width: 100%;
+    }
+}
+
+
+.container.main-container{
+    max-width: 100%!important;
+}
+.container.main-container .media-card-body{
+    padding: 20px;
+}
+@media (min-width: 768px){
+    .container.main-container .col-md-3 {
+        flex: 0 0 auto;
+        width: 25%;
+        max-width: 230px;
+    }
+
+    .container.main-container .col-md-9 {
+        flex: 0 0 auto;
+        width: calc(100% - 240px);
+        max-width: calc(100% - 230px);
+    }
+}

@@ -14,6 +14,7 @@ $userPageComponent = new UserPageComponent([
     'isSubscribed' => $isSubscribed,
     'categories' => $categories,
     'category' => $category,
+    'images' => $images,
 ]);
 
 ?>
@@ -25,6 +26,7 @@ $userPageComponent = new UserPageComponent([
     </div>
     <div class="col-md-9">
         <?= $userPageComponent->renderCollectionsList();?>
+        <?= $userPageComponent->renderImagesList();?>
     </div>
 </div>
 <?= $userPageComponent->renderCreateCollectionModal(); ?>

@@ -546,9 +546,26 @@ document.addEventListener("DOMContentLoaded", function() {
     updateCounter(titleInput, titleCounter, 100);
     updateCounter(descriptionTextarea, descriptionCounter, 1000);
 
+    var elem = document.querySelector('.grid');
+    window.msnry = new Masonry(elem, {
+        itemSelector: '.grid-item',
+        columnWidth: '.grid-item',
+        percentPosition: true,
+        gutter: 20
+    });
 
+    imagesLoaded(elem).on('progress', function() {
+        window.msnry.layout();
+    });
+
+    imagesLoaded(elem).on('always', function() {
+        window.msnry.layout();
+    });
 
 });
+window.onload = function() {
+    window.msnry.layout();
+};
 
 function updateDropdownContent(dropdownId, list, isCategory = false) {
     let $dropdown = $(dropdownId);
@@ -757,3 +774,4 @@ function createAndAddCategory(categoryName, usernameElementId, callback) {
         }
     });
 }
+
