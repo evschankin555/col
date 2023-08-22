@@ -39,4 +39,14 @@ class Category extends TimedActiveRecord
     {
         return $this->hasMany(Image::className(), ['id' => 'image_id'])->viaTable('image_relations', ['category_id' => 'id']);
     }
+    public static function getCategoriesForCollection($userId, $collectionId)
+    {
+        return self::find()
+            ->distinct()
+            ->innerJoin('image_relations', 'categories.id = image_relations.category_id')
+            ->where(['image_relations.user_id' => $userId, 'image_relations.collection_id' => $collectionId])
+            ->andWhere(['<>', 'image_relations.category_id', 0])
+            ->all();
+    }
+
 }

@@ -3,6 +3,8 @@ namespace app\models;
 
 use app\models\user_related\Collection;
 use app\models\user_related\Image;
+use app\models\user_related\ImageRelation;
+use app\models\user_related\Category;
 use Yii;
 use app\components\TimedActiveRecord;
 use yii\web\IdentityInterface;
@@ -231,6 +233,16 @@ class User extends TimedActiveRecord implements IdentityInterface
     public function getCategories()
     {
         return $this->hasMany(\app\models\user_related\Category::className(), ['user_id' => 'id']);
+    }
+
+    public function getCollectionsForCategory($categoryId)
+    {
+        return Collection::getCollectionsForCategory($this->id, $categoryId);
+    }
+
+    public function getCategoriesForCollection($collectionId)
+    {
+        return Category::getCategoriesForCollection($this->id, $collectionId);
     }
 
 }

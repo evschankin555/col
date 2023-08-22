@@ -88,7 +88,8 @@ class UserController extends Controller{
         $collections = $user->getCollections()->orderBy(['id' => SORT_DESC])->all();
         $allCollection = (object) ['id' => 0, 'name' => 'Все', 'images' => $user->getImages()->all()];
 
-        $categories = $user->getCategories()->all();
+        //$categories = $user->getCategories()->all();
+        $categories = $user->getCategoriesForCollection($id);
         $category = (object) ['id' => 0, 'name' => 'Все', 'images' => $user->getImages()->all()];
 
         array_unshift($collections, $allCollection);
@@ -422,7 +423,9 @@ class UserController extends Controller{
         $isSubscribed = Subscription::find()->where(['user_id' => $user->id, 'subscriber_id' => $currentUser->id])->exists();
 
         // Получение коллекций пользователя с сортировкой по ID в порядке убывания
-        $collections = $user->getCollections()->orderBy(['id' => SORT_DESC])->all();
+        //$collections = $user->getCollections()->orderBy(['id' => SORT_DESC])->all();
+        $collections = $user->getCollectionsForCategory($id);
+
 
         $allCollection = (object) ['id' => 0, 'name' => 'Все', 'images' => $user->getImages()->all()];
 

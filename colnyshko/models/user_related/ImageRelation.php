@@ -86,5 +86,28 @@ class ImageRelation extends TimedActiveRecord
             ->all();
     }
 
+    public static function getCollectionsForCategory($userId, $categoryId)
+    {
+        return self::find()
+            ->select('collection_id')
+            ->distinct()
+            ->where(['user_id' => $userId, 'category_id' => $categoryId])
+            ->andWhere(['<>', 'collection_id', 0]) // Исключаем записи, где collection_id равен 0
+            ->joinWith('collection')  // Присоединяем таблицу коллекций для дополнительной информации
+            ->all();
+    }
+
+
+    public static function getCategoriesForCollection($userId, $collectionId)
+    {
+        return self::find()
+            ->select('category_id')
+            ->distinct()
+            ->where(['image_relations.user_id' => $userId, 'collection_id' => $collectionId])
+            ->andWhere(['<>', 'category_id', 0]) // Исключаем записи, где category_id равен 0
+            ->joinWith('category')  // Присоединяем таблицу категорий для дополнительной информации
+            ->all();
+    }
+
 
 }
