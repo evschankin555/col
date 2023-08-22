@@ -82,7 +82,9 @@ class ImageRelation extends TimedActiveRecord
         return self::find()
             ->where($condition)
             ->with('image')
+            ->orderBy(['id' => SORT_DESC])
             ->all();
     }
+
 
 }
