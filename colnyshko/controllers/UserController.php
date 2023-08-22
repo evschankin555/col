@@ -94,6 +94,8 @@ class UserController extends Controller{
         array_unshift($collections, $allCollection);
         array_unshift($categories, $category);
 
+        $images = ImageRelation::getImagesByCriteria($user->id, $id);
+
         return $this->render('view', [
             'model' => $user,
             'currentUser' => $currentUser,
@@ -102,6 +104,7 @@ class UserController extends Controller{
             'collection' => $collection,
             'categories' => $categories,
             'category' => $category,
+            'images' => $images,
         ]);
     }
 
@@ -429,6 +432,8 @@ class UserController extends Controller{
         array_unshift($collections, $allCollection);
         array_unshift($categories, $allCategory);
 
+        $images = ImageRelation::getImagesByCriteria($user->id, null, $id);
+
         return $this->render('view', [
             'model' => $user,
             'currentUser' => $currentUser,
@@ -437,6 +442,7 @@ class UserController extends Controller{
             'collection' => $allCollection,
             'categories' => $categories,
             'category' => $category,
+            'images' => $images,
         ]);
     }
 
