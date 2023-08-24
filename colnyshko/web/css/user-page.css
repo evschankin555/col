@@ -387,3 +387,12 @@
         max-width: calc(100% - 230px);
     }
 }
+.card-title {
+     margin-bottom: var(--bs-card-title-spacer-y);
+     padding: 10px 0 0 0;
+     font-size: 14px;
+     white-space: nowrap;  /* Запрет переноса строки */
+     overflow: hidden;     /* Скрыть лишний текст */
+     text-overflow: ellipsis;  /* Добавить многоточие в конце */
+     max-width: 100%;      /* Ограничить максимальную ширину */
+ }
