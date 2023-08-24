@@ -15,6 +15,7 @@ class UserPageComponent extends Component
     public $categories;
     public $category;
     public $images;
+    public $isMain;
 
     public function renderUserCard()
     {
@@ -32,7 +33,7 @@ class UserPageComponent extends Component
                 </div>
                 <div class="form-group buttons">';
 
-        if ($this->currentUser && $this->currentUser->id == $this->model->id) {
+        if ($this->isCurrentUserModel()) {
             $output .= '
 
                         <button type="button" class="btn btn-warning btn-sm" id="addPostcardButton" data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('createCard', 'ru')->message) . '">
@@ -75,7 +76,7 @@ class UserPageComponent extends Component
 
         $output .= '</div>';
 
-        if ($this->currentUser && $this->currentUser->id == $this->model->id) {
+        if ($this->isCurrentUserModel() && $this->isMain) {
             if ($this->collection->id === 0) {
                 $output .= '<button type="button" data-username="' . Html::encode($this->model->username) . '" class="btn btn-warning btn-sm" id="createCollectionButton" data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('createCollection', 'ru')->message) . '">
                             Создать коллекцию
@@ -300,20 +301,26 @@ class UserPageComponent extends Component
     {
         $output = '<div class="card border-info mb-3">
             <div id="categories-list" class="card-body">';
-        $output .= '<button type="button" id="createCategoryButton" data-username="' . Html::encode($this->model->username) . '" class="btn btn-warning btn-sm" data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('createCategory', 'ru')->message) . '">
+        if($this->isMain && $this->isCurrentUserModel()){
+            $output .= '<button type="button" id="createCategoryButton" data-username="' . Html::encode($this->model->username) . '" class="btn btn-warning btn-sm" data-bs-toggle="popover" data-bs-placement="right" data-bs-html="true" data-bs-content="' . htmlspecialchars(\app\models\Tooltip::getTooltip('createCategory', 'ru')->message) . '">
     Создать категорию
 </button>';
-        foreach ($this->categories as $categoryItem) {
-            if ($categoryItem->id === 0) {
-                $output .= '<a class="btn btn-' . ($this->category->id == $categoryItem->id ? 'primary' : 'secondary') . ' btn-sm" href="/' . $this->model->username . '" title="' . Html::encode($categoryItem->name) . '">
+        }
+
+        if (!empty(array_filter($this->categories))) {
+            foreach ($this->categories as $categoryItem) {
+                if ($categoryItem->id === 0) {
+                    $output .= '<a class="btn btn-' . ($this->category->id == $categoryItem->id ? 'primary' : 'secondary') . ' btn-sm" href="/' . $this->model->username . '" title="' . Html::encode($categoryItem->name) . '">
                     ' . Html::encode($categoryItem->name) . '<span class="badge bg-secondary">' . count($categoryItem->images) . '</span>
                 </a>';
-            } else {
-                $output .= '<a class="btn btn-' . ($this->category->id == $categoryItem->id ? 'primary' : 'secondary') . ' btn-sm" href="/' . $this->model->username . '/category/' . $categoryItem->id . '" title="' . Html::encode($categoryItem->name) . '">
+                } else {
+                    $output .= '<a class="btn btn-' . ($this->category->id == $categoryItem->id ? 'primary' : 'secondary') . ' btn-sm" href="/' . $this->model->username . '/category/' . $categoryItem->id . '" title="' . Html::encode($categoryItem->name) . '">
                     ' . Html::encode($categoryItem->name) . '<span class="badge bg-secondary">' . count($categoryItem->images) . '</span>
                 </a>';
+                }
             }
         }
+
 
 
         $output .= '</div>';
@@ -328,4 +335,7 @@ class UserPageComponent extends Component
         return $output;
     }
 
+    public function isCurrentUserModel(): bool {
+        return $this->currentUser && $this->currentUser->id == $this->model->id;
+    }
 }

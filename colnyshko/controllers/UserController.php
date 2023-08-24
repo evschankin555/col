@@ -60,6 +60,7 @@ class UserController extends Controller{
             'categories' => $categories,
             'category' => $category,
             'images' => $images,
+            'isMain' => true,
 
         ]);
     }
@@ -90,7 +91,10 @@ class UserController extends Controller{
 
         //$categories = $user->getCategories()->all();
         $categories = $user->getCategoriesForCollection($id);
-        $category = (object) ['id' => 0, 'name' => 'Все', 'images' => $user->getImages()->all()];
+        $category = null;
+        if (!empty($categories)){
+            $category = (object) ['id' => 0, 'name' => 'Все', 'images' => $user->getImages()->all()];
+        }
 
         array_unshift($collections, $allCollection);
         array_unshift($categories, $category);
@@ -106,6 +110,7 @@ class UserController extends Controller{
             'categories' => $categories,
             'category' => $category,
             'images' => $images,
+            'isMain' => false,
         ]);
     }
 
@@ -446,6 +451,7 @@ class UserController extends Controller{
             'categories' => $categories,
             'category' => $category,
             'images' => $images,
+            'isMain' => false,
         ]);
     }
 

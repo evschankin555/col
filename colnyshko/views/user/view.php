@@ -15,6 +15,7 @@ $userPageComponent = new UserPageComponent([
     'categories' => $categories,
     'category' => $category,
     'images' => $images,
+    'isMain' => $isMain,
 ]);
 
 ?>
