@@ -1,7 +1,9 @@
 <?php
 namespace app\components\user;
 
+use app\assets\ImagesWidgetDropdownModalAsset;
 use yii\base\Widget;
+use yii\bootstrap5\Modal;
 use yii\helpers\Html;
 
 class UserImagesWidget extends Widget
@@ -32,17 +34,20 @@ class UserImagesWidget extends Widget
         $src = $url;
 
         $output .= '
-        <img class="user-image-modal" src="' . $src . '" alt="' . Html::encode($imageRelation->description) . '">';
-
+            <a href="'.$url.'">
+            <img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->url . '" src="' . $src . '" alt="' . $image->description . '" data-href="'.$image->href.'">';
+        $output .= '</a>';
         $output .= '<h5 class="card-title">' . Html::encode($imageRelation->title) . '</h5>';
 
         $output .= '</div>';
         $output .= '<div class="card-footer">';
 
         $output .= $this->renderDropdown($image);
-        $output .= $this->renderDownloadMenu($image);
         $output .= '</div>';
         $output .= '</div>';
+        $output .= $this->renderModal();
+        $output .= $this->renderAlert();
+        ImagesWidgetDropdownModalAsset::register($this->view);
 
         return $output;
     }
@@ -60,7 +65,7 @@ class UserImagesWidget extends Widget
         $output .= '</li>';*/
 
         $output .= '<li class="nav-item dropdown images-menu">';
-        $output .= '<a class="nav-link show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">&nbsp;</a>';
+        $output .= '<a class="nav-link show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отправить</a>';
         $output .= '<div class="dropdown-menu" data-popper-placement="bottom-start">';
         $output .= '<a class="dropdown-item ok" rel="nofollow noopener" target="_blank" href="https://connect.ok.ru/dk?st.cmd=WidgetSharePreview&st.shareUrl='.$url.'">Одноклассники</a>';
         $output .= '<a class="dropdown-item vk" rel="nofollow noopener" target="_blank" href="https://vk.com/share.php?url='.$url.'">Вконтакте</a>';
@@ -82,25 +87,35 @@ class UserImagesWidget extends Widget
 
         return $output;
     }
-
-    private function renderDownloadMenu($image)
+    private function renderModal()
     {
-    /*    $output = '<ul class="nav nav-pills">';
-        $output .= '<li class="nav-item dropdown images-menu-download">';
-        $output .= '<a class="nav-link show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Скачать</a>';
-        $output .= '<div class="dropdown-menu" data-popper-placement="bottom-start">';
-
-        if (is_array($image->files) || is_object($image->files)) {
-            foreach ($image->files as $file) {
-                $output .= '<a class="dropdown-item ' . $file['type'] . '" href="' . $file['href'] . '" download target="_blanck">&nbsp;</a>';
-            }
-        }
-
-        $output .= '</div>';
-        $output .= '</li>';
-        $output .= '</ul>';
-
-        return $output;*/
+        ob_start();
+        Modal::begin([
+            'title' => '<span id="modal-title"></span>',
+            'id' => 'myModal',
+            'footer' => Html::button('Копировать', ['class' => 'btn btn-primary images-copy']). Html::button('Close', ['class' => 'btn btn-secondary', 'data-bs-dismiss' => 'modal']),
+            'dialogOptions' => ['class' => 'modal-dialog-centered'],
+        ]);
+        echo '<span id="modal-content">Содержимое модального окна...</span>';
+        Modal::end();
+        return ob_get_clean();
     }
+    private function renderAlert()
+    {
+
+        return '
+<div id="copy-toast" class="toast alert-success" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="toast-header">
+    <strong class="me-auto">Выполнено!</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+  <div class="toast-body">
+    Скопировано в буфер обмена.
+  </div>
+</div>
+
+';
+    }
+
 }
 

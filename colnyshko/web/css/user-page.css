@@ -356,8 +356,8 @@
 }
 
 .grid-item {
-    width: 300px;
-    max-width: 300px;
+    width: 450px;
+    max-width: 450px;
 }
 
 @media (max-width: 768px){
