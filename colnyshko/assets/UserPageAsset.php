@@ -23,7 +23,7 @@ class UserPageAsset extends AssetBundle
 
         $this->js = [
             'https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js',
-            'https://cdnjs.cloudflare.com/ajax/libs/imagesloaded/4.1.4/imagesloaded.pkgd.min.js', // Добавляем эту строку
+            'https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js',
             'js/user-page.js?v=' . $jsVersion,
         ];
 

@@ -774,4 +774,25 @@ function createAndAddCategory(categoryName, usernameElementId, callback) {
         }
     });
 }
+$('.user-images .card').on('click', function() {
+    $(this).toggleClass('active');
+});
+function updateMasonry555(){
+    setTimeout(function (){
+        window.msnry.layout();
+    }, 555);
+};
+document.querySelectorAll('.js-card').forEach(function(card) {
+    card.addEventListener('mouseover', function() {
+        this.classList.add('is-active');
+        window.msnry.layout();
+        updateMasonry555();
+    });
+    card.addEventListener('mouseout', function() {
+        this.classList.remove('is-active');
+        window.msnry.layout();
+        updateMasonry555();
+    });
+});
+
 

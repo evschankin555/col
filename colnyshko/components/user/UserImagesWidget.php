@@ -12,7 +12,7 @@ class UserImagesWidget extends Widget
 
     public function run()
     {
-        $output = '<div class="grid">';
+        $output = '<div class="grid user-images">';
         foreach ($this->images as $image) {
             $output .= '<div class="grid-item">';
             $output .= $this->renderCard($image);
@@ -27,7 +27,8 @@ class UserImagesWidget extends Widget
     {
         $image = $imageRelation->image;
 
-        $output = '<div class="card mb-2">';
+        $output = '<div class="card mb-2 js-card">';
+        $output .= '  <h5 class="card-header">' . Html::encode($imageRelation->title) . '</h5>';
         $output .= '<div class="card-body media-card-body">';
 
         $url = $image->url;
@@ -37,7 +38,6 @@ class UserImagesWidget extends Widget
             <a href="'.$url.'">
             <img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->url . '" src="' . $src . '" alt="' . $image->description . '" data-href="'.$image->href.'">';
         $output .= '</a>';
-        $output .= '<h5 class="card-title">' . Html::encode($imageRelation->title) . '</h5>';
 
         $output .= '</div>';
         $output .= '<div class="card-footer">';
@@ -54,16 +54,10 @@ class UserImagesWidget extends Widget
 
     private function renderDropdown($image)
     {
-        $url = $image->href; // Замените на актуальный URL вашего изображения
+        $url = $image->href;
         $output = '<ul class="nav nav-pills">';
-
         $output .= '<li class="nav-item dropdown images-menu">';
         $output .= '<div class="dropdown-menu" data-popper-placement="bottom-start">';
-
-        /*$output .= '<li class="nav-item">';
-        $output .= '<a class="nav-link" href="' . $image->href . '">Просмотреть</a>';
-        $output .= '</li>';*/
-
         $output .= '<li class="nav-item dropdown images-menu">';
         $output .= '<a class="nav-link show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отправить</a>';
         $output .= '<div class="dropdown-menu" data-popper-placement="bottom-start">';
@@ -81,10 +75,7 @@ class UserImagesWidget extends Widget
         //$output .= '<a class="dropdown-item bb" href="#">BB-code</a>';
         $output .= '</div>';
         $output .= '</li>';
-
-
         $output .= '</ul>';
-
         return $output;
     }
     private function renderModal()

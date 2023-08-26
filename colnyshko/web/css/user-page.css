@@ -356,8 +356,8 @@
 }
 
 .grid-item {
-    width: 360px;
-    max-width: 360px;
+    width: 240px;
+    max-width: 240px;
 }
 
 @media (max-width: 768px){
@@ -387,12 +387,89 @@
         max-width: calc(100% - 230px);
     }
 }
-.card-title {
+.card-header {
      margin-bottom: var(--bs-card-title-spacer-y);
      padding: 10px 0 0 0;
-     font-size: 14px;
+     font-size: 16px;
      white-space: nowrap;  /* Запрет переноса строки */
      overflow: hidden;     /* Скрыть лишний текст */
      text-overflow: ellipsis;  /* Добавить многоточие в конце */
      max-width: 100%;      /* Ограничить максимальную ширину */
  }
+.user-images .nav-item.dropdown.images-menu .nav-link{
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 5px 10px;
+    padding-left: 30px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+.user-images .nav-item.dropdown.images-menu .nav-link::before{
+    background-size: 20px 20px;
+    width: 20px;
+    height: 20px;
+    left: 7px;
+}
+
+.user-images .dropdown-menu {
+    background-color: #e83283a8;
+    inset: auto auto 0px 0px !important;
+    transform: translate(-28px, -38px) !important;
+}
+
+.user-images .dropdown-item{
+    font-size: 14px;
+    padding: 10px 10px 10px 50px;
+}
+.user-images .dropdown-item.ok::before,
+.user-images .dropdown-item.mm::before,
+.user-images .dropdown-item.vk::before,
+.user-images .dropdown-item.whatsapp::before,
+.user-images .dropdown-item.telegram::before,
+.user-images .dropdown-item.viber::before
+{
+    background-size: 20px 20px;
+    width: 26px;
+    height: 26px;
+    top:3px;
+}
+
+
+.user-images .dropdown-item.link::before,
+.user-images .dropdown-item.html::before
+{
+    background-size: 20px 20px;
+    width: 24px;
+    height: 24px;
+    top: 8px;
+}
+.user-images .dropdown-divider
+{
+    margin: 5px;
+}
+
+.user-images .card .card-header,
+.user-images .card .card-footer{
+    opacity: 0;
+    height: 0;
+    padding: 0 0;  /* padding установлен в 0 */
+    overflow: hidden;
+    transition: opacity 1.5s, height 0.5s, padding 0.5s;
+}
+
+.user-images .card {
+    transition: all 1.5s;
+}
+
+.user-images .card.is-active .card-header,
+.user-images .card.is-active .card-footer{
+    opacity: 1;
+    height: auto;
+    padding: var(--bs-card-cap-padding-y) var(--bs-card-cap-padding-x);  /* фактические значения padding */
+}
+
+.container.main-container .user-images .media-card-body{
+    padding: 0px 0px;
+}
+.user-images .media-card-body img{
+    border-radius: 0.5rem;
+}
