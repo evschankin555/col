@@ -28,22 +28,23 @@ class UserImagesWidget extends Widget
         $image = $imageRelation->image;
 
         $output = '<div class="card mb-2 js-card">';
-        $output .= '  <h5 class="card-header">' . Html::encode($imageRelation->title) . '</h5>';
+        /*$output .= '  <h5 class="card-header">' . Html::encode($imageRelation->title) . '</h5>';*/
         $output .= '<div class="card-body media-card-body">';
 
         $url = $image->url;
         $src = $url;
 
-        $output .= '
-            <a href="'.$url.'">
-            <img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->url . '" src="' . $src . '" alt="' . $image->description . '" data-href="'.$image->href.'">';
+        $output .= '<a href="'.$url.'">';
+        $output .= '    <button type="button" class="btn btn-warning btn-sm save-button" id="saveButton" >';
+        $output .= '      Сохранить...';
+        $output .= '    </button>';
+        $output .= '<img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->url . '" src="' . $src . '" alt="' . $image->description . '" data-href="'.$image->href.'">';
+        $output .= $this->renderDropdown($image);
         $output .= '</a>';
 
         $output .= '</div>';
-        $output .= '<div class="card-footer">';
-
-        $output .= $this->renderDropdown($image);
-        $output .= '</div>';
+        /*$output .= '<div class="card-footer">';
+        $output .= '</div>';*/
         $output .= '</div>';
         $output .= $this->renderModal();
         $output .= $this->renderAlert();

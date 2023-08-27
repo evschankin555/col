@@ -397,11 +397,15 @@
      max-width: 100%;      /* Ограничить максимальную ширину */
  }
 .user-images .nav-item.dropdown.images-menu .nav-link{
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(231, 50, 130, 0.88);
     padding: 5px 10px;
     padding-left: 30px;
     border-radius: 4px;
     font-size: 14px;
+}
+.user-images .nav-item.dropdown.images-menu .nav-link:hover{
+    background-color: rgba(255, 78, 156, 0.98);
+
 }
 .user-images .nav-item.dropdown.images-menu .nav-link::before{
     background-size: 20px 20px;
@@ -475,3 +479,27 @@
 .user-images .media-card-body img{
     border-radius: 0.5rem;
 }
+.save-button {
+    opacity: 0;
+    transition: opacity 0.5s;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.card.is-active .save-button {
+    opacity: 1;
+}
+
+.user-images .nav.nav-pills{
+    opacity: 0;
+    transition: opacity 0.5s;
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+}
+
+.card.is-active .nav.nav-pills {
+    opacity: 1;
+}
+
