@@ -16,6 +16,7 @@ class CardManager {
         this.currentErrorClassIndex = 0;
         this.hasErrors = false;
         this.isCanceled = false;
+        this.isSavePostCard = false;
         this.gtfsUpload = $('#gtfs_upload');
         this.fileUploadContainer = $('.file-upload-container');
         this.initializeCounters();
@@ -51,6 +52,9 @@ class CardManager {
             card.addEventListener('mouseover', this.handleMouseOverCard.bind(this));
             card.addEventListener('mouseout', this.handleMouseOutCard.bind(this));
         });
+        document.querySelectorAll('.save-button').forEach(saveCard => {
+            saveCard.addEventListener('click', this.showSavePostcardModal.bind(this));
+        });
     }
 
     /**
@@ -72,10 +76,12 @@ class CardManager {
      * Инициализирует и отображает модальное окно, а также загружает коллекции и категории.
      */
     showAddPostcardModal() {
-        $('#addPostcard').modal('show');
         this.isCanceled = false;
+        this.isSavePostCard = false;
+        this.initializeFormPostcardModal();
         this.fetchCollections();
         this.fetchCategories();
+        $('#addPostcard').modal('show');
     }
     /**
      * Сохранение почтовой карточки.
@@ -294,7 +300,6 @@ class CardManager {
             }
         }
     }
-
     /**
      * Симулирует клик по элементу для загрузки файла.
      * Вызывается при клике на элемент с id 'browse-link'.
@@ -302,7 +307,6 @@ class CardManager {
     triggerFileUpload() {
         this.gtfsUpload.trigger('click');
     }
-
     /**
      * Обработчик события изменения выбранного файла.
      * При изменении файла в элементе загрузки вызывает функцию для обработки этого файла.
@@ -886,6 +890,55 @@ class CardManager {
         window.msnry.layout();
         this.updateMasonry555();
     }
+    /**
+     * Отображение модального окна для сохранения открытки.
+     * Метод вызывается при клике на кнопку "Сохранить" и открывает модальное окно,
+     * запрашивая детали посткарты по её id.
+     *
+     * @param {Event} event - Объект события клика.
+     */
+    showSavePostcardModal(event) {
+        const id = $(event.target).data('id');
+        this.isSavePostCard = true;
+        this.initializeFormPostcardModal();
+        $('#addPostcard').modal('show');
+        this.fetchPostcardDetails(id);
+    }
+    /**
+     * Запрос деталей посткарты через AJAX.
+     * Метод делает GET-запрос к серверу для получения деталей открытки по её id,
+     * и заполняет поля в модальном окне полученными данными.
+     *
+     * @param {number|string} id - Идентификатор открытки.
+     */
+    fetchPostcardDetails(id) {
+        $.ajax({
+            url: `/api/postcard/${id}`,
+            type: 'GET',
+            success: (data) => {
+                $('#postcardTitle').val(data.title);
+                $('#postcardDescription').val(data.description);
+            },
+            error: () => {
+                $('.error-text').html('Не удалось загрузить данные');
+            }
+        });
+    }
+    /**
+     * Инициализация формы для загрузки или сохранения открытки.
+     * Метод устанавливает класс 'active' или 'not-active' для элемента с классом 'file-upload-container'
+     * в зависимости от значения this.isSavePostCard.
+     */
+    initializeFormPostcardModal() {
+        if (this.isSavePostCard) {
+            $('.file-upload-container').removeClass('active').addClass('not-active');
+            $('#addPostcardModalLabel').text('Сохранить открытку');
+        } else {
+            $('.file-upload-container').removeClass('not-active').addClass('active');
+            $('#addPostcardModalLabel').text('Добавить открытку');
+        }
+    }
+
 }
 
 $(document).ready(function() {
