@@ -163,8 +163,6 @@ class UserPage {
     }
 }
 
-// Инициализируем новый класс после загрузки DOM
 $(document).ready(function() {
     new UserPage();
 });
-window.isCanceled = false;

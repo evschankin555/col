@@ -888,7 +888,6 @@ class CardManager {
     }
 }
 
-// Подключаем новый класс после загрузки DOM
 $(document).ready(function() {
     new CardManager();
 });
