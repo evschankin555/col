@@ -33,14 +33,13 @@ class UserImagesWidget extends Widget
 
         $url = $image->url;
         $src = $url;
-
-        $output .= '<a href="'.$url.'">';
-        $output .= '    <button type="button" class="btn btn-warning btn-sm save-button" id="saveButton" >';
+        $output .= '<div>';
+        $output .= '    <button type="button" class="btn btn-warning btn-sm save-button" id="saveButton" data-id="' . $image->id . '">';
         $output .= '      Сохранить...';
         $output .= '    </button>';
         $output .= '<img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->url . '" src="' . $src . '" alt="' . $image->description . '" data-href="'.$image->href.'">';
         $output .= $this->renderDropdown($image);
-        $output .= '</a>';
+        $output .= '</div>';
 
         $output .= '</div>';
         /*$output .= '<div class="card-footer">';
