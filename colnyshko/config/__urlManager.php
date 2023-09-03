@@ -23,6 +23,7 @@ return [
         'user/get-categories' => 'user/get-categories',
         'user/create-category' => 'user/create-category',
         'user/add-postcard' => 'user/add-postcard',
+        'user/post-card-data' => 'user/post-card-data',
         'login' => 'pages/login',
         'signup' => 'pages/signup',
         'logout' => 'pages/logout',

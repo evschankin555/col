@@ -109,5 +109,18 @@ class ImageRelation extends TimedActiveRecord
             ->all();
     }
 
+    public static function getImageURLById($id)
+    {
+        $imageRelation = self::find()
+            ->where(['id' => $id])
+            ->with('image')
+            ->one();
+
+        if ($imageRelation && $imageRelation->image) {
+            return $imageRelation->image->url;
+        }
+
+        return null;
+    }
 
 }

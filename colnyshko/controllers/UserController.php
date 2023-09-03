@@ -489,4 +489,26 @@ class UserController extends Controller{
         }
     }
 
+    public function actionPostCardData()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        if (!Yii::$app->user->isGuest) {
+            if (Yii::$app->request->isPost) {
+                $id = Yii::$app->request->post('id');
+
+                $imageURL = ImageRelation::getImageURLById($id);
+
+                if (!$imageURL) {
+                    return ['success' => false, 'message' => 'Изображение не найдено.'];
+                }
+
+                return ['success' => true, 'message' => 'Данные открытки успешно получены!', 'imageURL' => $imageURL];
+            } else {
+                return ['success' => false, 'message' => 'Недопустимый тип запроса.'];
+            }
+        } else {
+            return ['success' => false, 'message' => 'Вы не авторизованы. Пожалуйста, авторизуйтесь сначала.'];
+        }
+    }
+
 }

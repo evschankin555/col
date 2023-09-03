@@ -34,7 +34,11 @@ class UserImagesWidget extends Widget
         $url = $image->url;
         $src = $url;
         $output .= '<div>';
-        $output .= '    <button type="button" class="btn btn-warning btn-sm save-button" id="saveButton" data-id="' . $image->id . '">';
+        $output .= '    <button type="button" 
+        class="btn btn-warning btn-sm save-button"  
+        data-id="' . $image->id . '"
+        data-src="' . $image->url . '"
+        >';
         $output .= '      Сохранить...';
         $output .= '    </button>';
         $output .= '<img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->url . '" src="' . $src . '" alt="' . $image->description . '" data-href="'.$image->href.'">';

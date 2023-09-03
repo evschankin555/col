@@ -898,31 +898,9 @@ class CardManager {
      * @param {Event} event - Объект события клика.
      */
     showSavePostcardModal(event) {
-        const id = $(event.target).data('id');
         this.isSavePostCard = true;
         this.initializeFormPostcardModal();
         $('#addPostcard').modal('show');
-        this.fetchPostcardDetails(id);
-    }
-    /**
-     * Запрос деталей посткарты через AJAX.
-     * Метод делает GET-запрос к серверу для получения деталей открытки по её id,
-     * и заполняет поля в модальном окне полученными данными.
-     *
-     * @param {number|string} id - Идентификатор открытки.
-     */
-    fetchPostcardDetails(id) {
-        $.ajax({
-            url: `/api/postcard/${id}`,
-            type: 'GET',
-            success: (data) => {
-                $('#postcardTitle').val(data.title);
-                $('#postcardDescription').val(data.description);
-            },
-            error: () => {
-                $('.error-text').html('Не удалось загрузить данные');
-            }
-        });
     }
     /**
      * Инициализация формы для загрузки или сохранения открытки.
@@ -931,11 +909,27 @@ class CardManager {
      */
     initializeFormPostcardModal() {
         if (this.isSavePostCard) {
+            const id = $(event.target).data('id');
+            const src = $(event.target).data('src');
             $('.file-upload-container').removeClass('active').addClass('not-active');
             $('#addPostcardModalLabel').text('Сохранить открытку');
+            $('#del_file_upload-image').hide();
+
+            const container = $('.file-upload-container-image');
+            container.css('display', 'flex').css('border', 'none');
+            container.find('img, video').remove();
+            container.append(`<img src="${src}" alt="Uploaded Image" />`);
+
         } else {
             $('.file-upload-container').removeClass('not-active').addClass('active');
             $('#addPostcardModalLabel').text('Добавить открытку');
+            $('#del_file_upload-image').show();
+
+            const container = $('.file-upload-container-image');
+            container.css('display', 'flex').css('border', '2px dashed rgba(255,255,255,.7)');
+            container.find('img, video').remove();
+            $('.file-upload-container-image').hide().children().not('#del_file_upload-image').remove();
+
         }
     }
 
