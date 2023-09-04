@@ -510,5 +510,38 @@ class UserController extends Controller{
             return ['success' => false, 'message' => 'Вы не авторизованы. Пожалуйста, авторизуйтесь сначала.'];
         }
     }
+    public function actionSavePostcard()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        if (!Yii::$app->user->isGuest) {
+            $currentUser = Yii::$app->user->identity;
+            if (Yii::$app->request->isPost) {
+                $title = Yii::$app->request->post('title');
+                $description = Yii::$app->request->post('description');
+                $imageURL = Yii::$app->request->post('imageURL');
+                $collection = Yii::$app->request->post('collection');
+                $category = Yii::$app->request->post('category');
+
+                // Найти существующую запись изображения
+                $image = Image::findByUrl($imageURL);
+                if (!$image) {
+                    return ['success' => false, 'message' => 'Изображение не найдено.'];
+                }
+
+                // Создаем запись для связи
+                $relation = ImageRelation::createNew($image->id, $collection, $category, $title, $description, $currentUser->id);
+                if (!$relation) {
+                    return ['success' => false, 'message' => 'Ошибка при добавлении связи изображения.'];
+                }
+
+                return ['success' => true, 'message' => 'Открытка успешно сохранена!'];
+            } else {
+                return ['success' => false, 'message' => 'Недопустимый тип запроса.'];
+            }
+        } else {
+            return ['success' => false, 'message' => 'Вы не авторизованы. Пожалуйста, авторизуйтесь сначала.'];
+        }
+    }
 
 }

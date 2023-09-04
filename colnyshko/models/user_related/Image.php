@@ -115,5 +115,8 @@
             parent::afterFind();
             $this->href = $this->generateHref();
         }
+        public static function findByUrl($imageUrl) {
+            return self::findOne(['url' => $imageUrl]);
+        }
 
     }

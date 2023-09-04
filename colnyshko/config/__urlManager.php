@@ -24,6 +24,7 @@ return [
         'user/create-category' => 'user/create-category',
         'user/add-postcard' => 'user/add-postcard',
         'user/post-card-data' => 'user/post-card-data',
+        'user/save-postcard' => 'user/save-postcard',
         'login' => 'pages/login',
         'signup' => 'pages/signup',
         'logout' => 'pages/logout',
