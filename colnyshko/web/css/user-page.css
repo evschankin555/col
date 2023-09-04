@@ -503,3 +503,15 @@
     opacity: 1;
 }
 
+.move-button {
+    opacity: 0;
+    transition: opacity 0.5s;
+    position: absolute;
+    top: 5px;
+    right: 105px;
+}
+
+.card.is-active .move-button {
+    opacity: 1;
+}
+

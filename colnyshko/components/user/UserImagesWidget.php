@@ -5,13 +5,17 @@ use app\assets\ImagesWidgetDropdownModalAsset;
 use yii\base\Widget;
 use yii\bootstrap5\Modal;
 use yii\helpers\Html;
+use Yii;
 
 class UserImagesWidget extends Widget
 {
     public $images;
+    public $currentUser;
+    public $isCurrentUserOwner;
 
     public function run()
     {
+        $this->currentUser = Yii::$app->user->identity;
         $output = '<div class="grid user-images">';
         foreach ($this->images as $image) {
             $output .= '<div class="grid-item">';
@@ -25,6 +29,8 @@ class UserImagesWidget extends Widget
 
     private function renderCard($imageRelation)
     {
+
+        $this->isCurrentUserOwner = ($imageRelation->user_id == $this->currentUser->id);
         $image = $imageRelation->image;
 
         $output = '<div class="card mb-2 js-card">';
@@ -33,16 +39,8 @@ class UserImagesWidget extends Widget
         $url = $image->url;
         $src = $url;
         $output .= '<div>';
-        $output .= '    <button type="button" 
-class="btn btn-warning btn-sm save-button"  
-data-id="' . $image->id . '"
-data-src="' . $image->url . '"
-data-title="' . htmlspecialchars($imageRelation->title) . '"
-data-description="' . htmlspecialchars($imageRelation->description) . '"
->';
-
-        $output .= '      Сохранить...';
-        $output .= '    </button>';
+        $output .= $this->renderButton('Сохранить...', 'btn-warning', 'save-button', $image, $imageRelation);
+        $output .= $this->renderButton('Переместить...', 'btn-info', 'move-button', $image, $imageRelation);
 
         $output .= '<img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->url . '" src="' . $src . '" alt="' . $image->description . '" data-href="'.$image->href.'">';
         $output .= $this->renderDropdown($image);
@@ -113,6 +111,25 @@ data-description="' . htmlspecialchars($imageRelation->description) . '"
 </div>
 
 ';
+    }
+
+    public function renderButton($text, $btnClass, $actionButtonClass, $image, $imageRelation)
+    {
+        if ($text === "Переместить..." && !$this->isCurrentUserOwner) {
+            return '';
+        }
+
+        $output = '    <button type="button" ';
+        $output .= 'class="btn ' . $btnClass . ' btn-sm ' . $actionButtonClass . '" ';
+        $output .= 'data-id="' . $image->id . '" ';
+        $output .= 'data-src="' . $image->url . '" ';
+        $output .= 'data-title="' . htmlspecialchars($imageRelation->title) . '" ';
+        $output .= 'data-description="' . htmlspecialchars($imageRelation->description) . '" ';
+        $output .= '>';
+        $output .= $text;
+        $output .= '    </button>';
+
+        return $output;
     }
 
 }
