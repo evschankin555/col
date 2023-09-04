@@ -28,19 +28,22 @@ class UserImagesWidget extends Widget
         $image = $imageRelation->image;
 
         $output = '<div class="card mb-2 js-card">';
-        /*$output .= '  <h5 class="card-header">' . Html::encode($imageRelation->title) . '</h5>';*/
         $output .= '<div class="card-body media-card-body">';
 
         $url = $image->url;
         $src = $url;
         $output .= '<div>';
         $output .= '    <button type="button" 
-        class="btn btn-warning btn-sm save-button"  
-        data-id="' . $image->id . '"
-        data-src="' . $image->url . '"
-        >';
+class="btn btn-warning btn-sm save-button"  
+data-id="' . $image->id . '"
+data-src="' . $image->url . '"
+data-title="' . htmlspecialchars($imageRelation->title) . '"
+data-description="' . htmlspecialchars($imageRelation->description) . '"
+>';
+
         $output .= '      Сохранить...';
         $output .= '    </button>';
+
         $output .= '<img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->url . '" src="' . $src . '" alt="' . $image->description . '" data-href="'.$image->href.'">';
         $output .= $this->renderDropdown($image);
         $output .= '</div>';

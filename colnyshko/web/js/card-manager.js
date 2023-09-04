@@ -911,6 +911,12 @@ class CardManager {
         if (this.isSavePostCard) {
             const id = $(event.target).data('id');
             const src = $(event.target).data('src');
+            const title = $(event.target).data('title');
+            const description = $(event.target).data('description');
+
+            $('#postcard-title').val(title);
+            $('#postcard-description').val(description);
+
             $('.file-upload-container').removeClass('active').addClass('not-active');
             $('#addPostcardModalLabel').text('Сохранить открытку');
             $('#del_file_upload-image').hide();
@@ -929,9 +935,9 @@ class CardManager {
             container.css('display', 'flex').css('border', '2px dashed rgba(255,255,255,.7)');
             container.find('img, video').remove();
             $('.file-upload-container-image').hide().children().not('#del_file_upload-image').remove();
-
         }
     }
+
 
 }
 
