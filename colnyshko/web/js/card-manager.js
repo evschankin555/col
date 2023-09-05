@@ -17,6 +17,7 @@ class CardManager {
         this.hasErrors = false;
         this.isCanceled = false;
         this.isSavePostCard = false;
+        this.isMovePostCard = false;
         this.gtfsUpload = $('#gtfs_upload');
         this.fileUploadContainer = $('.file-upload-container');
         this.initializeCounters();
@@ -55,6 +56,9 @@ class CardManager {
         document.querySelectorAll('.save-button').forEach(saveCard => {
             saveCard.addEventListener('click', this.showSavePostcardModal.bind(this));
         });
+        document.querySelectorAll('.move-button').forEach(saveCard => {
+            saveCard.addEventListener('click', this.showMovePostcardModal.bind(this));
+        });
     }
 
     /**
@@ -77,6 +81,7 @@ class CardManager {
      */
     showAddPostcardModal() {
         this.isCanceled = false;
+        this.isMovePostCard = false;
         this.isSavePostCard = false;
         this.initializeFormPostcardModal();
         $('#addPostcard').modal('show');
@@ -891,6 +896,7 @@ class CardManager {
      */
     showSavePostcardModal(event) {
         this.isSavePostCard = true;
+        this.isMovePostCard = false;
         this.initializeFormPostcardModal();
         $('#addPostcard').modal('show');
     }
@@ -902,17 +908,35 @@ class CardManager {
     initializeFormPostcardModal() {
         this.fetchCollections();
         this.fetchCategories();
-        if (this.isSavePostCard) {
+        if (this.isSavePostCard || this.isMovePostCard) {
             const id = $(event.target).data('id');
+            const collectionId = $(event.target).data('collection-id');
+            const categoryId = $(event.target).data('category-id');
+
+            if (this.isMovePostCard) {
+                this.setDropdownSelection('collectionButton', '.collection-buttons .dropdown-menu', collectionId);
+                this.setDropdownSelection('categoryButton', '.category-buttons .dropdown-menu', categoryId);
+
+                $('#addPostcardModalLabel').text('Переместить открытку');
+                $("#save-postcard-btn").text("Переместить");
+
+                document.getElementById('postcard-title').parentNode.style.display = 'none';
+                document.getElementById('postcard-description').parentNode.style.display = 'none';
+            }else{
+                const title = $(event.target).data('title');
+                const description = $(event.target).data('description');
+
+                $('#postcard-title').val(title);
+                $('#postcard-description').val(description);
+                $('#addPostcardModalLabel').text('Сохранить открытку');
+                $("#save-postcard-btn").text("Сохранить");
+
+
+                document.getElementById('postcard-title').parentNode.style.display = 'block';
+                document.getElementById('postcard-description').parentNode.style.display = 'block';
+            }
             const src = $(event.target).data('src');
-            const title = $(event.target).data('title');
-            const description = $(event.target).data('description');
-
-            $('#postcard-title').val(title);
-            $('#postcard-description').val(description);
-
             $('.file-upload-container').removeClass('active').addClass('not-active');
-            $('#addPostcardModalLabel').text('Сохранить открытку');
             $('#del_file_upload-image').hide();
 
             const container = $('.file-upload-container-image');
@@ -921,8 +945,12 @@ class CardManager {
             container.append(`<img src="${src}" alt="Uploaded Image" />`);
             $('#input_file_upload-image').val(src);
         } else {
+            document.getElementById('postcard-title').parentNode.style.display = 'block';
+            document.getElementById('postcard-description').parentNode.style.display = 'block';
             $('.file-upload-container').removeClass('not-active').addClass('active');
             $('#addPostcardModalLabel').text('Добавить открытку');
+            $("#save-postcard-btn").text("Добавить");
+
             $('#del_file_upload-image').show();
 
             const container = $('.file-upload-container-image');
@@ -956,6 +984,46 @@ class CardManager {
         });
     }
 
+    /**
+     * Отображение модального окна для перемещения открытки.
+     * Метод вызывается при клике на кнопку "Переместить" и открывает модальное окно,
+     * запрашивая детали открытки по её id для операции перемещения.
+     *
+     * @param {Event} event - Объект события клика.
+     */
+    showMovePostcardModal(event) {
+        this.isMovePostCard = true;
+        this.isSavePostCard = false;
+        this.initializeFormPostcardModal();
+        $('#addPostcard').modal('show');
+    }
+
+    /**
+     * Устанавливает выбранный пункт в выпадающем меню на основе переданного `id`.
+     * Метод проходит по всем пунктам выпадающего меню и выбирает тот пункт, который
+     * соответствует указанному `id`. Выбранный пункт отображается на кнопке меню.
+     *
+     * @param {string} dropdownButtonId - ID кнопки выпадающего меню.
+     * @param {string} dropdownMenuId - селектор меню, содержащего пункты для выбора.
+     * @param {number} selectedId - ID пункта, который нужно выбрать.
+     */
+
+    setDropdownSelection(dropdownButtonId, dropdownMenuId, selectedId) {
+        // Сброс текущего выбора
+        $(`#${dropdownButtonId}`).text('Не выбрано').attr('data-value', '');
+
+        // Пройдемся по всем пунктам в выпадающем меню
+        $(`${dropdownMenuId} .dropdown-item`).each(function() {
+            const itemId = $(this).data('value');
+            const itemName = $(this).text();
+
+            // Если текущий пункт соответствует переданному id, обновим текст кнопки
+            if (itemId === selectedId) {
+                $(`#${dropdownButtonId}`).text(itemName).attr('data-value', itemId);
+                return false;  // прерываем цикл
+            }
+        });
+    }
 
 }
 

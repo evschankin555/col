@@ -118,13 +118,14 @@ class UserImagesWidget extends Widget
         if ($text === "Переместить..." && !$this->isCurrentUserOwner) {
             return '';
         }
-
         $output = '    <button type="button" ';
         $output .= 'class="btn ' . $btnClass . ' btn-sm ' . $actionButtonClass . '" ';
         $output .= 'data-id="' . $image->id . '" ';
         $output .= 'data-src="' . $image->url . '" ';
         $output .= 'data-title="' . htmlspecialchars($imageRelation->title) . '" ';
         $output .= 'data-description="' . htmlspecialchars($imageRelation->description) . '" ';
+        $output .= 'data-collection-id="' . $imageRelation->collection_id . '" ';
+        $output .= 'data-category-id="' . $imageRelation->category_id . '" ';
         $output .= '>';
         $output .= $text;
         $output .= '    </button>';
