@@ -102,13 +102,16 @@ class CardManager {
         $('#error-list').empty();
         this.hasErrors = false;
 
-        if (postcardTitle.length < 10) {
-            this.appendError('Название должно быть не менее 10 символов');
+        // Проверки на валидацию не нужны при операции перемещения
+        if (!this.isMovePostCard) {
+            if (postcardTitle.length < 10) {
+                this.appendError('Название должно быть не менее 10 символов');
+            }
+            if (postcardDescription.length < 20) {
+                this.appendError('Описание должно быть не менее 20 символов');
+            }
         }
-        if (postcardDescription.length < 20) {
-            this.appendError('Описание должно быть не менее 20 символов');
-        }
-        if (!postcardImageURL) {
+        if (!postcardImageURL && !this.isMovePostCard) { // Нет нужды в проверке картинки при перемещении
             this.appendError('Нужно загрузить картинку');
         }
 
@@ -127,6 +130,11 @@ class CardManager {
         if (this.isSavePostCard) {
             // Сохранение открытки
             this.sendPostcardRequest(formData, '/user/save-postcard');
+        } else if (this.isMovePostCard) {
+            const cardId = $('input[name="card-id"]').val();
+            formData.append('cardId', cardId);
+            // Перемещение открытки
+            this.sendPostcardRequest(formData, '/user/move-postcard');
         } else {
             // Добавление новой открытки
             formData.append('imageURL', postcardImageURL);
@@ -914,6 +922,9 @@ class CardManager {
             const categoryId = $(event.target).data('category-id');
 
             if (this.isMovePostCard) {
+                // Установка скрытого поля card-id
+                $('input[name="card-id"]').val(id);
+
                 this.setDropdownSelection('collectionButton', '.collection-buttons .dropdown-menu', collectionId);
                 this.setDropdownSelection('categoryButton', '.category-buttons .dropdown-menu', categoryId);
 
@@ -922,7 +933,7 @@ class CardManager {
 
                 document.getElementById('postcard-title').parentNode.style.display = 'none';
                 document.getElementById('postcard-description').parentNode.style.display = 'none';
-            }else{
+            } else {
                 const title = $(event.target).data('title');
                 const description = $(event.target).data('description');
 
@@ -931,10 +942,10 @@ class CardManager {
                 $('#addPostcardModalLabel').text('Сохранить открытку');
                 $("#save-postcard-btn").text("Сохранить");
 
-
                 document.getElementById('postcard-title').parentNode.style.display = 'block';
                 document.getElementById('postcard-description').parentNode.style.display = 'block';
             }
+
             const src = $(event.target).data('src');
             $('.file-upload-container').removeClass('active').addClass('not-active');
             $('#del_file_upload-image').hide();
@@ -959,6 +970,7 @@ class CardManager {
             $('.file-upload-container-image').hide().children().not('#del_file_upload-image').remove();
         }
     }
+
     /**
      * Отправка AJAX-запроса для сохранения или добавления открытки.
      * Метод использует jQuery для выполнения POST-запроса с переданными данными в форме FormData.

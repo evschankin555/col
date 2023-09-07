@@ -261,6 +261,7 @@ class UserPageComponent extends Component
     <ul id="error-list" class="list-group"></ul>
 </div>
 
+<input type="hidden" name="card-id">
 
 
                         </div>

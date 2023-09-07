@@ -123,4 +123,24 @@ class ImageRelation extends TimedActiveRecord
         return null;
     }
 
+    public function updateCollectionAndCategory($newCollectionId, $newCategoryId) {
+        $changed = false;
+
+        if ($this->collection_id !== $newCollectionId) {
+            $this->collection_id = $newCollectionId !== 0 ? $newCollectionId : null;
+            $changed = true;
+        }
+
+        if ($this->category_id !== $newCategoryId) {
+            $this->category_id = $newCategoryId !== 0 ? $newCategoryId : null;
+            $changed = true;
+        }
+
+        if ($changed) {
+            return $this->save();
+        }
+
+        return false;
+    }
+
 }
