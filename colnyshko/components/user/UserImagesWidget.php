@@ -120,7 +120,7 @@ class UserImagesWidget extends Widget
         }
         $output = '    <button type="button" ';
         $output .= 'class="btn ' . $btnClass . ' btn-sm ' . $actionButtonClass . '" ';
-        $output .= 'data-id="' . $image->id . '" ';
+        $output .= 'data-id="' . $imageRelation->id . '" ';
         $output .= 'data-src="' . $image->url . '" ';
         $output .= 'data-title="' . htmlspecialchars($imageRelation->title) . '" ';
         $output .= 'data-description="' . htmlspecialchars($imageRelation->description) . '" ';
