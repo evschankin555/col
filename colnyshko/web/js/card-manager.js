@@ -18,6 +18,8 @@ class CardManager {
         this.isCanceled = false;
         this.isSavePostCard = false;
         this.isMovePostCard = false;
+        this.collectionId = 0;
+        this.categoryId = 0;
         this.gtfsUpload = $('#gtfs_upload');
         this.fileUploadContainer = $('.file-upload-container');
         this.initializeCounters();
@@ -654,6 +656,9 @@ class CardManager {
             success: (response) => {
                 if (response.success) {
                     this.updateDropdownContent(".collection-buttons .dropdown-menu", response.data);
+                    if (this.isMovePostCard) {
+                        this.setCollectionAndCategory('collection');
+                    }
                 } else {
                     console.error("Ошибка при получении списка коллекций:", response.error);
                 }
@@ -674,6 +679,9 @@ class CardManager {
             success: (response) => {
                 if (response.success) {
                     this.updateDropdownContent(".category-buttons .dropdown-menu", response.data, true);
+                    if (this.isMovePostCard) {
+                        this.setCollectionAndCategory('category');
+                    }
                 } else {
                     console.error("Ошибка при получении списка категорий:", response.error);
                 }
@@ -914,20 +922,17 @@ class CardManager {
      * в зависимости от значения this.isSavePostCard.
      */
     initializeFormPostcardModal() {
+        this.collectionId = 0;
+        this.categoryId = 0;
         this.fetchCollections();
         this.fetchCategories();
         if (this.isSavePostCard || this.isMovePostCard) {
             const id = $(event.target).data('id');
-            const collectionId = $(event.target).data('collection-id');
-            const categoryId = $(event.target).data('category-id');
-
+            this.collectionId = $(event.target).data('collection-id');
+            this.categoryId = $(event.target).data('category-id');
             if (this.isMovePostCard) {
                 // Установка скрытого поля card-id
                 $('input[name="card-id"]').val(id);
-
-                this.setDropdownSelection('collectionButton', '.collection-buttons .dropdown-menu', collectionId);
-                this.setDropdownSelection('categoryButton', '.category-buttons .dropdown-menu', categoryId);
-
                 $('#addPostcardModalLabel').text('Переместить открытку');
                 $("#save-postcard-btn").text("Переместить");
 
@@ -1035,6 +1040,23 @@ class CardManager {
                 return false;  // прерываем цикл
             }
         });
+    }
+
+    /**
+     * Устанавливает выбранные пункты для выпадающих меню "Коллекция" и "Категория"
+     * на основе переданного параметра.
+     *
+     * @param {string} type - Тип выпадающего меню, которое нужно обновить.
+     * Может принимать значения 'collection', 'category' или 'both'.
+     */
+    setCollectionAndCategory(type) {
+        if (type === 'collection' || type === 'both') {
+            this.setDropdownSelection('collectionButton', '.collection-buttons .dropdown-menu', this.collectionId);
+        }
+
+        if (type === 'category' || type === 'both') {
+            this.setDropdownSelection('categoryButton', '.category-buttons .dropdown-menu', this.categoryId);
+        }
     }
 
 }
