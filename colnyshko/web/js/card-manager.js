@@ -46,7 +46,7 @@ class CardManager {
         $(document).on('click', '.category-buttons .dropdown-item:not(#createCategoryButtonAddCard), .collection-buttons .dropdown-item:not(#createCollectionButtonAddCard)', this.handleDropdownItemClick.bind(this));
         $(document).on('click', '#createCollectionButtonAddCard', this.showCollectionCreationForm.bind(this));
         $(document).on('click', '#createCategoryButtonAddCard', this.showCategoryCreationForm.bind(this));
-        $(document).on('click', '#createCollectionButtonForm', this.createAndAddCollection.bind(this));
+        $(document).on('click', '#createCollectionButtonForm', this.createAndAddCollectionHandler.bind(this));
         $(document).on('click', '#createCategoryButtonForm', this.createAndAddCategoryHandler.bind(this));
         $(document).on('click', '#cancelCollectionButton', this.hideCollectionCreationForm.bind(this));
         $(document).on('click', '#cancelCategoryButton', this.hideCategoryCreationForm.bind(this));
@@ -752,7 +752,7 @@ class CardManager {
      * Создание и добавление новой коллекции.
      * @param {Event} event - Объект события.
      */
-    createAndAddCollection(event) {
+    createAndAddCollectionHandler(event) {
         let collectionName = $('.new-collection-form .form-control').val();
 
         if(collectionName.trim() === "") {
@@ -760,7 +760,7 @@ class CardManager {
             return;
         }
 
-        createAndAddCollection(collectionName, '#collectionButton', function(success) {
+        this.createAndAddCollection(collectionName, '#collectionButton', function(success) {
             if(success) {
                 $('.new-collection-form').addClass('d-none').hide();
                 $('.collection-buttons').show();
@@ -780,7 +780,7 @@ class CardManager {
             return;
         }
 
-        this.createAndAddCategory(categoryName, '#categoryButton', function(success) {
+        this.createAndAddCategory(categoryName, '#createCategoryButton', function(success) {
             if(success) {
                 $('.new-category-form').addClass('d-none').hide();
                 $('.category-buttons').show();
@@ -805,6 +805,32 @@ class CardManager {
     }
 
     /**
+     * Обновляет пользовательский интерфейс с новыми данными коллекции.
+     *
+     * @param {Object} data - Данные новой коллекции.
+     * @param {string} username - Имя пользователя.
+     */
+    updateUIWithNewCollection(data, username) {
+        showToast(data.message, 'success', 1500);
+
+        let newCollectionItem = $('<a></a>')
+            .addClass('dropdown-item')
+            .attr('data-value', data.newCollection.id)
+            .text(data.newCollection.name);
+        $(".collection-buttons .dropdown-menu").append(newCollectionItem);
+
+        $('#collectionButton').text('Коллекция: ' + data.newCollection.name).attr('data-value', data.newCollection.id);
+
+        let newCollection = $('<a></a>')
+            .attr('href', '/' + username + '/collection/' + data.newCollection.id)
+            .addClass('btn btn-secondary btn-sm')
+            .attr('title', data.newCollection.name)
+            .text(data.newCollection.name)
+            .append('<span class="badge bg-secondary">0</span>');
+        newCollection.insertAfter('#collections-list a:last-child');
+    }
+
+    /**
      * Создание и добавление новой коллекции через AJAX.
      *
      * @param {string} collectionName - Имя новой коллекции.
@@ -812,15 +838,14 @@ class CardManager {
      * @param {Function} callback - Функция обратного вызова после выполнения AJAX-запроса.
      */
     createAndAddCollection(collectionName, usernameElementId, callback) {
-        let username = $(usernameElementId).data('username');
+        let username = $('#createCollectionButton').data('username');
         $.ajax({
             url: '/user/create-collection',
             type: 'POST',
             data: { name: collectionName },
-            success: function(data) {
+            success: (data) => {
                 if (data.success) {
-                    showToast(data.message, 'success', 1500);
-                    // ... Дополнительные действия
+                    this.updateUIWithNewCollection(data, username);
                     callback(true);
                 } else {
                     showToast(data.message, 'danger', 15000);
@@ -830,12 +855,39 @@ class CardManager {
         });
     }
 
+
     /**
      * Показывает модальное окно для создания новой категории.
      */
     showModalCreateCategory() {
         const myModal = new bootstrap.Modal(document.getElementById('createCategory'), {});
         myModal.show();
+    }
+
+    /**
+     * Обновляет пользовательский интерфейс с новыми данными категории.
+     *
+     * @param {Object} data - Данные новой категории.
+     * @param {string} username - Имя пользователя.
+     */
+    updateUIWithNewCategory(data, username) {
+        showToast(data.message, 'success', 1500);
+
+        let newCategoryItem = $('<a></a>')
+            .addClass('dropdown-item')
+            .attr('data-value', data.newCategory.id)
+            .text(data.newCategory.name);
+        $(".category-buttons .dropdown-menu").append(newCategoryItem);
+
+        $('#categoryButton').text('Категория: ' + data.newCategory.name).attr('data-value', data.newCategory.id);
+
+        let newCategory = $('<a></a>')
+            .attr('href', '/' + username + '/category/' + data.newCategory.id)
+            .addClass('btn btn-info btn-sm')
+            .attr('title', data.newCategory.name)
+            .text(data.newCategory.name)
+            .append('<span class="badge bg-info">0</span>');
+        newCategory.insertAfter('#categories-list a:last-child');
     }
 
     /**
@@ -851,18 +903,18 @@ class CardManager {
             url: '/user/create-category',
             type: 'POST',
             data: { name: categoryName },
-            success: function(data) {
+            success: (data) => {
                 if (data.success) {
-                    showToast(data.message, 'success', 1500);
-                    // ... Дополнительные действия
-                    callback(true);
+                    this.updateUIWithNewCategory(data, username);
+                    callback(true);  // Если успешно создано
                 } else {
                     showToast(data.message, 'danger', 15000);
-                    callback(false);
+                    callback(false);  // Если ошибка
                 }
             }
         });
     }
+
 
     /**
      * Переключает класс 'active' для элемента карточки.
