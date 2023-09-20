@@ -515,3 +515,15 @@
     opacity: 1;
 }
 
+.del-button {
+    opacity: 0;
+    transition: opacity 0.5s;
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+}
+
+.card.is-active .del-button {
+    opacity: 1;
+}
+

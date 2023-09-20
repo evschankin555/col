@@ -41,6 +41,7 @@ class UserImagesWidget extends Widget
         $output .= '<div>';
         $output .= $this->renderButton('Сохранить...', 'btn-warning', 'save-button', $image, $imageRelation);
         $output .= $this->renderButton('Переместить...', 'btn-info', 'move-button', $image, $imageRelation);
+        $output .= $this->renderButton('Удалить...', 'btn-danger', 'del-button', $image, $imageRelation);
 
         $output .= '<img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->url . '" src="' . $src . '" alt="' . $image->description . '" data-href="'.$image->href.'">';
         $output .= $this->renderDropdown($image);
