@@ -28,6 +28,10 @@ class User extends TimedActiveRecord implements IdentityInterface
             [['email'], 'unique', 'message' => 'Этот адрес электронной почты уже используется.'],
             ['display_name', 'required'],
             ['display_name', 'string', 'max' => 255],
+            [['last_updated_collection_id', 'last_updated_category_id'], 'integer'],
+            [['last_updated_collection_id'], 'exist', 'skipOnError' => true, 'targetClass' => Collection::className(), 'targetAttribute' => ['last_updated_collection_id' => 'id']],
+            [['last_updated_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['last_updated_category_id' => 'id']],
+
         ];
     }
 
@@ -38,8 +42,10 @@ class User extends TimedActiveRecord implements IdentityInterface
             'email' => 'Eмейл',
             'password' => 'Пароль',
             'agreement' => 'Согласие на обработку персональных данных',
-            'avatar' => 'Аватар',  // добавлено поле 'avatar'
-            // и так далее для всех ваших полей...
+            'avatar' => 'Аватар',
+            'last_updated_collection_id' => 'Последняя обновленная коллекция',
+            'last_updated_category_id' => 'Последняя обновленная категория',
+
         ];
     }
 
@@ -243,6 +249,31 @@ class User extends TimedActiveRecord implements IdentityInterface
     public function getCategoriesForCollection($collectionId)
     {
         return Category::getCategoriesForCollection($this->id, $collectionId);
+    }
+
+    public function updateLastUpdatedCollection($collectionId)
+    {
+        $this->last_updated_collection_id = $collectionId;
+        return $this->save();
+    }
+
+    public function updateLastUpdatedCategory($categoryId)
+    {
+        $this->last_updated_category_id = $categoryId;
+        return $this->save();
+    }
+
+    public function updateLastUpdated($collectionId = null, $categoryId = null)
+    {
+        if ($collectionId !== null) {
+            $this->last_updated_collection_id = $collectionId;
+        }
+
+        if ($categoryId !== null) {
+            $this->last_updated_category_id = $categoryId;
+        }
+
+        return $this->save();
     }
 
 }

@@ -476,10 +476,11 @@ class UserController extends Controller{
 
                 // Создаем запись для связи
                 $relation = ImageRelation::createNew($image->id, $collection, $category, $title, $description, $currentUser->id);
+
                 if (!$relation) {
                     return ['success' => false, 'message' => 'Ошибка при добавлении связи изображения.'];
                 }
-
+                $currentUser->updateLastUpdated($collection, $category);
                 return ['success' => true, 'message' => 'Открытка успешно добавлена!'];
             } else {
                 return ['success' => false, 'message' => 'Недопустимый тип запроса.'];
@@ -534,7 +535,7 @@ class UserController extends Controller{
                 if (!$relation) {
                     return ['success' => false, 'message' => 'Ошибка при добавлении связи изображения.'];
                 }
-
+                $currentUser->updateLastUpdated($collection, $category);
                 return ['success' => true, 'message' => 'Открытка успешно сохранена!'];
             } else {
                 return ['success' => false, 'message' => 'Недопустимый тип запроса.'];
@@ -567,6 +568,7 @@ class UserController extends Controller{
         if (!$relation) {
             return ['success' => false, 'message' => 'Доступ запрещен или изображение не найдено.'];
         }
+        $currentUser->updateLastUpdated($collectionId, $categoryId);
 
         // Обновление коллекции и категории
         if ($relation->updateCollectionAndCategory($collectionId, $categoryId)) {
