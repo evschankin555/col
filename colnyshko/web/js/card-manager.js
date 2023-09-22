@@ -109,7 +109,7 @@ class CardManager {
         this.hasErrors = false;
 
         // Проверки на валидацию не нужны при операции перемещения
-        if (!this.isMovePostCard) {
+        if (!this.isMovePostCard && !this.isDeletePostCard) {
             if (postcardTitle.length < 10) {
                 this.appendError('Название должно быть не менее 10 символов');
             }
@@ -117,7 +117,7 @@ class CardManager {
                 this.appendError('Описание должно быть не менее 20 символов');
             }
         }
-        if (!postcardImageURL && !this.isMovePostCard) { // Нет нужды в проверке картинки при перемещении
+        if (!postcardImageURL && !this.isMovePostCard && !this.isDeletePostCard) { // Нет нужды в проверке картинки при перемещении
             this.appendError('Нужно загрузить картинку');
         }
 
@@ -141,6 +141,12 @@ class CardManager {
             formData.append('cardId', cardId);
             // Перемещение открытки
             this.sendPostcardRequest(formData, '/user/move-postcard');
+        } else if (this.isDeletePostCard) {
+            // Удаление открытки
+            const cardId = $('input[name="card-id"]').val();+
+            formData.append('cardId', cardId);
+
+            this.sendPostcardRequest(formData, '/user/delete-postcard');
         } else {
             // Добавление новой открытки
             formData.append('imageURL', postcardImageURL);
@@ -164,6 +170,15 @@ class CardManager {
         this.currentErrorClassIndex = (this.currentErrorClassIndex + 1) % 2;
         this.hasErrors = true;
     }
+    /**
+     * Очистка списка сообщений об ошибках.
+     * Удаляет все сообщения об ошибках из списка.
+     */
+    clearErrors() {
+        $('#error-list').empty();
+        this.hasErrors = false;
+    };
+
     /**
      * Загрузка файла на сервер.
      * @param {File} file - Файл для загрузки.
@@ -983,6 +998,7 @@ class CardManager {
         this.categoryId = 0;
         this.fetchCollections();
         this.fetchCategories();
+        this.clearErrors();
         if (this.isSavePostCard || this.isMovePostCard || this.isDeletePostCard) {
             const id = $(event.target).data('id');
             this.collectionId = $(event.target).data('collection-id');
@@ -1005,6 +1021,8 @@ class CardManager {
                 document.getElementById('postcard-title').parentNode.style.display = 'none';
                 document.getElementById('postcard-description').parentNode.style.display = 'none';
             } else if (this.isDeletePostCard) {
+                // Установка скрытого поля card-id
+                $('input[name="card-id"]').val(id);
                 // Установка интерфейса для удаления
                 $('#addPostcardModalLabel').text('Удалить открытку');
                 $("#save-postcard-btn").text("Удалить");
@@ -1069,6 +1087,9 @@ class CardManager {
             success: function (data) {
                 if (data.success) {
                     showToast(data.message, 'success', 1500);
+                    if (this.isDeletePostCard) {
+                        $('#grid-item-'+data.cardId).hide()
+                    }
                 } else {
                     showToast(data.message, 'danger', 15000);
                 }

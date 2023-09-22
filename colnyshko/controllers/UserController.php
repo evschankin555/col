@@ -577,5 +577,33 @@ class UserController extends Controller{
             return ['success' => false, 'message' => 'Ошибка при перемещении открытки.'];
         }
     }
+    public function actionDeletePostcard() {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
+        if (Yii::$app->user->isGuest) {
+            return ['success' => false, 'message' => 'Вы не авторизованы. Пожалуйста, авторизуйтесь сначала.'];
+        }
+
+        if (!Yii::$app->request->isPost) {
+            return ['success' => false, 'message' => 'Недопустимый тип запроса.'];
+        }
+
+        $currentUser = Yii::$app->user->identity;
+        $cardId = Yii::$app->request->post('cardId');
+
+        $relation = ImageRelation::find()->where(['id' => $cardId, 'user_id' => $currentUser->id])->one();
+
+        if (!$relation) {
+            return ['success' => false,'message' => 'Доступ запрещен или изображение не найдено.'];
+        }
+
+        if ($relation->markAsDeleted()) {
+            return [
+                'success' => true,
+                'message' => 'Открытка успешно удалена!',
+                'cardId' => $cardId];
+        } else {
+            return ['success' => false, 'message' => 'Ошибка при удалении открытки.'];
+        }
+    }
 }

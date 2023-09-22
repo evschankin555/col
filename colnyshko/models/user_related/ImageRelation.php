@@ -18,6 +18,7 @@ class ImageRelation extends TimedActiveRecord
             [['collection_id', 'category_id', 'image_id', 'user_id'], 'default', 'value' => null],
             [['title'], 'string', 'min' => 10, 'max' => 100],
             [['description'], 'string', 'min' => 20, 'max' => 1000],
+            [['is_deleted'], 'boolean'],
         ];
     }
 
@@ -32,6 +33,7 @@ class ImageRelation extends TimedActiveRecord
             'user_id' => 'User ID',
             'title' => 'Title',
             'description' => 'Description',
+            'is_deleted' => 'Is Deleted',
         ];
     }
 
@@ -69,7 +71,7 @@ class ImageRelation extends TimedActiveRecord
 
     public static function getImagesByCriteria($userId, $collectionId = null, $categoryId = null)
     {
-        $condition = ['user_id' => $userId];
+        $condition = ['user_id' => $userId, 'is_deleted' => 0];
 
         if ($collectionId !== null && $collectionId != 0) {
             $condition['collection_id'] = $collectionId;
@@ -91,21 +93,20 @@ class ImageRelation extends TimedActiveRecord
         return self::find()
             ->select('collection_id')
             ->distinct()
-            ->where(['user_id' => $userId, 'category_id' => $categoryId])
-            ->andWhere(['<>', 'collection_id', 0]) // Исключаем записи, где collection_id равен 0
-            ->joinWith('collection')  // Присоединяем таблицу коллекций для дополнительной информации
+            ->where(['user_id' => $userId, 'category_id' => $categoryId, 'is_deleted' => 0])
+            ->andWhere(['<>', 'collection_id', 0])
+            ->joinWith('collection')
             ->all();
     }
-
 
     public static function getCategoriesForCollection($userId, $collectionId)
     {
         return self::find()
             ->select('category_id')
             ->distinct()
-            ->where(['image_relations.user_id' => $userId, 'collection_id' => $collectionId])
-            ->andWhere(['<>', 'category_id', 0]) // Исключаем записи, где category_id равен 0
-            ->joinWith('category')  // Присоединяем таблицу категорий для дополнительной информации
+            ->where(['image_relations.user_id' => $userId, 'collection_id' => $collectionId, 'is_deleted' => 0])
+            ->andWhere(['<>', 'category_id', 0])
+            ->joinWith('category')
             ->all();
     }
 
@@ -141,6 +142,12 @@ class ImageRelation extends TimedActiveRecord
         }
 
         return false;
+    }
+
+    public function markAsDeleted()
+    {
+        $this->is_deleted = 1;
+        return $this->save();
     }
 
 }

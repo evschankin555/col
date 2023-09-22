@@ -26,6 +26,7 @@ return [
         'user/post-card-data' => 'user/post-card-data',
         'user/save-postcard' => 'user/save-postcard',
         'user/move-postcard' => 'user/move-postcard',
+        'user/delete-postcard' => 'user/delete-postcard',
         'login' => 'pages/login',
         'signup' => 'pages/signup',
         'logout' => 'pages/logout',

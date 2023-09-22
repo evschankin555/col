@@ -18,7 +18,7 @@ class UserImagesWidget extends Widget
         $this->currentUser = Yii::$app->user->identity;
         $output = '<div class="grid user-images">';
         foreach ($this->images as $image) {
-            $output .= '<div class="grid-item">';
+            $output .= '<div class="grid-item" id="grid-item-'.$image->id.'">';
             $output .= $this->renderCard($image);
             $output .= '</div>';
         }
