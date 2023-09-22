@@ -257,6 +257,11 @@ class UserPageComponent extends Component
 </div>
 
 </div>
+<div class="full-screen-container">
+  <div class="message-deleting" id="message-deleting">
+      Вы действительно хотите удалить открытку?
+  </div>
+</div>
 <div class="error-messages">
     <ul id="error-list" class="list-group"></ul>
 </div>

@@ -527,3 +527,31 @@
     opacity: 1;
 }
 
+.file-upload-container-image-delete img, .file-upload-container-image-delete video {
+    max-width: 50%;
+    width: 100%;
+    margin-bottom: 0px;
+}
+.full-screen-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    display: none; /* скрыть контейнер */
+    z-index: 998; /* чтобы он был поверх других элементов, но ниже message-deleting */
+}
+
+.message-deleting {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    background-color: #f70;
+    color: white;
+    padding: 30px;
+    border-radius: 5px;
+    font-size: 16px;
+    width: calc(100% - 50px);
+}

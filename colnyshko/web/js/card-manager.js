@@ -18,6 +18,7 @@ class CardManager {
         this.isCanceled = false;
         this.isSavePostCard = false;
         this.isMovePostCard = false;
+        this.isDeletePostCard = false;
         this.collectionId = 0;
         this.categoryId = 0;
         this.gtfsUpload = $('#gtfs_upload');
@@ -60,6 +61,9 @@ class CardManager {
         });
         document.querySelectorAll('.move-button').forEach(saveCard => {
             saveCard.addEventListener('click', this.showMovePostcardModal.bind(this));
+        });
+        document.querySelectorAll('.del-button').forEach(delCard => {
+            delCard.addEventListener('click', this.showDeletePostcardModal.bind(this));
         });
     }
 
@@ -973,15 +977,25 @@ class CardManager {
      * Метод устанавливает класс 'active' или 'not-active' для элемента с классом 'file-upload-container'
      * в зависимости от значения this.isSavePostCard.
      */
+
     initializeFormPostcardModal() {
         this.collectionId = 0;
         this.categoryId = 0;
         this.fetchCollections();
         this.fetchCategories();
-        if (this.isSavePostCard || this.isMovePostCard) {
+        if (this.isSavePostCard || this.isMovePostCard || this.isDeletePostCard) {
             const id = $(event.target).data('id');
             this.collectionId = $(event.target).data('collection-id');
             this.categoryId = $(event.target).data('category-id');
+            const fileUploadContainerImage = document.querySelector('.file-upload-container-image');
+            if (this.isDeletePostCard) {
+                fileUploadContainerImage.classList.add('file-upload-container-image-delete');
+                document.querySelector(".full-screen-container").style.display = "block"; // показать
+            } else {
+                fileUploadContainerImage.classList.remove('file-upload-container-image-delete');
+                document.querySelector(".full-screen-container").style.display = "none";  // скрытьрыть
+            }
+
             if (this.isMovePostCard) {
                 // Установка скрытого поля card-id
                 $('input[name="card-id"]').val(id);
@@ -990,6 +1004,15 @@ class CardManager {
 
                 document.getElementById('postcard-title').parentNode.style.display = 'none';
                 document.getElementById('postcard-description').parentNode.style.display = 'none';
+            } else if (this.isDeletePostCard) {
+                // Установка интерфейса для удаления
+                $('#addPostcardModalLabel').text('Удалить открытку');
+                $("#save-postcard-btn").text("Удалить");
+
+                document.getElementById('postcard-title').parentNode.style.display = 'none';
+                document.getElementById('postcard-description').parentNode.style.display = 'none';
+                document.querySelectorAll('.collection-buttons').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.category-buttons').forEach(el => el.style.display = 'none');
             } else {
                 const title = $(event.target).data('title');
                 const description = $(event.target).data('description');
@@ -1109,6 +1132,24 @@ class CardManager {
         if (type === 'category' || type === 'both') {
             this.setDropdownSelection('categoryButton', '.category-buttons .dropdown-menu', this.categoryId);
         }
+    }
+
+    /**
+     * Отображение модального окна для удаления открытки.
+     * Метод вызывается при клике на кнопку "Удалить" и открывает модальное окно,
+     * запрашивая подтверждение для удаления.
+     *
+     * @param {Event} event - Объект события клика.
+     */
+    showDeletePostcardModal(event) {
+        this.isSavePostCard = false;
+        this.isMovePostCard = false;
+        this.isDeletePostCard = true;
+        this.initializeFormPostcardModal();
+        $('#addPostcard').modal('show');
+
+        const postcardName = "Открытка такая то";
+        const message = `Вы действительно хотите удалить "${postcardName}"?`;
     }
 
 }
