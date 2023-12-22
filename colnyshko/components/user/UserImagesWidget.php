@@ -29,8 +29,7 @@ class UserImagesWidget extends Widget
 
     private function renderCard($imageRelation)
     {
-
-        $this->isCurrentUserOwner = ($imageRelation->user_id == $this->currentUser->id);
+        $this->isCurrentUserOwner = ($imageRelation->user_id == ($this->currentUser ? $this->currentUser->id : null));
         $image = $imageRelation->image;
 
         $output = '<div class="card mb-2 js-card">';
@@ -39,10 +38,11 @@ class UserImagesWidget extends Widget
         $url = $image->url;
         $src = $url;
         $output .= '<div>';
-        $output .= $this->renderButton('Сохранить...', 'btn-warning', 'save-button', $image, $imageRelation);
-        $output .= $this->renderButton('Переместить...', 'btn-info', 'move-button', $image, $imageRelation);
-        $output .= $this->renderButton('Удалить...', 'btn-danger', 'del-button', $image, $imageRelation);
-
+        if ($this->currentUser){
+            $output .= $this->renderButton('Сохранить...', 'btn-warning', 'save-button', $image, $imageRelation);
+            $output .= $this->renderButton('Переместить...', 'btn-info', 'move-button', $image, $imageRelation);
+            $output .= $this->renderButton('Удалить...', 'btn-danger', 'del-button', $image, $imageRelation);
+        }
         $output .= '<img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->url . '" src="' . $src . '" alt="' . $image->description . '" data-href="'.$image->href.'">';
         $output .= $this->renderDropdown($image);
         $output .= '</div>';

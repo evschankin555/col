@@ -150,4 +150,15 @@ class ImageRelation extends TimedActiveRecord
         return $this->save();
     }
 
+    public static function getImagesNewHome()
+    {
+        $condition = ['is_deleted' => 0];
+
+        return self::find()
+            ->where($condition)
+            ->with('image')
+            ->orderBy(['id' => SORT_DESC])
+            ->all();
+    }
+
 }

@@ -11,6 +11,8 @@ return [
 
     'rules' => [
         '/' => '/base/home',
+        'gpt/35turbo' => 'gpt/35turbo',
+        'gpt/35turbo-send' => 'gpt/35turbo-send',
         'user/subscribe' => 'user/subscribe',
         'user/unsubscribe' => 'user/unsubscribe',
         'user/create-collection' => 'user/create-collection',

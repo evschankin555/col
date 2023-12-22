@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\components\Common;
 use app\models\Category;
+use app\models\user_related\ImageRelation;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\web\Controller;
@@ -19,7 +20,6 @@ use app\modules\SeoModule;
 
 class BaseController extends Controller
 {
-
     public $enableCsrfValidation = false;
     public function beforeAction($action)
 {
@@ -32,7 +32,7 @@ class BaseController extends Controller
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function actionHome(): string
+    public function _actionHome(): string
     {
 
         $display = Yii::$app->request->get('display');
@@ -63,7 +63,14 @@ class BaseController extends Controller
             'pagination' => $pagination,
         ]);
     }
+    public function actionHome(): string
+    {
+        $images = ImageRelation::getImagesNewHome();
 
+        return $this->render('home', [
+            'images' => $images
+        ]);
+    }
     public function actionRegister()
     {
         Yii::$app->response->headers->set('Content-Type', 'application/json; charset=utf-8');
@@ -101,8 +108,6 @@ class BaseController extends Controller
             return \yii\widgets\ActiveForm::validate($model);
         }
     }
-
-
     public function actionAuth()
     {
         Yii::$app->response->headers->set('Content-Type', 'application/json; charset=utf-8');
@@ -129,7 +134,6 @@ class BaseController extends Controller
             ];
         }
     }
-
     public function actionRestore()
     {
         Yii::$app->response->headers->set('Content-Type', 'application/json; charset=utf-8');
@@ -154,7 +158,6 @@ class BaseController extends Controller
             ];
         }
     }
-
     public function actionConfirmEmail()
     {
         $userModel = new User();
@@ -176,8 +179,6 @@ class BaseController extends Controller
             'email' => $email,
         ]);
     }
-
-
     public function actionResetPassword()
     {
         $userModel = new User();
@@ -211,10 +212,7 @@ class BaseController extends Controller
             'code' => $code
         ]);
     }
-
-
-
-    public function actionLogout()
+        public function actionLogout()
     {
         Yii::$app->response->headers->set('Content-Type', 'application/json; charset=utf-8');
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;

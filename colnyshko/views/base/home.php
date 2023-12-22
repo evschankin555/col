@@ -3,21 +3,22 @@
 /* @var $this yii\web\View */
 
 use yii\helpers\Html;
-use yii\bootstrap5\NavBar;
-use yii\bootstrap5\Nav;
-use yii\widgets\ActiveForm;
-use yii\bootstrap5\Button;
-use GuzzleHttp\Client;
-use yii\caching\FileCache;
-use app\components\CategoryWidget;
-use app\components\ImagesWidget;
-use app\components\PaginationWidget;
-?>
-    <div class="jumbotron">
-        <?= CategoryWidget::widget(['categories' => $categories])?>
-    </div>
+use yii\bootstrap5\ActiveForm;
+use app\assets\UserPageAsset;
+UserPageAsset::register($this);
+use app\components\HomePageComponent;
 
-    <div class="row">
-        <?= ImagesWidget::widget(['images' => $images])?>
-        <?= PaginationWidget::widget(['pagination' => $pagination])?>
+$userPageComponent = new HomePageComponent([
+    'images' => $images
+]);
+?>
+<div class="row">
+    <div class="col-md-3">
+        <?= $userPageComponent->renderLeftCard();?>
+        <div class="card border-secondary mb-3">
+        </div>
     </div>
+    <div class="col-md-9">
+        <?= $userPageComponent->renderImagesList();?>
+    </div>
+</div>

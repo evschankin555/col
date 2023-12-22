@@ -83,7 +83,13 @@ class UserController extends Controller{
         $this->view->title = "Коллекция " . Html::encode($collection->name) . " пользователя " . Html::encode($user->display_name);
 
         $currentUser = Yii::$app->user->identity;
-        $isSubscribed = Subscription::find()->where(['user_id' => $user->id, 'subscriber_id' => $currentUser->id])->exists();
+        $isSubscribed = false;
+
+        if ($currentUser && $currentUser->id !== null) {
+            $isSubscribed = Subscription::find()
+                ->where(['user_id' => $user->id, 'subscriber_id' => $currentUser->id])
+                ->exists();
+        }
 
         // Получение коллекций пользователя с сортировкой по ID в порядке убывания
         $collections = $user->getCollections()->orderBy(['id' => SORT_DESC])->all();
@@ -425,7 +431,13 @@ class UserController extends Controller{
         $this->view->title = "Категория " . Html::encode($category->name) . " пользователя " . Html::encode($user->display_name);
 
         $currentUser = Yii::$app->user->identity;
-        $isSubscribed = Subscription::find()->where(['user_id' => $user->id, 'subscriber_id' => $currentUser->id])->exists();
+        $isSubscribed = false;
+
+        if ($currentUser) {
+            $isSubscribed = Subscription::find()
+                ->where(['user_id' => $user->id, 'subscriber_id' => $currentUser->id])
+                ->exists();
+        }
 
         // Получение коллекций пользователя с сортировкой по ID в порядке убывания
         //$collections = $user->getCollections()->orderBy(['id' => SORT_DESC])->all();

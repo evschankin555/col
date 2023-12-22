@@ -48,5 +48,14 @@ class Category extends TimedActiveRecord
             ->andWhere(['<>', 'image_relations.category_id', 0])
             ->all();
     }
+    public static function getCategoriesForHome()
+    {
+        return self::find()
+            ->distinct()
+            ->innerJoin('image_relations', 'categories.id = image_relations.category_id')
+            ->where(['<>', 'image_relations.category_id', 0])
+            ->limit(20)
+            ->all();
+    }
 
 }
