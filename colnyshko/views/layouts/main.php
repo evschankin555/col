@@ -27,19 +27,10 @@ use app\components\UserMenuContentWidget;
 use app\components\ApiTimer;
 use app\components\DbTimer;
 
-
 AppAsset::register($this);
 
 $model = new \app\models\SearchForm();
 $modelUser = new \app\models\User();
-
-$form = ActiveForm::begin([
-    'action' => ['/site/search'],
-    'method' => 'get',
-    'options' => [
-        'class' => 'd-flex'
-    ]
-]);
 
 ?>
 
