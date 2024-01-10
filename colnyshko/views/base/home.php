@@ -7,7 +7,7 @@ use yii\bootstrap5\ActiveForm;
 use app\assets\UserPageAsset;
 UserPageAsset::register($this);
 use app\components\HomePageComponent;
-
+use app\components\user\UserImagesWidget;
 $userPageComponent = new HomePageComponent([
     'images' => $images
 ]);
@@ -19,6 +19,6 @@ $userPageComponent = new HomePageComponent([
         </div>
     </div>
     <div class="col-md-9">
-        <?= $userPageComponent->renderImagesList();?>
+        <?= UserImagesWidget::widget(['images' => $images]);?>
     </div>
 </div>

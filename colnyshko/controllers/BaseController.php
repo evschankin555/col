@@ -66,6 +66,7 @@ class BaseController extends Controller
     public function actionHome(): string
     {
         $images = ImageRelation::getImagesNewHome();
+        $images = ImageRelation::getAllImages();
 
         return $this->render('home', [
             'images' => $images

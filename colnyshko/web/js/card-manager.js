@@ -23,7 +23,7 @@ class CardManager {
         this.categoryId = 0;
         this.gtfsUpload = $('#gtfs_upload');
         this.fileUploadContainer = $('.file-upload-container');
-        this.initializeCounters();
+        /*this.initializeCounters();*/
         this.initializeMasonry();
         this.bindEvents();
     }
@@ -640,8 +640,14 @@ class CardManager {
      * @param {number} maxLength - Максимальная длина ввода.
      */
     updateCounter(inputElement, counterElement, maxLength) {
-        const wordCount = inputElement.value.length;
-        counterElement.textContent = `${wordCount}/${maxLength}`;
+        // Дополнительная проверка на наличие элемента ввода и элемента счетчика
+        if (inputElement && counterElement) {
+            const wordCount = inputElement.value.length;
+            counterElement.textContent = `${wordCount}/${maxLength}`;
+        } else {
+            // Обработка случая, когда inputElement или counterElement отсутствует
+            console.error('Ошибка: inputElement или counterElement отсутствует.');
+        }
     }
 
     /**

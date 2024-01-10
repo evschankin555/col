@@ -161,4 +161,15 @@ class ImageRelation extends TimedActiveRecord
             ->all();
     }
 
+    public static function getAllImages()
+    {
+        return self::find()
+            ->select('*')
+            ->where(['is_deleted' => 0])
+            ->with('image')
+            ->orderBy(['id' => SORT_DESC])
+            ->all();
+    }
+
+
 }

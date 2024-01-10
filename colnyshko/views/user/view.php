@@ -1,5 +1,6 @@
 <?php
 
+use app\components\user\UserImagesWidget;
 use yii\helpers\Html;
 use yii\bootstrap5\ActiveForm;
 use app\assets\UserPageAsset;
@@ -27,10 +28,6 @@ $userPageComponent = new UserPageComponent([
     </div>
     <div class="col-md-9">
         <?= $userPageComponent->renderCollectionsList();?>
-        <?= $userPageComponent->renderImagesList();?>
+        <?= UserImagesWidget::widget(['images' => $images]);?>
     </div>
 </div>
-<?= $userPageComponent->renderCreateCollectionModal(); ?>
-<?= $userPageComponent->renderDeleteCollectionModal(); ?>
-<?= $userPageComponent->renderAddPostcardModal(); ?>
-<?= $userPageComponent->renderCreateCategoryModal(); ?>
