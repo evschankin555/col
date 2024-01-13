@@ -41,7 +41,6 @@ class UserImagesWidget extends Widget
 
         $url = $image->url;
         $src = $url;
-
         $output .= '<div>';
         if ($this->currentUser) {
             // Проверка, является ли текущий пользователь владельцем изображения
@@ -62,8 +61,14 @@ class UserImagesWidget extends Widget
         $output .= '</div>';
 
         $output .= '</div>';
-        /*$output .= '<div class="card-footer">';
-        $output .= '</div>';*/
+        /*  $output .= '<div class="card-footer">';
+        $output .= '<img id="user-avatar" class="d-block user-select-none"
+                      src="' . $this->model->getAvatarUrl() . '" width="100%" height="100%"
+                      alt="">
+                 <div class="user-username">
+                     <h3 id="user-login">@' . Html::encode($this->model->username) . '</h3>
+                 </div>';
+         $output .= '</div>';*/
         $output .= '</div>';
         $output .= $this->renderModal();
         $output .= $this->renderAlert();

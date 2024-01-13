@@ -1179,6 +1179,7 @@ class CardManager {
         const message = `Вы действительно хотите удалить "${postcardName}"?`;
     }
 
+/*.del-button, .user-images .nav.nav-pills*/
 }
 
 $(document).ready(function() {

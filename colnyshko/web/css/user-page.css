@@ -508,7 +508,7 @@
     transition: opacity 0.5s;
     position: absolute;
     top: 5px;
-    right: 105px;
+    left: 5px;
 }
 
 .card.is-active .move-button {

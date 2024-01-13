@@ -3,6 +3,7 @@ namespace app\models\user_related;
 
 use Yii;
 use app\components\TimedActiveRecord;
+use app\models\User;
 
 class ImageRelation extends TimedActiveRecord
 {
@@ -14,14 +15,14 @@ class ImageRelation extends TimedActiveRecord
     public function rules()
     {
         return [
-            [['image_id', 'user_id'], 'required'],
+            [['image_id', 'user_id', 'username'], 'required'],
             [['collection_id', 'category_id', 'image_id', 'user_id'], 'default', 'value' => null],
             [['title'], 'string', 'min' => 10, 'max' => 100],
             [['description'], 'string', 'min' => 20, 'max' => 1000],
             [['is_deleted'], 'boolean'],
+            [['username'], 'string', 'max' => 50],
         ];
     }
-
 
     public function attributeLabels()
     {
@@ -54,6 +55,8 @@ class ImageRelation extends TimedActiveRecord
 
     public static function createNew($image_id, $collection_id, $category_id, $title, $description, $user_id)
     {
+        $username = \app\models\User::find()->where(['id' => $user_id])->one()->username;
+
         $relation = new ImageRelation();
         $relation->image_id = $image_id;
         $relation->collection_id = $collection_id !== 0 ? $collection_id : null;
@@ -61,6 +64,7 @@ class ImageRelation extends TimedActiveRecord
         $relation->title = $title;
         $relation->description = $description;
         $relation->user_id = $user_id;
+        $relation->username = $username;
 
         if ($relation->save()) {
             return $relation;
