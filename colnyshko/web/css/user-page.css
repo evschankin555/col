@@ -555,3 +555,18 @@
     font-size: 16px;
     width: calc(100% - 50px);
 }
+
+.user-username-images{
+    opacity: 0;
+    transition: opacity 0.5s;
+    position: absolute;
+    bottom: 45px;
+    padding: 5px 10px;
+    font-size: 12px;
+    width: 100%;
+    background-color: rgba(0,0,0,.5);
+}
+
+.card.is-active .user-username-images {
+    opacity: 1;
+}

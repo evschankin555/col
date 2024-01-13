@@ -61,14 +61,11 @@ class UserImagesWidget extends Widget
         $output .= '</div>';
 
         $output .= '</div>';
-        /*  $output .= '<div class="card-footer">';
-        $output .= '<img id="user-avatar" class="d-block user-select-none"
-                      src="' . $this->model->getAvatarUrl() . '" width="100%" height="100%"
-                      alt="">
-                 <div class="user-username">
-                     <h3 id="user-login">@' . Html::encode($this->model->username) . '</h3>
+        $output .= '
+                 <div class="user-username-images">
+                     <a class="user-login-images" href="/'.$imageRelation->username
+            .'">@' . Html::encode($imageRelation->username) . '</a>
                  </div>';
-         $output .= '</div>';*/
         $output .= '</div>';
         $output .= $this->renderModal();
         $output .= $this->renderAlert();
