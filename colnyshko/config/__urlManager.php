@@ -42,6 +42,7 @@ return [
         'restore' => 'pages/restore',
         'page/<page:\d+>' => '/base/home',
         'base' => 'pages/base',
+        '<username:\w+>/card/<hash:[\w_\/-]+>' => 'user/card',
         '<username:\w+>/collection/<id:\d+>' => 'user/collection',
         '<username:\w+>/category/<id:\d+>' => 'user/category',
         '<username:\w+>' => 'user/view',

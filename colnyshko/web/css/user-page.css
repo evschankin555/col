@@ -570,3 +570,24 @@
 .card.is-active .user-username-images {
     opacity: 1;
 }
+.card-page{
+    margin: 20px auto;
+    max-width: 999px!important;
+    border-radius: 40px!important;
+}
+#card-container .card-container-image{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    flex: 1 1 auto;
+    padding: 0;
+    color: var(--bs-card-color);
+    position: relative;
+}
+#card-container .card-container-image img{
+    max-width: 100%;
+    width: 100%;
+    margin-bottom: 0px;
+    border-radius: 20px;
+}

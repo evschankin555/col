@@ -50,7 +50,6 @@ class UserController extends Controller{
         array_unshift($categories, $category);
 
         $images = ImageRelation::getImagesByCriteria($model->id);
-
         return $this->render('view', [
             'model' => $model,
             'currentUser' => $currentUser,
@@ -618,4 +617,35 @@ class UserController extends Controller{
             return ['success' => false, 'message' => 'Ошибка при удалении открытки.'];
         }
     }
+    public function actionCard($username, $hash)
+    {
+        if (preg_match('/-(\d+)$/', $hash, $matches)) {
+            $idCard = $matches[1];
+
+            $user = User::find()->where(['username' => $username])->one();
+
+            if ($user === null) {
+                throw new NotFoundHttpException("The user was not found.");
+            }
+
+            $imageRelation = ImageRelation::find()
+                ->where(['id' => $idCard, 'user_id' => $user->id])
+                ->one();
+
+            if ($imageRelation === null) {
+                throw new NotFoundHttpException("The image relation was not found.");
+            }
+            $this->view->title = $imageRelation->title . " -  @" . Html::encode($user->username);
+            $image = Image::findOne($imageRelation->image_id);
+
+            return $this->render('card', [
+                'imageRelation' => $imageRelation,
+                'image' => $image,
+            ]);
+        } else {
+            Yii::$app->runAction('site/404');
+        }
+
+    }
+
 }
