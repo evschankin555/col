@@ -637,10 +637,14 @@ class UserController extends Controller{
             }
             $this->view->title = $imageRelation->title . " -  @" . Html::encode($user->username);
             $image = Image::findOne($imageRelation->image_id);
+            $collection = Collection::find()->where(['id' => $imageRelation->collection_id])->one();
+            $category = Category::find()->where(['id' => $imageRelation->category_id])->one();
 
             return $this->render('card', [
                 'imageRelation' => $imageRelation,
                 'image' => $image,
+                'collection' => $collection,
+                'category' => $category,
             ]);
         } else {
             Yii::$app->runAction('site/404');

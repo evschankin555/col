@@ -23,6 +23,10 @@ UserPageAsset::register($this);
                 <div class="mb-3" style="position: relative; display: block;">
                     <label for="postcard-description" ...=""><?=$imageRelation->description?></label>
                 </div>
+                <div class="mb-3" style="position: relative; display: block;">
+                    <a type="button" class="btn btn-outline-primary btn-sm" title='Коллекция "<?=$collection->name?>"'><?=$collection->name?></a>
+                    <a type="button" class="btn btn-outline-info btn-sm" title='Категория "<?=$category->name?>"'><?=$category->name?></a>
+                </div>
             </div>
         </div>
     </div>
