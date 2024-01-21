@@ -13,17 +13,21 @@ UserPageAsset::register($this);
                 <div>
                     <div class="card-container-image">
                         <img src="<?=$image->url?>" alt="Uploaded Image">
+                        <div class="user-username-images">
+                            <a  href="/<?=$imageRelation->username?>">@<?=$imageRelation->username?></a>
+                            <a type="button" class="btn btn-warning btn-sm">Подписаться</a>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="mb-3" style="position: relative; display: block;">
+                <div class="mb-3 card-title">
                     <h2 for="postcard-title" ...=""><?=$imageRelation->title?></h2>
                 </div>
-                <div class="mb-3" style="position: relative; display: block;">
-                    <label for="postcard-description" ...=""><?=$imageRelation->description?></label>
+                <div class="mb-3 card-desc">
+                    <span><?=$imageRelation->description?></span>
                 </div>
-                <div class="mb-3" style="position: relative; display: block;">
+                <div class="mb-3 btns">
                     <a type="button" class="btn btn-outline-primary btn-sm" title='Коллекция "<?=$collection->name?>"'><?=$collection->name?></a>
                     <a type="button" class="btn btn-outline-info btn-sm" title='Категория "<?=$category->name?>"'><?=$category->name?></a>
                 </div>

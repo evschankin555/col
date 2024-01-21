@@ -584,10 +584,32 @@
     padding: 0;
     color: var(--bs-card-color);
     position: relative;
+    margin-bottom: -45px;
+    position: relative;
 }
 #card-container .card-container-image img{
     max-width: 100%;
     width: 100%;
     margin-bottom: 0px;
     border-radius: 20px;
+}
+
+#card-container .card-container-image .user-username-images{
+    position: relative; display: block;opacity: 1;
+    bottom: 51px;
+    padding: 10px 20px;
+    font-size: 14px;
+    display: flex;
+    border-radius: 0 0 20px 20px;
+    justify-content: space-between;
+    align-items: center;
+}
+#card-container .card-desc, #card-container .card-desc {
+    position: relative;
+    display: block;
+}
+#card-container .btns {
+    position: relative;
+    display: block;
+    float: right;
 }
