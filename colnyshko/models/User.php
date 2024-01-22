@@ -192,6 +192,39 @@ class User extends TimedActiveRecord implements IdentityInterface
         }
     }
 
+    public function getFormattedSubscribersCountCard()
+    {
+        $subscribersCount = Subscription::find()->where(['user_id' => $this->id])->count();
+
+        if ($subscribersCount == 0) {
+            return '0 подписчиков';
+        }
+
+        // Функция для форматирования чисел с учетом русского языка
+        $formatNumber = function ($number) {
+            $lastDigit = $number % 10;
+            $lastTwoDigits = $number % 100;
+
+            if ($lastDigit == 1 && $lastTwoDigits != 11) {
+                return "{$number} подписчик";
+            } elseif (in_array($lastDigit, [2, 3, 4]) && !in_array($lastTwoDigits, [12, 13, 14])) {
+                return "{$number} подписчика";
+            } else {
+                return "{$number} подписчиков";
+            }
+        };
+
+        if ($subscribersCount >= 1000000) {
+            $formattedCount = Yii::$app->formatter->asDecimal($subscribersCount / 1000000, 3);
+            return "{$formattedCount}М подписчиков";
+        } elseif ($subscribersCount >= 1000) {
+            $formattedCount = Yii::$app->formatter->asDecimal($subscribersCount / 1000, 1);
+            return "{$formattedCount}К подписчиков";
+        } else {
+            return $formatNumber($subscribersCount);
+        }
+    }
+
     public function getFormattedSubscriptionsCount()
     {
         $subscriptionsCount = Subscription::find()->where(['subscriber_id' => $this->id])->count();

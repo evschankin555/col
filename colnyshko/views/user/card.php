@@ -5,6 +5,7 @@ use yii\helpers\Html;
 use yii\bootstrap5\ActiveForm;
 use app\assets\UserPageAsset;
 UserPageAsset::register($this);
+$countSubscribers = $userCard->getFormattedSubscribersCountCard();
 ?>
 <div class="card card-page border-info mb-2">
     <div id="card-container" class="card-body">
@@ -15,6 +16,7 @@ UserPageAsset::register($this);
                         <img src="<?=$image->url?>" alt="Uploaded Image">
                         <div class="user-username-images">
                             <a  href="/<?=$imageRelation->username?>">@<?=$imageRelation->username?></a>
+                            <span><?=$countSubscribers?></span>
                             <a type="button" class="btn btn-warning btn-sm">Подписаться</a>
                         </div>
                     </div>
