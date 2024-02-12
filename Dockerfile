@@ -13,3 +13,9 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 # Определите рабочую директорию
 WORKDIR /var/www/colnyshko
+
+# Установка расширений PHP, включая OPCache
+RUN docker-php-ext-install opcache pdo_mysql
+
+# Копирование файла конфигурации OPCache
+COPY opcache.ini /usr/local/etc/php/conf.d/opcache.ini
