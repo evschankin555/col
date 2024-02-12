@@ -18,7 +18,7 @@ use yii\web\UploadedFile;
 use app\models\UploadForm;
 use app\models\Upload;
 use app\models\user_related\ImageRelation;
-
+use app\components\Base62Converter;
 
 class UserController extends Controller{
     public function actionView($username)
@@ -619,8 +619,9 @@ class UserController extends Controller{
     }
     public function actionCard($username, $hash)
     {
-        if (preg_match('/-(\d+)$/', $hash, $matches)) {
-            $idCard = $matches[1];
+        if (preg_match('/-(\w+)$/', $hash, $matches)) {
+            $base62Converter = new Base62Converter();
+            $idCard = $base62Converter->decode($matches[1]);
 
             $user = User::find()->where(['username' => $username])->one();
 
@@ -631,7 +632,6 @@ class UserController extends Controller{
             $imageRelation = ImageRelation::find()
                 ->where(['id' => $idCard, 'user_id' => $user->id])
                 ->one();
-
             if ($imageRelation === null) {
                 throw new NotFoundHttpException("The image relation was not found.");
             }

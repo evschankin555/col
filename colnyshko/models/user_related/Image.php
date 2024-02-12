@@ -69,9 +69,9 @@
         {
             $username = $this->user->username;  // Получаем имя пользователя
             $titleTranslit = $this->translit($this->description);  // Получаем транслитерированный title
-            $idEncoded = $this->id;  // Кодируем ID в base64 (или в 16-ричную систему счисления)
+            //$idEncoded = $this->id;  // Кодируем ID в base64 (или в 16-ричную систему счисления)
 
-            return "http://localhost/{$username}/card/{$titleTranslit}-{$idEncoded}";
+            return "http://localhost/{$username}/card/{$titleTranslit}-";
         }
 
         private function translit($string)

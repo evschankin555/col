@@ -6,6 +6,7 @@ use yii\base\Widget;
 use yii\bootstrap5\Modal;
 use yii\helpers\Html;
 use Yii;
+use app\components\Base62Converter;
 
 class UserImagesWidget extends Widget
 {
@@ -56,7 +57,8 @@ class UserImagesWidget extends Widget
             $output .= $this->renderButton('Сохранить...', 'btn-warning', 'save-button', $image, $imageRelation);
         }
 
-        $output .= '<img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->url . '" src="' . $src . '" alt="' . $image->description . '" data-href="'.$image->href.'">';
+        $output .= '<a href="'.$this->createHref($image, $imageRelation).'" title="Открыть: '.$imageRelation->title
+            .'"><img class="image-modal" data-html="HTML код..." data-bb="BB код..."  data-src="' . $image->url . '" src="' . $src . '" alt="' . $image->description . '" data-href="'.$image->href.'"></a>';
         $output .= $this->renderDropdown($image);
         $output .= '</div>';
 
@@ -75,6 +77,10 @@ class UserImagesWidget extends Widget
     }
 
 
+    private function createHref($image, $imageRelation){
+        $base62Converter = new Base62Converter();
+        return $image->href.$base62Converter->encode($imageRelation->id);
+    }
     private function renderDropdown($image)
     {
         $url = $image->href;

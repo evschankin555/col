@@ -26,6 +26,7 @@ use app\components\UserMenuButtonWidget;
 use app\components\UserMenuContentWidget;
 use app\components\ApiTimer;
 use app\components\DbTimer;
+Yii::$app->opcacheManager->reset();
 
 AppAsset::register($this);
 
