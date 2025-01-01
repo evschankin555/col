@@ -41,5 +41,37 @@ class GptController extends Controller
             ];
         }
     }
+    public function actionGemini()
+    {
+        return $this->render('gemini');
+    }
+
+    public function actionGeminiSend()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $content = Yii::$app->request->post('content');
+
+        // Получите доступ к компоненту Gemini
+        $gemini = \Yii::$app->get('gemini');
+
+        // Передайте текст запроса в компонент
+        $generatedText = $gemini->generateContent($content);
+
+        if ($generatedText !== null) {
+            // Верните успешный ответ с сгенерированным текстом
+            return [
+                'success' => true,
+                'message' => 'Текст успешно сгенерирован.',
+                'generatedText' => $generatedText,
+            ];
+        } else {
+            // Если произошла ошибка при генерации текста, верните сообщение об ошибке
+            return [
+                'success' => false,
+                'message' => 'Ошибка при генерации текста.',
+            ];
+        }
+    }
+
 
 }

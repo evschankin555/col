@@ -49,6 +49,10 @@ $config = [
         'formatter' => [
             'thousandSeparator' => ' ',
         ],
+        'gemini' => [
+            'class' => 'app\components\Gemini',
+            'apiKey' => 'AIzaSyCTRDGoOBwrvMyVaGV6hYSa7iebVlF3wXc',
+        ],
     ],
     'modules' => [
         'seo-module' => [
